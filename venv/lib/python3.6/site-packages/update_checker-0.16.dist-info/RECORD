@@ -1,0 +1,11 @@
+update_checker.py,sha256=PvVMSlyMa3XWue1l1-_nG3e_leFQe0n4G7E3UOMixGw,9367
+update_checker_test.py,sha256=NEAj_peQV6y-Tfv9uF3j0_fSPL4ThsdCpG0wfwURdR0,2848
+update_checker-0.16.dist-info/DESCRIPTION.rst,sha256=IthinrvroBWJck3eXVJM8pEtVti2BNwNXjVs5QZrZ40,1228
+update_checker-0.16.dist-info/METADATA,sha256=4Lcomh5FWzU0wS3g8gezRZ7kI3wLdfqk0xoAHj6ZCBY,1966
+update_checker-0.16.dist-info/RECORD,,
+update_checker-0.16.dist-info/WHEEL,sha256=5wvfB7GvgZAbKBSE9uX9Zbi6LCL-_KgezgHblXhCRnM,113
+update_checker-0.16.dist-info/metadata.json,sha256=wphiRaz24qnZfdstYjQQFzONg4-f6o_-vQTi3KDsy5U,899
+update_checker-0.16.dist-info/top_level.txt,sha256=v2qENVN-klKjtYpEJDzFt7tHDq7ALuBw1hYg7n6Xrk0,35
+update_checker-0.16.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+__pycache__/update_checker.cpython-36.pyc,,
+__pycache__/update_checker_test.cpython-36.pyc,,
