@@ -24,6 +24,7 @@ end_date_ = 'end_date'
 subreddit_ = 'subreddit'
 created_at_ = 'created_at'
 updated_at_ = 'updated_at'
+frequency_ = 'frequency'
 
 # Regions / Countries
 NA_ = 'NA'

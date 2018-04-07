@@ -15,25 +15,26 @@ LOG = logging.getLogger('bot')
 
 def run():
     LOG.info(' ')
-    LOG.info(' Looking for Nintendo Switch Deals on NA Region')
 
-    na_games, na_added_games = na.get_games(system=SWITCH)
+    for system, properties in SYSTEMS.items():
+        LOG.info(' Looking for {} deals on NA Region'.format(system))
 
-    LOG.info(' Deals found: {}'.format(len(na_games)))
-    LOG.info(' New deals since last update: {}'.format(len(na_added_games)))
+        na_games, na_added_games = na.get_games(system=system)
 
-    LOG.info(' ')
-    LOG.info(' Building reddit post')
-    na_post = na.make_post(na_games)
+        LOG.info(' Deals found: {}'.format(len(na_games)))
+        LOG.info(' New deals since last update: {}'.format(len(na_added_games)))
 
-    LOG.info(' Posting deals to subreddit: {}'.format(SWITCH_SUBREDDIT))
-    Reddit.instance().post(
-        SWITCH_SUBREDDIT,
-        NA_,
-        SWITCH,
-        SWITCH_POST_FREQUENCY,
-        '[{}] Current eShop deals',
-        na_post,
-        na_added_games
-    )
+        LOG.info(' ')
+        LOG.info(' Building reddit post')
+        na_post = na.make_post(na_games)
 
+        LOG.info(' Posting deals to subreddit: {}'.format(properties[subreddit_]))
+        Reddit.instance().post(
+            properties[subreddit_],
+            NA_,
+            system,
+            properties[frequency_],
+            '[{}] Current {} eshop deals'.format('{}', system),
+            na_post,
+            na_added_games
+        )
