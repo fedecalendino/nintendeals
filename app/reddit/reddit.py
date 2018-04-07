@@ -36,6 +36,9 @@ class Reddit:
             user_agent=REDDIT_USERAGENT
         )
 
+    def find(self, submission_id):
+        return self.api.submission(id=submission_id)
+
     def create(self, subreddit, title, content):
 
         submission = self.api\
@@ -45,21 +48,19 @@ class Reddit:
         return submission.id
 
     def edit(self, submission_id, content):
-        submission = self.api.submission(id=submission_id)
+        submission = self.find(submission_id)
 
         if submission is not None:
             submission.edit(content)
 
     def delete(self, submission_id):
-        submission = self.api.submission(id=submission_id)
+        submission = self.find(submission_id)
 
         if submission is not None:
             submission.delete()
 
     def post(self, subreddit, region, system, frequency, title, content, added_games=[]):
         db = PostsDatabase.instance()
-
-        current = db.load_last(subreddit, region, system, frequency)
 
         text = []
 
@@ -77,6 +78,11 @@ class Reddit:
         text.append("> Developed by /u/uglyasablasphemy (v{})".format(VERSION))
 
         content = content + "\n" + "\n".join(text)
+
+        current = db.load_last(subreddit, region, system, frequency)
+
+        if current is not None and self.find(current[id_]) is None:
+            current = None
 
         if current is None:
             current = {
