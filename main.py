@@ -22,7 +22,11 @@ def main():
 
     while True:
         LOG.info(' Running Bot')
-        app.run()
+
+        try:
+            app.run()
+        except Exception as e:
+            LOG.error(e)
 
         LOG.info(' Sleeping for {} seconds'.format(UPDATE_FREQUENCY))
         time.sleep(UPDATE_FREQUENCY)

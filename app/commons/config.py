@@ -4,10 +4,10 @@ import os
 # Statics
 from app.commons.keys import *
 
-VERSION = "0.2"
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
+VERSION = "0.3"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -20,10 +20,12 @@ SWITCH = 'switch'
 
 SYSTEMS = {
     SWITCH: {
-        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'u_nintendeals'),
+        name_: 'Nintendo Switch',
+        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'test'),
         frequency_: int(os.environ.get('SWITCH_POST_TIME_FRAME', '2'))
     }, N3DS: {
-        subreddit_: os.environ.get('3DS_SUBREDDIT', 'u_nintendeals'),
+        name_: 'Nintendo 3DS',
+        subreddit_: os.environ.get('3DS_SUBREDDIT', 'test'),
         frequency_: int(os.environ.get('3DS_POST_TIME_FRAME', '2'))
     }
 }

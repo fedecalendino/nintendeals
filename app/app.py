@@ -34,7 +34,7 @@ def run():
             NA_,
             system,
             properties[frequency_],
-            '[{}] Current {} eshop deals'.format('{}', system),
+            '[{}] Current {} eShop deals'.format('{}', properties[name_]),
             na_post,
             na_added_games
         )

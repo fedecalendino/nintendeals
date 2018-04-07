@@ -36,8 +36,16 @@ class Reddit:
             user_agent=REDDIT_USERAGENT
         )
 
-    def find(self, submission_id):
-        return self.api.submission(id=submission_id)
+    def exists(self, submission_id):
+        try:
+            submission = self.api.submission(id=submission_id)
+
+            if submission.author.name == REDDIT_USERNAME:
+                return submission
+            else:
+                return None
+        except Exception as e:
+            return None
 
     def create(self, subreddit, title, content):
 
@@ -48,13 +56,13 @@ class Reddit:
         return submission.id
 
     def edit(self, submission_id, content):
-        submission = self.find(submission_id)
+        submission = self.api.submission(id=submission_id)
 
         if submission is not None:
             submission.edit(content)
 
     def delete(self, submission_id):
-        submission = self.find(submission_id)
+        submission = self.api.submission(id=submission_id)
 
         if submission is not None:
             submission.delete()
@@ -81,10 +89,12 @@ class Reddit:
 
         current = db.load_last(subreddit, region, system, frequency)
 
-        if current is not None and self.find(current[id_]) is None:
+        if current is not None and self.exists(current[id_]) is None:
             current = None
 
         if current is None:
+            LOG.info(" Creating a post on {}".format(subreddit))
+
             current = {
                 subreddit_: subreddit,
                 region_: region,
@@ -101,6 +111,8 @@ class Reddit:
             LOG.info(" Created a new post on {}: https://redd.it/{}".format(subreddit, sub_id))
 
         else:
+            LOG.info(" Updating post on {}".format(subreddit))
+
             self.edit(current[id_], content)
 
             current[updated_at_] = datetime.now()
