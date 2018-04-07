@@ -1,4 +1,4 @@
-requests
-python-dateutil
-pymongo
-praw
+praw==5.4.0
+pymongo==3.6.1
+python-dateutil==2.7.2
+requests==2.18.4
