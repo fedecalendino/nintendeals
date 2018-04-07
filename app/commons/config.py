@@ -4,6 +4,7 @@ import os
 # Statics
 from app.commons.keys import *
 
+VERSION = "0.1"
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 

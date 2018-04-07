@@ -163,9 +163,9 @@ def make_post(games):
             url = details[website_]
 
             if len(url) == 0:
-                price_columns.append('{} **{}** `{}%`'.format(currency, sale_price, price[discount_]))
+                price_columns.append('`{}%` {} **{}**'.format(price[discount_], currency, sale_price))
             else:
-                price_columns.append('[{} **{}**]({}) `{}%`'.format(currency, sale_price, url, price[discount_]))
+                price_columns.append('`{}%` [{} **{}**]({})'.format(price[discount_], currency, sale_price, url))
 
             time_left = price[end_date_] - datetime.utcnow()
 
@@ -179,7 +179,7 @@ def make_post(games):
 
         if len(price_columns) < 3:
             for i in range(len(price_columns), 3):
-                price_columns.append('-')
+                price_columns.append(' ')
 
         text.append('{} | {} | {} '.format(
             title_columns[0],

@@ -74,7 +74,7 @@ class Reddit:
         text.append("")
         text.append("---")
         text.append("")
-        text.append("> Developed by /u/uglyasablasphemy")
+        text.append("> Developed by /u/uglyasablasphemy (v{})".format(VERSION))
 
         content = content + "\n" + "\n".join(text)
 
