@@ -83,7 +83,9 @@ class Reddit:
         text.append("")
         text.append("---")
         text.append("")
-        text.append("> Developed by /u/uglyasablasphemy (v{})".format(VERSION))
+        text.append("* Developed by /u/uglyasablasphemy")
+        text.append("* Version: {} ({}d/{}h)".format(VERSION, frequency, int(UPDATE_FREQUENCY/60/60)))
+
 
         content = content + "\n" + "\n".join(text)
 
