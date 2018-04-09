@@ -8,6 +8,10 @@ import requests
 
 # Modules
 from app.db.mongo import GamesDatabase
+from app.db.mongo import PostsDatabase
+
+# Utils
+from app.commons.util import format_float
 
 # Constants
 from app.commons.config import REGIONS
@@ -60,11 +64,8 @@ def get_games(system, limit=200, offset=0, deals_only=True):
     json = r.json()
 
     games = []
-    added_games = []
 
     for data in json['games']['game']:
-        added = False
-
         game_id = data['game_code'][-5:]
 
         game = GamesDatabase.instance().load(game_id)
@@ -83,7 +84,6 @@ def get_games(system, limit=200, offset=0, deals_only=True):
                 genres_: categories
             }
 
-            added = True
             LOG.info(' {} found'.format(data['title']))
 
         games.append(game)
@@ -109,82 +109,84 @@ def get_games(system, limit=200, offset=0, deals_only=True):
 
                     if price is not None:
                         prices.append(price)
-                        added = True
 
                         LOG.info(' New deal for {} found'.format(data['title']))
 
         GamesDatabase.instance().save(game)
 
-        if added:
-            added_games.append(data['title'])
-
-    return games, added_games
+    return games
 
 
-def make_post(games):
+def one_table_per_country(games):
     text = []
 
     text.append('')
     text.append('')
     text.append("# {} ({} deals)".format(NA_, len(games)))
     text.append('')
-    text.append(
-        'Title | {} {} | {} {} | {} {} | Ends in'.format(
-            REGION[countries_][US_][flag_], US_,
-            REGION[countries_][CA_][flag_], CA_,
-            REGION[countries_][MX_][flag_], MX_
+
+    for country, properties in REGION[countries_].items():
+        text.append('##{} {}'.format(properties[flag_], properties[name_]))
+        text.append('')
+
+        text.append('Title | % | Sale Price | Full Price | From | To')
+        text.append('- | - | - | - | - | -')
+
+        # Get max full price for leading zeroes
+        max_sale = "%.2f" % max(
+            [
+                game[countries_][country][prices_][-1][sale_price_]
+                for game in games if len(game[countries_][country][prices_]) > 0
+            ]
         )
-    )
 
-    text.append('----- | ---- | --- | ---- | ----')
+        # Get max full price for leading zeroes
+        max_full = "%.2f" % max(
+            [
+                game[countries_][country][prices_][-1][full_price_]
+                for game in games if len(game[countries_][country][prices_]) > 0
+            ]
+        )
 
-    for game in games:
+        for game in games:
 
-        title_columns = []
-        price_columns = []
-        expiration_columns = []
-
-        for country, details in game[countries_].items():
-
-            title = details[title_]
-
-            if len(title) >= 35:
-                title = title[:32] + "..."
-
-            title_columns.append(title)
+            details = game[countries_][country]
 
             if len(details[prices_]) < 1:
                 continue
 
+            title = details[title_]
+
+            if len(details[website_]) > 0:
+                title = "[{}]({})".format(title, details[website_])
+
+            currency = properties[currency_]
+
             price = details[prices_][-1]
-
-            currency = REGION[countries_][country][currency_]
-            sale_price = "%.2f" % price[sale_price_]
-            url = details[website_]
-
-            if len(url) == 0:
-                price_columns.append('`{}%` {} **{}**'.format(price[discount_], currency, sale_price))
-            else:
-                price_columns.append('`{}%` [{} **{}**]({})'.format(price[discount_], currency, sale_price, url))
+            sale_price = format_float(price[sale_price_], len(max_sale))
+            full_price = format_float(price[full_price_], len(max_full))
 
             time_left = price[end_date_] - datetime.utcnow()
 
             if time_left.days > 0:
-                time_left = str(time_left.days) + " days"
+                days = time_left.days
+                time = "{}d".format(days)
+
+                warning = '❗' if days < 2 else ''
             else:
-                time_left = round(time_left.days * 24 + time_left.seconds / 60 / 60)
-                time_left = str(time_left) + " hours"
+                hours = round(time_left.seconds/60/60)
+                time = "{}h".format(hours)
 
-            expiration_columns.append(time_left)
+                warning = '‼️' if hours < 24 else ''
 
-        if len(price_columns) < 3:
-            for i in range(len(price_columns), 3):
-                price_columns.append(' ')
+            new = '⭐' if (datetime.now() - price[start_date_]).days < 2 else ''
 
-        text.append('{} | {} | {} '.format(
-            title_columns[0],
-            "|".join(price_columns),
-            expiration_columns[0]
-        ))
+            text.append('{} {} | `{}%` | **{} {}** | ~~{} {}~~ | {} | *{} ({}{})*'.format(
+                title, new, price[discount_], currency, sale_price, currency, full_price,
+                price[start_date_].strftime("%B %d"),
+                price[end_date_].strftime("%B %d"), time, warning
+            ))
+
+        text.append('')
 
     return '\n'.join(text)

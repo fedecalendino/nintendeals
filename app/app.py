@@ -19,14 +19,13 @@ def run():
     for system, properties in SYSTEMS.items():
         LOG.info(' Looking for {} deals on NA Region'.format(system))
 
-        na_games, na_added_games = na.get_games(system=system)
+        na_games = na.get_games(system=system)
 
         LOG.info(' Deals found: {}'.format(len(na_games)))
-        LOG.info(' New deals since last update: {}'.format(len(na_added_games)))
 
         LOG.info(' ')
         LOG.info(' Building reddit post')
-        na_post = na.make_post(na_games)
+        na_post = na.one_table_per_country(na_games)
 
         LOG.info(' Posting deals to subreddit: {}'.format(properties[subreddit_]))
         Reddit.instance().post(
@@ -35,6 +34,5 @@ def run():
             system,
             properties[frequency_],
             '[{}] Current {} eShop deals'.format('{}', properties[name_]),
-            na_post,
-            na_added_games
+            na_post
         )

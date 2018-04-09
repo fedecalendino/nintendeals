@@ -67,25 +67,17 @@ class Reddit:
         if submission is not None:
             submission.delete()
 
-    def post(self, subreddit, region, system, frequency, title, content, added_games=[]):
+    def post(self, subreddit, region, system, frequency, title, content):
         db = PostsDatabase.instance()
 
         text = []
-
-        if len(added_games):
-            text.append("---")
-            text.append("### Added on {}:".format(datetime.now().date()))
-            text.append("")
-
-            for added_game in added_games:
-                text.append("* {}".format(added_game))
 
         text.append("")
         text.append("---")
         text.append("")
         text.append("* Developed by /u/uglyasablasphemy")
         text.append("* Version: {} ({}d/{}h)".format(VERSION, frequency, int(UPDATE_FREQUENCY/60/60)))
-
+        text.append("* Last update: {}".format(datetime.now()))
 
         content = content + "\n" + "\n".join(text)
 

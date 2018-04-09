@@ -21,6 +21,7 @@ start_date_ = 'start_date'
 end_date_ = 'end_date'
 
 # Reddit
+games_ = 'games'
 subreddit_ = 'subreddit'
 created_at_ = 'created_at'
 updated_at_ = 'updated_at'
