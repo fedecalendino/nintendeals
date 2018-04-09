@@ -8,13 +8,12 @@ import requests
 
 # Modules
 from app.db.mongo import GamesDatabase
-from app.db.mongo import PostsDatabase
 
 # Utils
 from app.commons.util import format_float
 
 # Constants
-from app.commons.config import REGIONS
+from app.commons.config import *
 from app.commons.keys import *
 
 
@@ -129,8 +128,8 @@ def one_table_per_country(games):
         text.append('##{} {}'.format(properties[flag_], properties[name_]))
         text.append('')
 
-        text.append('Title | % | Sale Price | Full Price | From | To')
-        text.append('- | - | - | - | - | -')
+        text.append('Title | Expiration | Sale Price | Full Price | Discount')
+        text.append('- | - | - | - | - ')
 
         # Get max full price for leading zeroes
         max_sale = "%.2f" % max(
@@ -172,19 +171,21 @@ def one_table_per_country(games):
                 days = time_left.days
                 time = "{}d".format(days)
 
-                warning = '❗' if days < 2 else ''
+                warning = EMOJI_EXP_TOMORROW if days < 2 else ''
             else:
                 hours = round(time_left.seconds/60/60)
                 time = "{}h".format(hours)
 
-                warning = '‼️' if hours < 24 else ''
+                warning = EMOJI_EXP_TODAY if hours < 24 else ''
 
-            new = '⭐' if (datetime.now() - price[start_date_]).days < 2 else ''
+            new = EMOJI_NEW if (datetime.now() - price[start_date_]).days < 2 else ''
 
-            text.append('{} {} | `{}%` | **{} {}** | ~~{} {}~~ | {} | *{} ({}{})*'.format(
-                title, new, price[discount_], currency, sale_price, currency, full_price,
-                price[start_date_].strftime("%B %d"),
-                price[end_date_].strftime("%B %d"), time, warning
+            text.append('{} {}{} | *{} ({})* | **{} {}** | ~~{} {}~~ | `{}%` '.format(
+                title, new, warning,
+                price[end_date_].strftime("%B %d"), time,
+                currency, sale_price,
+                currency, full_price,
+                price[discount_]
             ))
 
         text.append('')

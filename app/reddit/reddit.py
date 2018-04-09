@@ -53,6 +53,8 @@ class Reddit:
             .subreddit(subreddit)\
             .submit(title, selftext=content)
 
+        submission.disable_inbox_replies()
+
         return submission.id
 
     def edit(self, submission_id, content):
@@ -75,9 +77,14 @@ class Reddit:
         text.append("")
         text.append("---")
         text.append("")
-        text.append("* Developed by /u/uglyasablasphemy")
-        text.append("* Version: {} ({}d/{}h)".format(VERSION, frequency, int(UPDATE_FREQUENCY/60/60)))
-        text.append("* Last update: {}".format(datetime.now()))
+        text.append("* Developed by [uglyasablasphemy]"
+                    "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20ther%20nintendeals%20bot)")
+        text.append("* Version: {}".format(VERSION))
+        text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
+        text.append("* References:")
+        text.append("  * {} : new".format(EMOJI_NEW))
+        text.append("  * {} : expires soon™".format(EMOJI_EXP_TOMORROW))
+        text.append("  * {} : expires in less than 24h".format(EMOJI_EXP_TODAY))
 
         content = content + "\n" + "\n".join(text)
 

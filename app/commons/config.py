@@ -7,13 +7,17 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "v0.5"
+VERSION = "v0.6"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
 REDDIT_CLIENTID = os.environ.get("REDDIT_CLIENTID")
 REDDIT_CLIENTSECRET = os.environ.get("REDDIT_CLIENTSECRET")
 REDDIT_USERAGENT = os.environ.get("REDDIT_USERAGENT")
+
+EMOJI_NEW = '✨'
+EMOJI_EXP_TOMORROW = '❗'
+EMOJI_EXP_TODAY = '‼️'
 
 N3DS = '3ds'
 SWITCH = 'switch'
@@ -38,7 +42,7 @@ REGIONS = {
         key_: NA_,
         name_: 'North America',
         api_: {
-            list_api_: 'https://www.nintendo.com/json/content/get/filter/game?system={}&limit={}&offset={}{}',
+            list_api_: 'https://www.nintendo.com/json/content/get/filter/game?system={}&sort=title&direction=asc&limit={}&offset={}{}',
             price_api_: 'https://api.ec.nintendo.com/v1/price?country={}&lang=en&ids={}'
         },
         countries_: {
