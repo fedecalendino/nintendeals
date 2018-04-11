@@ -79,12 +79,19 @@ class Reddit:
         text.append("")
         text.append("* Developed by [uglyasablasphemy]"
                     "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20ther%20nintendeals%20bot)")
-        text.append("* Version: {}".format(VERSION))
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
+        text.append("")
         text.append("* References:")
         text.append("  * {} : new".format(EMOJI_NEW))
         text.append("  * {} : expires soon™".format(EMOJI_EXP_TOMORROW))
         text.append("  * {} : expires in less than 24h".format(EMOJI_EXP_TODAY))
+        text.append("  * {} : best discount in {}".format(EMOJI_MAX_DISCOUNT, region))
+        text.append("")
+        text.append("* Changelog ({}):".format(VERSION))
+        text.append("  * Added a column for the number of players.")
+        text.append("  * Compacted the sale and full price columns into one.")
+        text.append("  * Added tooltip text on the icons.")
+        text.append("  * Added the {} symbol to indicate the best discount in the region.".format(EMOJI_MAX_DISCOUNT))
 
         content = content + "\n" + "\n".join(text)
 

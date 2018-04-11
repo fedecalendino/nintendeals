@@ -162,6 +162,22 @@ def one_table_per_country(games):
             currency = properties[currency_]
 
             price = details[prices_][-1]
+            discount = price[discount_]
+
+            max_discount = ''
+            try:
+                discounts = [
+                    dtls[prices_][-1][discount_]
+                    for (ctr, dtls) in game[countries_].items() if
+                    dtls[prices_][-1][end_date_] > datetime.now()
+                ]
+                
+                if any(d != discount for d in discounts):
+                    if discount == max(discounts):
+                        max_discount = EMOJI_MAX_DISCOUNT
+            except:
+                pass
+
             sale_price = format_float(price[sale_price_], len(max_sale))
             full_price = format_float(price[full_price_], len(max_full))
 
@@ -187,18 +203,18 @@ def one_table_per_country(games):
             else:
                 players = players \
                     .replace(' players', '') \
-                    .replace('To be determined', 'tbd')
+                    .replace('To be determined', '- tbd -')
 
             text.append(
                 '{title} {new}{warning} | '
                 '*{end_date} ({time_left})* | '
                 '{currency} **{sale_price}** ~~{full_price}~~ | '
-                '`{discount}%` | '
+                '`{discount}%`{min_discount} | '
                 '{players}'.format(
                     title=title, new=new, warning=warning,
                     end_date=price[end_date_].strftime("%B %d"), time_left=time,
                     currency=currency, sale_price=sale_price,full_price=full_price,
-                    discount=price[discount_],
+                    discount=discount, min_discount=max_discount,
                     players=players)
                 )
 
