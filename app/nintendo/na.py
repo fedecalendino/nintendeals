@@ -109,7 +109,7 @@ def get_games(system, limit=200, offset=0, deals_only=True):
                     if price is not None:
                         prices.append(price)
 
-                        LOG.info(' New deal for {} found'.format(data['title']))
+                        LOG.info(' New deal for {} found in {}'.format(data['title'], country))
 
         GamesDatabase.instance().save(game)
 
@@ -128,7 +128,7 @@ def one_table_per_country(games):
         text.append('##{} {}'.format(properties[flag_], properties[name_]))
         text.append('')
 
-        text.append('Title | Expiration | Sale Price | Full Price | Discount')
+        text.append('Title | Expiration | Price | % | Players')
         text.append('- | - | - | - | - ')
 
         # Get max full price for leading zeroes
@@ -180,13 +180,27 @@ def one_table_per_country(games):
 
             new = EMOJI_NEW if (datetime.now() - price[start_date_]).days < 2 else ''
 
-            text.append('{} {}{} | *{} ({})* | **{} {}** | ~~{} {}~~ | `{}%` '.format(
-                title, new, warning,
-                price[end_date_].strftime("%B %d"), time,
-                currency, sale_price,
-                currency, full_price,
-                price[discount_]
-            ))
+            players = game[number_of_players_]
+
+            if players is None:
+                players = 'TBD'
+            else:
+                players = players \
+                    .replace(' players', '') \
+                    .replace('To be determined', 'tbd')
+
+            text.append(
+                '{title} {new}{warning} | '
+                '*{end_date} ({time_left})* | '
+                '{currency} **{sale_price}** ~~{full_price}~~ | '
+                '`{discount}%` | '
+                '{players}'.format(
+                    title=title, new=new, warning=warning,
+                    end_date=price[end_date_].strftime("%B %d"), time_left=time,
+                    currency=currency, sale_price=sale_price,full_price=full_price,
+                    discount=price[discount_],
+                    players=players)
+                )
 
         text.append('')
 
