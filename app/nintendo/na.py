@@ -156,6 +156,9 @@ def one_table_per_country(games):
 
             title = details[title_]
 
+            if len(title) > 40:
+                title = title[:35] + '…'
+
             if len(details[website_]) > 0:
                 title = "[{}]({})".format(title, details[website_])
 

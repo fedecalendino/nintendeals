@@ -7,7 +7,7 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "v0.8"
+VERSION = "v0.9"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -15,10 +15,10 @@ REDDIT_CLIENTID = os.environ.get("REDDIT_CLIENTID")
 REDDIT_CLIENTSECRET = os.environ.get("REDDIT_CLIENTSECRET")
 REDDIT_USERAGENT = os.environ.get("REDDIT_USERAGENT")
 
-EMOJI_NEW = '[✨](http://# "new")'
-EMOJI_EXP_TOMORROW = '[❕](http://# "expires soon")'
-EMOJI_EXP_TODAY = '[❗](http://# "expires in less than 24h")'
-EMOJI_MAX_DISCOUNT = '[🔥](http://# "best discount in the region")'
+EMOJI_NEW = '✨'
+EMOJI_EXP_TOMORROW = '❕'
+EMOJI_EXP_TODAY = '❗'
+EMOJI_MAX_DISCOUNT = '🔥'
 
 N3DS = '3ds'
 SWITCH = 'switch'
