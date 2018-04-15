@@ -49,7 +49,7 @@ REGIONS = {
         countries_: {
             US_: {
                 key_: US_,
-                name_: 'United Stated of America',
+                name_: 'United States of America',
                 currency_: 'USD',
                 flag_: '🇺🇸',
                 website_: 'https://www.nintendo.com/games/detail/{}'

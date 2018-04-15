@@ -1,6 +1,7 @@
 # Standard
 import logging
 import time
+import traceback
 
 # Modules
 from app import app
@@ -27,6 +28,7 @@ def main():
             app.run()
         except Exception as e:
             LOG.error(e)
+            traceback.print_exc()
 
         LOG.info(' Sleeping for {} seconds'.format(UPDATE_FREQUENCY))
         time.sleep(UPDATE_FREQUENCY)
