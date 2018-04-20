@@ -129,7 +129,7 @@ def one_table_per_country(games):
         text.append('')
 
         text.append('Title | Expiration | Price | % | Players')
-        text.append('- | - | - | - | - ')
+        text.append('--- | --- | --- | --- | --- ')
 
         # Get max full price for leading zeroes
         max_sale = "%.2f" % max(

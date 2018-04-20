@@ -85,10 +85,7 @@ class Reddit:
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
         text.append("")
         text.append("* Changelog ({}):".format(VERSION))
-        text.append("  * Added a column for the number of players.")
-        text.append("  * Compacted the sale and full price columns into one.")
-        text.append("  * Added icons on top of the post.")
-        text.append("  * Added the {} symbol to indicate the best discount in the region.".format(EMOJI_MAX_DISCOUNT))
+        text.append("  * Fixed layout for new design.")
 
         content = symbols + "\n" + content + "\n" + "\n".join(text)
 

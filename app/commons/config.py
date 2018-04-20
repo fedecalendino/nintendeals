@@ -7,7 +7,7 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "v0.9"
+VERSION = "v1.0"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
