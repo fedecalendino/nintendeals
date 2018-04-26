@@ -1,5 +1,6 @@
 # Games
 id_ = '_id'
+ids_ = 'ids'
 system_ = 'system'
 release_date_ = 'release_date'
 number_of_players_ = 'number_of_players'
@@ -10,7 +11,7 @@ countries_ = 'countries'
 region_ = 'region'
 country_ = 'country'
 title_ = 'title'
-website_ = 'website'
+websites_ = 'websites'
 prices_ = 'prices'
 
 # Prices
@@ -32,6 +33,14 @@ NA_ = 'NA'
 US_ = 'US'
 CA_ = 'CA'
 MX_ = 'MX'
+
+EU_ = 'EU'
+ES_ = 'ES'
+GB_ = 'GB'
+RU_ = 'RU'
+ZA_ = 'ZA'
+AU_ = 'AU'
+CH_ = 'CH'
 
 key_ = 'key'
 name_ = 'name'

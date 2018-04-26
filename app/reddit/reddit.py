@@ -72,8 +72,8 @@ class Reddit:
     def post(self, subreddit, region, system, frequency, title, content):
         db = PostsDatabase.instance()
 
-        symbols = '> `{} > new` `{} > expires soon` `{} > expires in less than 24h` `{} > best discount in {}`'\
-            .format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY, EMOJI_MAX_DISCOUNT, region)
+        symbols = '> `{} > new` `{} > expires soon` `{} > expires in less than 24h` `{} > best deal` '\
+            .format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY, EMOJI_MAX_DISCOUNT)
 
         text = []
 
@@ -85,7 +85,13 @@ class Reddit:
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
         text.append("")
         text.append("* Changelog ({}):".format(VERSION))
-        text.append("  * Fixed layout for new design.")
+        text.append("  * Added deal count per country.")
+
+        if "/" in title:
+            text.append("  * Added support for EU region.")
+            text.append("")
+            text.append("* Polls:")
+            text.append("  * Post formats: https://www.strawpoll.me/15578395")
 
         content = symbols + "\n" + content + "\n" + "\n".join(text)
 

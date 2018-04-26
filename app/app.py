@@ -1,14 +1,18 @@
 # Standard
 import logging
+from operator import itemgetter
 
 # Modules
+from app.nintendo import common
 from app.nintendo import na
+from app.nintendo import eu
+
+from app.commons.util import merge
+
 from app.reddit.reddit import Reddit
 
 # Statics
 from app.commons.config import *
-from app.commons.keys import *
-
 
 LOG = logging.getLogger('bot')
 
@@ -17,22 +21,32 @@ def run():
     LOG.info(' ')
 
     for system, properties in SYSTEMS.items():
-        LOG.info(' Looking for {} deals on NA Region'.format(system))
+        na_games = na.get_deals(system=system)
+        LOG.info('Deals found on NA region: {}'.format(len(na_games)))
 
-        na_games = na.get_games(system=system)
+        eu_games = eu.get_deals(system=system)
+        LOG.info('Deals found on EU region: {}'.format(len(eu_games)))
 
-        LOG.info(' Deals found: {}'.format(len(na_games)))
+        games = merge(na_games, eu_games)
+        LOG.info('Total deals found: {}'.format(len(games)))
+
+        games = common.find_prices(games)
+
+        games = sorted(games, key=itemgetter(title_))
 
         LOG.info(' ')
         LOG.info(' Building reddit post')
-        na_post = na.one_table_per_country(na_games)
 
-        LOG.info(' Posting deals to subreddit: {}'.format(properties[subreddit_]))
+        post, regions = common.make_unified_post(games)
+
+        LOG.info(' Posting all deals to subreddit: {}'.format(properties[subreddit_]))
+
         Reddit.instance().post(
             properties[subreddit_],
-            NA_,
+            "-".join(regions),
             system,
             properties[frequency_],
-            '[{}] Current {} eShop deals'.format('{}', properties[name_]),
-            na_post
+            '[{}] Current {} eShop deals'.format("/".join(regions), properties[name_]),
+            post
         )
+
