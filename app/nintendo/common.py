@@ -1,6 +1,7 @@
 # Standard
 from datetime import datetime
 import logging
+import time
 
 # Dependencies
 import dateutil.parser
@@ -9,6 +10,7 @@ import requests
 # Modules
 from app.db.mongo import GamesDatabase
 from app.commons.util import *
+from app.metacritic import metacritic
 
 # Constants
 from app.commons.config import *
@@ -69,6 +71,8 @@ def find_prices(games):
             if prices_ not in game:
                 game[prices_] = {}
 
+        game = metacritic.find_scores(game)
+
         for region, id in game[ids_].items():
             for country, details in REGIONS[region][countries_].items():
                 if country not in game[prices_]:
@@ -87,6 +91,8 @@ def find_prices(games):
 
         GamesDatabase.instance().save(game)
         updated_games.append(game)
+
+        time.sleep(1)
 
     return updated_games
 
@@ -128,8 +134,8 @@ def make_post(games, region):
         text.append('##{} {} ({} deals)'.format(properties[flag_], properties[name_], deal_count))
         text.append('')
 
-        text.append('Title | Expiration | Price | % | Players')
-        text.append('--- | --- | --- | --- | --- ')
+        text.append('Title | Expiration | Price | % | Players | Score')
+        text.append('--- | --- | --- | --- | --- | ---')
 
         for game in games:
             if country not in game[prices_]:
@@ -142,8 +148,8 @@ def make_post(games, region):
 
             title = game[title_]
 
-            if len(title) > 40:
-                title = title[:35] + '…'
+            if len(title) > 31:
+                title = title[:30] + '…'
 
             if country in game[websites_]:
                 title = "[{}]({})".format(title, game[websites_][country])
@@ -197,16 +203,26 @@ def make_post(games, region):
             else:
                 players = 'up to {}'.format(players)
 
+            score = ''
+
+            if scores_ in game and len(game[scores_]) > 0:
+                if metascore_ in game[scores_] and game[scores_][metascore_] is not None:
+                    score = "{} `{}`".format(EMOJI_METACRITIC, int(game[scores_][metascore_]))
+                elif userscore_ in game[scores_] and game[scores_][userscore_] is not None:
+                    score = "{} `{}`".format(EMOJI_USER, "%.2f" % game[scores_][userscore_])
+
+
             text.append(
                 '{title} {new}{warning} | '
                 '*{end_date} ({time_left})* | '
                 '{currency} **{sale_price}** ~~{full_price}~~ | '
                 '`{discount}%` {best_discount}| '
-                '{players}'.format(
+                '{players} | {score}'.format(
                     title=title, new=new, warning=warning,
-                    end_date=price[end_date_].strftime("%B %d"), time_left=time,
+                    end_date=price[end_date_].strftime("%b %d"), time_left=time,
                     currency=currency, sale_price=sale_price, full_price=full_price,
-                    discount=discount, best_discount=best_discount, players=players)
+                    discount=discount, best_discount=best_discount, players=players,
+                    score=score)
             )
 
             deal_count += 1

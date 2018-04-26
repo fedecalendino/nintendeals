@@ -28,6 +28,12 @@ created_at_ = 'created_at'
 updated_at_ = 'updated_at'
 frequency_ = 'frequency'
 
+# Metacritic
+scores_ = 'scores'
+metascore_ = 'metascore'
+userscore_ = 'userscore'
+last_update_ = 'last_update'
+
 # Regions / Countries
 NA_ = 'NA'
 US_ = 'US'

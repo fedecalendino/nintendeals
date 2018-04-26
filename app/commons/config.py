@@ -7,7 +7,7 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "v2.0"
+VERSION = "v2.5"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -19,6 +19,8 @@ EMOJI_NEW = '✨'
 EMOJI_EXP_TOMORROW = '❕'
 EMOJI_EXP_TODAY = '❗'
 EMOJI_MAX_DISCOUNT = '🔥'
+EMOJI_METACRITIC = 'Ⓜ️'
+EMOJI_USER = '👤'
 
 N3DS_ = '3DS'
 SWITCH_ = 'Switch'
@@ -56,13 +58,13 @@ REGIONS = {
             US_: {
                 key_: US_,
                 name_: 'United States of America',
-                websites_: 'https://nintendo.com/games/detail/{}',
+                websites_: 'https://www.nintendo.com/games/detail/{}',
                 flag_: '🇺🇸'
             },
             CA_: {
                 key_: CA_,
                 name_: 'Canada',
-                websites_: 'https://nintendo.com/en_CA/games/detail/{}',
+                websites_: 'https://www.nintendo.com/en_CA/games/detail/{}',
                 flag_: '🇨🇦'
             },
             MX_: {
@@ -80,13 +82,13 @@ REGIONS = {
             EU_: {
                 key_: ES_,
                 name_: 'European Union',
-                websites_: 'https://nintendo.es/Juegos/{}',
+                websites_: 'https://www.nintendo.es/Juegos/{}',
                 flag_: '🇪🇺'
             },
             GB_: {
                 key_: GB_,
                 name_: 'Great Britain',
-                websites_: 'https://nintendo.co.uk/{}',
+                websites_: 'https://www.nintendo.co.uk/{}',
                 flag_: '🇬🇧'
             },
             AU_: {
@@ -103,13 +105,13 @@ REGIONS = {
             ZA_: {
                 key_: ZA_,
                 name_: 'South Africa',
-                websites_: 'https://nintendo.co.za/Games/{}',
+                websites_: 'https://www.nintendo.co.za/Games/{}',
                 flag_: '🇿🇦'
             },
             CH_: {
                 key_: CH_,
                 name_: 'Switzerland',
-                websites_: 'https://nintendo.ch/de/Games/{}',
+                websites_: 'https://www.nintendo.ch/de/Games/{}',
                 flag_: '🇨🇭'
             }
         }
