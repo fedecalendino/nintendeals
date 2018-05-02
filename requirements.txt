@@ -3,3 +3,4 @@ pymongo==3.6.1
 python-dateutil==2.7.2
 requests==2.18.4
 beautifulsoup4==4.6.0
+xmltodict

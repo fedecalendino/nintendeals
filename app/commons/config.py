@@ -7,7 +7,7 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "v2.5"
+VERSION = "v3.0"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -32,15 +32,15 @@ SYSTEMS = {
         frequency_: int(os.environ.get('SWITCH_POST_TIME_FRAME', '2')),
         system_: {
             NA_: 'switch',
-            EU_: 'Nintendo Switch'
+            EU_: 'Nintendo Switch',
+            JP_: 'switch'
         }
     }, N3DS_: {
         name_: 'Nintendo 3DS',
         subreddit_: os.environ.get('3DS_SUBREDDIT', 'test'),
         frequency_: int(os.environ.get('3DS_POST_TIME_FRAME', '2')),
         system_: {
-            NA_: '3ds',
-            EU_: 'Nintendo 3ds'
+            NA_: '3ds'
         }
     }
 }
@@ -96,24 +96,32 @@ REGIONS = {
                 name_: 'Australia',
                 flag_: '🇦🇺'
             },
-#            RU_: {
-#                key_: RU_,
-#                name_: 'Russia',
-#                websites_: 'https://nintendo.ru/{}',
-#                flag_: '🇷🇺'
+#            ZA_: {
+#                key_: ZA_,
+#                name_: 'South Africa',
+#                websites_: 'https://www.nintendo.co.za/Games/{}',
+#                flag_: '🇿🇦'
 #            },
-            ZA_: {
-                key_: ZA_,
-                name_: 'South Africa',
-                websites_: 'https://www.nintendo.co.za/Games/{}',
-                flag_: '🇿🇦'
-            },
-            CH_: {
-                key_: CH_,
-                name_: 'Switzerland',
-                websites_: 'https://www.nintendo.ch/de/Games/{}',
-                flag_: '🇨🇭'
+#            CH_: {
+#                key_: CH_,
+#                name_: 'Switzerland',
+#                websites_: 'https://www.nintendo.ch/de/Games/{}',
+#                flag_: '🇨🇭'
+#            }
+        }
+    },
+    JP_: {
+        key_: JP_,
+        name_: 'Japan',
+        api_: 'https://www.nintendo.co.jp/{system}/software/data/eshopinfo.js',
+        details_: 'https://ec.nintendo.com/JP/ja/titles/{}',
+        countries_: {
+            JP_: {
+                key_: JP_,
+                name_: 'Japan',
+                websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
+                flag_: '🇯🇵'
             }
         }
-    }
+    },
 }

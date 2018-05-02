@@ -64,7 +64,12 @@ def find_scores(game):
         game[scores_] = {}
 
     if last_update_ not in game[scores_] or game[scores_][last_update_] + relativedelta(days=+14) < datetime.now():
-        metascore, userscore = get_score(game[system_], game[title_])
+        if title_ in game:
+            title = game[title_]
+        else:
+            title = game[title_jp_]
+
+        metascore, userscore = get_score(game[system_], title)
 
         game[scores_][last_update_] = datetime.now()
 

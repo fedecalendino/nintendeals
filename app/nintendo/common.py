@@ -65,6 +65,7 @@ def find_prices(games):
 
         if saved_game is not None:
             saved_game[ids_] = merge(game[ids_], saved_game[ids_])
+            saved_game[websites_] = merge(game[websites_], saved_game[websites_])
 
             game = saved_game
         else:
@@ -84,7 +85,12 @@ def find_prices(games):
                     if current[end_date_] > datetime.now():
                         continue
 
-                price = get_price(details[key_], id, game[title_])
+                if title_ in game:
+                    title = game[title_]
+                else:
+                    title = game[title_jp_]
+
+                price = get_price(details[key_], id, title)
 
                 if price is not None:
                     game[prices_][country].append(price)
@@ -100,9 +106,6 @@ def find_prices(games):
 def make_post(games, region):
     text = []
 
-    text.append('')
-    text.append('')
-    text.append("# {}".format(REGIONS[region][name_]))
     text.append('')
 
     for country, properties in REGIONS[region][countries_].items():
@@ -146,18 +149,28 @@ def make_post(games, region):
             if len(details) < 1:
                 continue
 
-            title = game[title_]
+            if title_ in game:
+                title = game[title_]
 
-            if len(title) > 31:
-                title = title[:30] + '…'
+                if len(title) > 30:
+                    title = title[:29] + '…'
+            else:
+                title = game[title_jp_]
+
+                if len(title) > 20:
+                    title = title[:19] + '…'
 
             if country in game[websites_]:
                 title = "[{}]({})".format(title, game[websites_][country])
 
             price = details[-1]
+
+            if price[end_date_] < datetime.now():
+                continue
+
             currency = price[currency_]
             sale_price = format_float(price[sale_price_], len(max_sale))
-            full_price = format_float(price[full_price_], len(max_full))
+            full_price = format_float(price[full_price_], 0)
             discount = price[discount_]
 
             best_discount = discount
@@ -177,7 +190,7 @@ def make_post(games, region):
             else:
                 best_discount = ''
 
-            time_left = price[end_date_] - datetime.utcnow()
+            time_left = price[end_date_] - datetime.now()
 
             if time_left.days > 0:
                 days = time_left.days
@@ -188,7 +201,7 @@ def make_post(games, region):
                 hours = round(time_left.seconds / 60 / 60)
                 time = "{}h".format(hours)
 
-                warning = EMOJI_EXP_TODAY if hours < 24 else ''
+                warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
             new = EMOJI_NEW if (datetime.now() - price[start_date_]).days < 2 else ''
 
@@ -209,7 +222,7 @@ def make_post(games, region):
                 if metascore_ in game[scores_] and game[scores_][metascore_] is not None:
                     score = "{} `{}`".format(EMOJI_METACRITIC, int(game[scores_][metascore_]))
                 elif userscore_ in game[scores_] and game[scores_][userscore_] is not None:
-                    score = "{} `{}`".format(EMOJI_USER, "%.2f" % game[scores_][userscore_])
+                    score = "{} `{}`".format(EMOJI_USER, "%.1f" % game[scores_][userscore_])
 
 
             text.append(
@@ -236,7 +249,7 @@ def make_unified_post(games):
     regions = []
     text = []
 
-    for region in [NA_, EU_]:
+    for region in [NA_, EU_, JP_]:
         post = make_post(games, region)
 
         if post is not None:

@@ -88,9 +88,13 @@ class Reddit:
         text.append("  * Added {} for metascore and {} for userscore".format(EMOJI_METACRITIC, EMOJI_USER))
         text.append("  * Added deal count per country.")
 
-        if "/" in title:
-            text.append("  * Added support for EU region.")
+        if system == SWITCH_:
+            text.append("  * Added support for {}".format(REGIONS[JP_][countries_][JP_][flag_]))
             text.append("")
+            text.append("Polls")
+            text.append("")
+            text.append("* /u/nintendeals usefulness : https://www.strawpoll.me/15618452")
+            text.append("* Favorite deal lists: https://www.strawpoll.me/15618466")
 
         content = symbols + "\n" + content + "\n" + "\n".join(text)
 

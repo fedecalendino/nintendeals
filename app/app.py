@@ -6,6 +6,7 @@ from operator import itemgetter
 from app.nintendo import common
 from app.nintendo import na
 from app.nintendo import eu
+from app.nintendo import jp
 
 from app.commons.util import merge
 
@@ -17,22 +18,30 @@ from app.commons.config import *
 LOG = logging.getLogger('bot')
 
 
+fetchers = {
+    NA_: na.get_deals,
+    EU_: eu.get_deals,
+    JP_: jp.get_deals
+}
+
+
 def run():
     LOG.info(' ')
 
     for system, properties in SYSTEMS.items():
-        na_games = na.get_deals(system=system)
-        LOG.info('Deals found on NA region: {}'.format(len(na_games)))
+        games = {}
 
-        eu_games = eu.get_deals(system=system)
-        LOG.info('Deals found on EU region: {}'.format(len(eu_games)))
+        for region, alias in properties[system_].items():
+            region_games = fetchers[region](system)
 
-        games = merge(na_games, eu_games)
+            LOG.info('Deals found on {} region: {}'.format(region, len(region_games)))
+            games = merge(games, region_games)
+
         LOG.info('Total deals found: {}'.format(len(games)))
 
         games = common.find_prices(games)
 
-        games = sorted(games, key=itemgetter(title_))
+        games = sorted(games, key=lambda x: x[title_] if title_ in x else x[title_jp_])
 
         LOG.info(' ')
         LOG.info(' Building reddit post')

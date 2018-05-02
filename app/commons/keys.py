@@ -11,8 +11,10 @@ countries_ = 'countries'
 region_ = 'region'
 country_ = 'country'
 title_ = 'title'
+title_jp_ = 'title_jp'
 websites_ = 'websites'
 prices_ = 'prices'
+details_ = 'details'
 
 # Prices
 full_price_ = 'full_price'
@@ -47,6 +49,8 @@ RU_ = 'RU'
 ZA_ = 'ZA'
 AU_ = 'AU'
 CH_ = 'CH'
+
+JP_ = 'JP'
 
 key_ = 'key'
 name_ = 'name'
