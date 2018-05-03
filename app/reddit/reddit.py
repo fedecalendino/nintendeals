@@ -86,10 +86,10 @@ class Reddit:
         text.append("")
         text.append("* Changelog ({}):".format(VERSION))
         text.append("  * Added {} for metascore and {} for userscore".format(EMOJI_METACRITIC, EMOJI_USER))
-        text.append("  * Added deal count per country.")
 
         if system == SWITCH_:
             text.append("  * Added support for {}".format(REGIONS[JP_][countries_][JP_][flag_]))
+            text.append("  * 🇲🇽 and 🇦🇺 deals are disable at the moment. The ammount of deals exceeds the 40k char limit of reddit.")
             text.append("")
             text.append("Polls")
             text.append("")

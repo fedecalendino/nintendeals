@@ -1,6 +1,5 @@
 # Standard
 import logging
-from operator import itemgetter
 
 # Modules
 from app.nintendo import common
@@ -50,12 +49,13 @@ def run():
 
         LOG.info(' Posting all deals to subreddit: {}'.format(properties[subreddit_]))
 
-        Reddit.instance().post(
-            properties[subreddit_],
-            "-".join(regions),
-            system,
-            properties[frequency_],
-            '[{}] Current {} eShop deals'.format("/".join(regions), properties[name_]),
-            post
-        )
+        for subreddit in properties[subreddit_]:
+            Reddit.instance().post(
+                subreddit,
+                "-".join(regions),
+                system,
+                properties[frequency_],
+                '[{}] Current {} eShop deals'.format("/".join(regions), properties[name_]),
+                post
+            )
 

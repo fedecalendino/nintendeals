@@ -28,7 +28,7 @@ SWITCH_ = 'Switch'
 SYSTEMS = {
     SWITCH_: {
         name_: 'Nintendo Switch',
-        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'test'),
+        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'test|test3').split('|'),
         frequency_: int(os.environ.get('SWITCH_POST_TIME_FRAME', '2')),
         system_: {
             NA_: 'switch',
@@ -37,7 +37,7 @@ SYSTEMS = {
         }
     }, N3DS_: {
         name_: 'Nintendo 3DS',
-        subreddit_: os.environ.get('3DS_SUBREDDIT', 'test'),
+        subreddit_: os.environ.get('3DS_SUBREDDIT', 'test4').split('|'),
         frequency_: int(os.environ.get('3DS_POST_TIME_FRAME', '2')),
         system_: {
             NA_: '3ds'
@@ -67,11 +67,11 @@ REGIONS = {
                 websites_: 'https://www.nintendo.com/en_CA/games/detail/{}',
                 flag_: '🇨🇦'
             },
-            MX_: {
-                key_: 'MX',
-                name_: 'Mexico',
-                flag_: '🇲🇽'
-            }
+#            MX_: {
+#                key_: 'MX',
+#                name_: 'Mexico',
+#                flag_: '🇲🇽'
+#            }
         }
     },
     EU_: {
@@ -91,11 +91,11 @@ REGIONS = {
                 websites_: 'https://www.nintendo.co.uk/{}',
                 flag_: '🇬🇧'
             },
-            AU_: {
-                key_: AU_,
-                name_: 'Australia',
-                flag_: '🇦🇺'
-            },
+#            AU_: {
+#                key_: AU_,
+#                name_: 'Australia',
+#                flag_: '🇦🇺'
+#            },
 #            ZA_: {
 #                key_: ZA_,
 #                name_: 'South Africa',

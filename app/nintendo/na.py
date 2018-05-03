@@ -33,7 +33,7 @@ def get_deals(system, limit=100, offset=0):
 
         release_date = datetime.strptime(data['release_date'], '%b %d, %Y')
 
-        number_of_players = re.sub('[^0-9]', '', data['number_of_players'])
+        number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
 
         categories = data['categories']['category']
         if type(categories) == str:

@@ -16,12 +16,12 @@ from app.metacritic import metacritic
 from app.commons.config import *
 from app.commons.keys import *
 
-
 LOG = logging.getLogger('nintendo.common')
+
+OFFSET = 3
 
 
 def get_price(country, id, title=None):
-
     try:
         r = requests.get(PRICE_API.format(country=country, id=id))
         data = r.json()
@@ -58,6 +58,8 @@ def get_price(country, id, title=None):
 
 
 def find_prices(games):
+    now = datetime.utcnow().replace(tzinfo=None)
+
     updated_games = []
 
     for id, game in games.items():
@@ -82,7 +84,7 @@ def find_prices(games):
                 if len(game[prices_][country]) > 0:
                     current = game[prices_][country][-1]
 
-                    if current[end_date_] > datetime.now():
+                    if current[end_date_] > now:
                         continue
 
                 if title_ in game:
@@ -104,6 +106,8 @@ def find_prices(games):
 
 
 def make_post(games, region):
+    now = datetime.utcnow().replace(tzinfo=None)
+
     text = []
 
     text.append('')
@@ -119,8 +123,18 @@ def make_post(games, region):
 
         for game in games:
             if country in game[prices_] and len(game[prices_][country]) > 0:
-                sale = game[prices_][country][-1][sale_price_]
-                full = game[prices_][country][-1][full_price_]
+                price = game[prices_][country][-1]
+
+                if price[end_date_] < now:
+                    continue
+
+                time_left = price[end_date_] - now
+
+                if time_left.days == 0 and round(time_left.seconds / 60 / 60) <= 1:
+                    continue
+
+                sale = price[sale_price_]
+                full = price[full_price_]
 
                 if max_sale < sale:
                     max_sale = sale
@@ -165,9 +179,6 @@ def make_post(games, region):
 
             price = details[-1]
 
-            if price[end_date_] < datetime.now():
-                continue
-
             currency = price[currency_]
             sale_price = format_float(price[sale_price_], len(max_sale))
             full_price = format_float(price[full_price_], 0)
@@ -177,7 +188,7 @@ def make_post(games, region):
             all_equals = True
 
             for _, prices in game[prices_].items():
-                if len(prices) > 0 and prices[-1][end_date_] > datetime.now():
+                if len(prices) > 0 and prices[-1][end_date_] > now:
 
                     if prices[-1][discount_] > best_discount:
                         best_discount = prices[-1][discount_]
@@ -190,7 +201,10 @@ def make_post(games, region):
             else:
                 best_discount = ''
 
-            time_left = price[end_date_] - datetime.now()
+            if price[end_date_] < now:
+                continue
+
+            time_left = price[end_date_] - now
 
             if time_left.days > 0:
                 days = time_left.days
@@ -203,7 +217,10 @@ def make_post(games, region):
 
                 warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-            new = EMOJI_NEW if (datetime.now() - price[start_date_]).days < 2 else ''
+                if hours <= 1:
+                    continue
+
+            new = EMOJI_NEW if (now - price[start_date_]).days < 2 else ''
 
             players = game[number_of_players_]
 
@@ -223,7 +240,6 @@ def make_post(games, region):
                     score = "{} `{}`".format(EMOJI_METACRITIC, int(game[scores_][metascore_]))
                 elif userscore_ in game[scores_] and game[scores_][userscore_] is not None:
                     score = "{} `{}`".format(EMOJI_USER, "%.1f" % game[scores_][userscore_])
-
 
             text.append(
                 '{title} {new}{warning} | '
