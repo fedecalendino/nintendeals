@@ -11,12 +11,12 @@ from app.commons.keys import *
 
 LOG = logging.getLogger('nintendo.eu')
 
+
 REGION = REGIONS[EU_]
 LIST_API = REGION[api_]
 
 
 def get_deals(system, start=0):
-
     r = requests.get(LIST_API.format(system=SYSTEMS[system][system_][EU_], start=start))
     json = r.json()
 
@@ -46,9 +46,10 @@ def get_deals(system, start=0):
             genres_: categories
         }
 
-        for country, properties in REGION[countries_].items():
-            if websites_ in properties:
-                game[websites_][country] = properties[websites_].format(data['url'].rsplit('/', 1)[-1])
+        for country, country_details in COUNTRIES.items():
+            if country_details[region_] == EU_:
+                if websites_ in country_details:
+                    game[websites_][country] = country_details[websites_].format(data['url'].rsplit('/', 1)[-1])
 
         games[game_id] = game
 
@@ -56,5 +57,3 @@ def get_deals(system, start=0):
         games.update(get_deals(system, start + 10))
 
     return games
-
-

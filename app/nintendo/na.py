@@ -13,6 +13,7 @@ from app.commons.keys import *
 
 LOG = logging.getLogger('nintendo.na')
 
+
 REGION = REGIONS[NA_]
 LIST_API = REGION[api_]
 
@@ -54,10 +55,11 @@ def get_deals(system, limit=100, offset=0):
             genres_: [cat.lower() for cat in categories]
         }
 
-        for country, properties in REGION[countries_].items():
-            if websites_ in properties:
-                if 'slug' in data:
-                    game[websites_][country] = properties[websites_].format(data['slug'])
+        for country, country_details in COUNTRIES.items():
+            if country_details[region_] == NA_:
+                if websites_ in country_details:
+                    if 'slug' in data:
+                        game[websites_][country] = country_details[websites_].format(data['slug'])
 
         games[game_id] = game
 

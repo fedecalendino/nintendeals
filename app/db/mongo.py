@@ -64,12 +64,11 @@ class PostsDatabase(Database):
     def __init__(self):
         super(PostsDatabase, self).__init__('posts')
 
-    def load_last(self, subreddit, region, system, frequency):
+    def load_last(self, subreddit, system, frequency):
         try:
             result = self.db[self.collection]\
                 .find({
                     subreddit_: subreddit,
-                    region_: region,
                     system_: system
                 })\
                 .sort([(created_at_, -1)])\

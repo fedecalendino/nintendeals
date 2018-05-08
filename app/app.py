@@ -1,4 +1,5 @@
 # Standard
+import time
 import logging
 
 # Modules
@@ -6,6 +7,8 @@ from app.nintendo import common
 from app.nintendo import na
 from app.nintendo import eu
 from app.nintendo import jp
+
+from app.posts import generator
 
 from app.commons.util import merge
 
@@ -27,35 +30,61 @@ fetchers = {
 def run():
     LOG.info(' ')
 
-    for system, properties in SYSTEMS.items():
+    for system, system_details in SYSTEMS.items():
         games = {}
+        countries = []
 
-        for region, alias in properties[system_].items():
+        for region, alias in system_details[system_].items():
+            LOG.info('Fetching deals for region: {}'.format(region))
+
             region_games = fetchers[region](system)
 
             LOG.info('Deals found on {} region: {}'.format(region, len(region_games)))
             games = merge(games, region_games)
 
+            for country, country_details in COUNTRIES.items():
+                if country_details[region_] == region:
+                    countries.append((country, country_details))
+
         LOG.info('Total deals found: {}'.format(len(games)))
 
-        games = common.find_prices(games)
+        games = common.find_prices_and_scores(games)
 
+        LOG.info('Sorting deals by game title')
         games = sorted(games, key=lambda x: x[title_] if title_ in x else x[title_jp_])
 
         LOG.info(' ')
-        LOG.info(' Building reddit post')
+        LOG.info('Building reddit post')
+        post = generator.make_post(games, countries)
 
-        post, regions = common.make_unified_post(games)
+        LOG.info('Posting all deals to subreddit: {}'.format(system_details[subreddit_]))
 
-        LOG.info(' Posting all deals to subreddit: {}'.format(properties[subreddit_]))
-
-        for subreddit in properties[subreddit_]:
-            Reddit.instance().post(
+        for subreddit in system_details[subreddit_]:
+            post_id = Reddit.instance().post(
                 subreddit,
-                "-".join(regions),
                 system,
-                properties[frequency_],
-                '[{}] Current {} eShop deals'.format("/".join(regions), properties[name_]),
+                system_details[frequency_],
+                'Current {} eShop deals'.format(system_details[name_]),
                 post
             )
 
+            for country, country_details in countries:
+                LOG.info('Building reddit comment for {} {} on {}'.format(country_details[flag_], country, post_id))
+
+                comment = generator.make_comment(games, country, country_details)
+
+                Reddit.instance().comment(
+                    post_id,
+                    country,
+                    comment
+                )
+
+                time.sleep(15)
+
+            Reddit.instance().post(
+                subreddit,
+                system,
+                system_details[frequency_],
+                'Current {} eShop deals'.format(system_details[name_]),
+                post
+            )

@@ -36,9 +36,6 @@ def extract_number(soup, tag, properties):
 
 
 def get_score(system, title):
-
-    LOG.info("Fetching scores for {} on {}".format(title, system))
-
     url = METACRITIC_URL.format(system=system.lower(), title=normalize(title))
 
     metascore = None

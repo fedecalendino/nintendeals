@@ -4,10 +4,9 @@ import os
 # Statics
 from app.commons.keys import *
 
-
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "v3.0"
+VERSION = "4.0"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -22,8 +21,9 @@ EMOJI_MAX_DISCOUNT = '🔥'
 EMOJI_METACRITIC = 'Ⓜ️'
 EMOJI_USER = '👤'
 
-N3DS_ = '3DS'
-SWITCH_ = 'Switch'
+UPDATE_FREQUENCY = int(os.environ.get('UPDATE_TIME_FRAME', 6 * 60 * 60))
+
+PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={id}'
 
 SYSTEMS = {
     SWITCH_: {
@@ -45,83 +45,86 @@ SYSTEMS = {
     }
 }
 
-UPDATE_FREQUENCY = int(os.environ.get('UPDATE_TIME_FRAME', 6 * 60 * 60))
-
-PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={id}'
-
 REGIONS = {
     NA_: {
         key_: NA_,
         name_: 'North America',
-        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&sale=true',
-        countries_: {
-            US_: {
-                key_: US_,
-                name_: 'United States of America',
-                websites_: 'https://www.nintendo.com/games/detail/{}',
-                flag_: '🇺🇸'
-            },
-            CA_: {
-                key_: CA_,
-                name_: 'Canada',
-                websites_: 'https://www.nintendo.com/en_CA/games/detail/{}',
-                flag_: '🇨🇦'
-            },
-#            MX_: {
-#                key_: 'MX',
-#                name_: 'Mexico',
-#                flag_: '🇲🇽'
-#            }
-        }
+        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&sale=true'
     },
     EU_: {
         key_: EU_,
         name_: 'Europe & Friends',
-        api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"',
-        countries_: {
-            EU_: {
-                key_: ES_,
-                name_: 'European Union',
-                websites_: 'https://www.nintendo.es/Juegos/{}',
-                flag_: '🇪🇺'
-            },
-            GB_: {
-                key_: GB_,
-                name_: 'Great Britain',
-                websites_: 'https://www.nintendo.co.uk/{}',
-                flag_: '🇬🇧'
-            },
-#            AU_: {
-#                key_: AU_,
-#                name_: 'Australia',
-#                flag_: '🇦🇺'
-#            },
-#            ZA_: {
-#                key_: ZA_,
-#                name_: 'South Africa',
-#                websites_: 'https://www.nintendo.co.za/Games/{}',
-#                flag_: '🇿🇦'
-#            },
-#            CH_: {
-#                key_: CH_,
-#                name_: 'Switzerland',
-#                websites_: 'https://www.nintendo.ch/de/Games/{}',
-#                flag_: '🇨🇭'
-#            }
-        }
+        api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"'
     },
     JP_: {
         key_: JP_,
         name_: 'Japan',
         api_: 'https://www.nintendo.co.jp/{system}/software/data/eshopinfo.js',
-        details_: 'https://ec.nintendo.com/JP/ja/titles/{}',
-        countries_: {
-            JP_: {
-                key_: JP_,
-                name_: 'Japan',
-                websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
-                flag_: '🇯🇵'
-            }
-        }
+        details_: 'https://ec.nintendo.com/JP/ja/titles/{}'
+    }
+}
+
+COUNTRIES = {
+    US_: {
+        key_: US_,
+        name_: 'United States of America',
+        websites_: 'https://www.nintendo.com/games/detail/{}',
+        flag_: '🇺🇸',
+        region_: NA_,
+        digits_: 5,
+        currency_: '$'  # 'USD '
     },
+    CA_: {
+        key_: CA_,
+        name_: 'Canada',
+        websites_: 'https://www.nintendo.com/en_CA/games/detail/{}',
+        flag_: '🇨🇦',
+        region_: NA_,
+        digits_: 5,
+        currency_: '$'  # 'CAD '
+    },
+
+    MX_: {
+        key_: 'MX',
+        name_: 'Mexico',
+        flag_: '🇲🇽',
+        region_: NA_,
+        digits_: 6,
+        currency_: '$'  # 'MXN '
+    },
+    EU_: {
+        key_: EU_,
+        name_: 'European Union',
+        websites_: 'https://www.nintendo.es/Juegos/{}',
+        flag_: '🇪🇺',
+        region_: EU_,
+        digits_: 5,
+        currency_: '€'  # 'EUR '
+    },
+    GB_: {
+        key_: GB_,
+        name_: 'Great Britain',
+        websites_: 'https://www.nintendo.co.uk/{}',
+        flag_: '🇬🇧',
+        region_: EU_,
+        digits_: 5,
+        currency_: '£'  # 'GBP '
+    },
+    AU_: {
+        key_: AU_,
+        name_: 'Australia',
+        flag_: '🇦🇺',
+        region_: EU_,
+        digits_: 5,
+        currency_: '$'  # 'AUD '
+    },
+    JP_: {
+        key_: JP_,
+        name_: 'Japan',
+        websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
+        flag_: '🇯🇵',
+        region_: JP_,
+        digits_: 7,
+        currency_: '¥'  # 'JPY '
+    }
 }

@@ -14,6 +14,7 @@ from app.commons.keys import *
 
 LOG = logging.getLogger('nintendo.jp')
 
+
 REGION = REGIONS[JP_]
 LIST_API = REGION[api_]
 

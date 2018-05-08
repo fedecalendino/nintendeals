@@ -69,11 +69,8 @@ class Reddit:
         if submission is not None:
             submission.delete()
 
-    def post(self, subreddit, region, system, frequency, title, content):
+    def post(self, subreddit, system, frequency, title, content):
         db = PostsDatabase.instance()
-
-        symbols = '`{} new` `{} expires soon` `{} expires in less than 24h` `{} best deal` `{} metascore` `{} userscore`'\
-            .format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY, EMOJI_MAX_DISCOUNT, EMOJI_METACRITIC, EMOJI_USER)
 
         text = []
 
@@ -81,24 +78,18 @@ class Reddit:
         text.append("---")
         text.append("")
         text.append("* Developed by [uglyasablasphemy]"
-                    "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20ther%20nintendeals%20bot)")
+                    "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20the%20nintendeals%20bot)")
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
         text.append("")
         text.append("* Changelog ({}):".format(VERSION))
-        text.append("  * Added {} for metascore and {} for userscore".format(EMOJI_METACRITIC, EMOJI_USER))
+        text.append("  * Changed post format")
+        text.append("")
+        text.append("* Polls:")
+        text.append("  * Do you like the new format? : https://www.strawpoll.me/15662984")
 
-        if system == SWITCH_:
-            text.append("  * Added support for {}".format(REGIONS[JP_][countries_][JP_][flag_]))
-            text.append("  * 🇲🇽 and 🇦🇺 deals are disable at the moment. The ammount of deals exceeds the 40k char limit of reddit.")
-            text.append("")
-            text.append("Polls")
-            text.append("")
-            text.append("* /u/nintendeals usefulness : https://www.strawpoll.me/15618452")
-            text.append("* Favorite deal lists: https://www.strawpoll.me/15618466")
+        content = content + "\n" + "\n".join(text)
 
-        content = symbols + "\n" + content + "\n" + "\n".join(text)
-
-        current = db.load_last(subreddit, region, system, frequency)
+        current = db.load_last(subreddit, system, frequency)
 
         if current is not None and self.exists(current[id_]) is None:
             current = None
@@ -108,12 +99,11 @@ class Reddit:
 
             current = {
                 subreddit_: subreddit,
-                region_: region,
                 system_: system,
                 created_at_: datetime.now()
             }
 
-            sub_id = self.create(subreddit, title.format(region), content)
+            sub_id = self.create(subreddit, title, content)
 
             current[id_] = sub_id
 
@@ -124,9 +114,48 @@ class Reddit:
         else:
             LOG.info(" Updating post on {}".format(subreddit))
 
+            if comments_ in current:
+                links = []
+
+                for country, country_details in COUNTRIES.items():
+                    if country in current[comments_]:
+                        links.append(
+                            '[{flag} {name}](https://reddit.com/comments/{post_id}/_/{comment_id})'.format(
+                                flag=country_details[flag_],
+                                name=country,
+                                post_id=current[id_],
+                                comment_id=current[comments_][country]
+                            )
+                        )
+
+                content = 'Quick links: {}\n___\n{}'.format(' | '.join(links), content)
+
             self.edit(current[id_], content)
 
             current[updated_at_] = datetime.now()
             db.save(current)
 
             LOG.info(" Updated post on {}: https://redd.it/{}".format(subreddit, current[id_]))
+
+        return current[id_]
+
+    def comment(self, post_id, country, content):
+        db = PostsDatabase.instance()
+        post = db.load(post_id)
+
+        if comments_ not in post:
+            post[comments_] = {}
+
+        if country not in post[comments_]:
+            comment = self.api.submission(id=post_id).reply(content)
+            post[comments_][country] = comment.id
+
+            LOG.info("Created comment https://reddit.com/comments/{}//{}".format(post_id, comment.id))
+        else:
+            comment_id = post[comments_][country]
+            self.api.comment(comment_id).edit(content)
+
+            LOG.info("Updated comment https://reddit.com/comments/{}//{}".format(post_id, comment_id))
+
+        db.save(post)
+
