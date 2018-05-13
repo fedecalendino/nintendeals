@@ -6,7 +6,7 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "4.0"
+VERSION = "4.1"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -117,6 +117,15 @@ COUNTRIES = {
         region_: EU_,
         digits_: 5,
         currency_: '$'  # 'AUD '
+    },
+    RU_: {
+        key_: RU_,
+        name_: 'Russia',
+        websites_: 'https://www.nintendo.ru/-/{}',
+        flag_: '🇷🇺',
+        region_: EU_,
+        digits_: 7,
+        currency_: '₽'  # 'RUB '
     },
     JP_: {
         key_: JP_,

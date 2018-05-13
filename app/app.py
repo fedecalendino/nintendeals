@@ -81,6 +81,8 @@ def run():
 
                 time.sleep(15)
 
+            LOG.info('Updating post with comment links')
+
             Reddit.instance().post(
                 subreddit,
                 system,

@@ -53,7 +53,7 @@ class Reddit:
             .subreddit(subreddit)\
             .submit(title, selftext=content)
 
-        submission.disable_inbox_replies()
+        # submission.disable_inbox_replies()
 
         return submission.id
 
@@ -80,12 +80,27 @@ class Reddit:
         text.append("* Developed by [uglyasablasphemy]"
                     "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20the%20nintendeals%20bot)")
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
+        # text.append("")
+        # text.append("* Changelog ({}):".format(VERSION))
+        # text.append("  * Changed post format")
         text.append("")
-        text.append("* Changelog ({}):".format(VERSION))
-        text.append("  * Changed post format")
+        text.append("---")
         text.append("")
-        text.append("* Polls:")
-        text.append("  * Do you like the new format? : https://www.strawpoll.me/15662984")
+        text.append("FAQ:")
+        text.append("Why did you changed the format?")
+        text.append("> When the ammount of deals increase i had to take countries out to be able to show everything on one post,")
+        text.append("> with this new format i can include as many countries as you like. This solution will scale in the future, no matter ")
+        text.append("> how many deals are active on a give time.")
+        text.append("> note: after the comments are created a list of quick links will be added on top of the post for you to get to your country without scrolling.")
+        text.append("> **If you don't like the discount/country table on the post, i'd love to hear some feedback to improve it or change it.**")
+        text.append("")
+        text.append("Why is there a 0 after some prices?")
+        text.append("> This is to be able to sort correctly using the sorters in the reddit tables. [Example](https://www.reddit.com/r/NintendoSwitchDeals/comments/8i0ofo/current_nintendo_switch_eshop_deals/dyoaouj/)")
+        text.append("")
+        text.append("Why is there lot of games that seem to be always on discount?")
+        text.append("> Some devs seem to exploit the deal system to gain more exposure. Once i have enough historical data on prices")
+        text.append("> i'll be able to detect them and filtering them out.")
+
 
         content = content + "\n" + "\n".join(text)
 

@@ -24,40 +24,50 @@ def make_comment(games, country, country_details):
     deal_count = 0
 
     for game in games:
+        # Game has no prices for this country
         if country not in game[prices_]:
             continue
 
         details = game[prices_][country]
 
+        # Game has no prices for this country
         if len(details) < 1:
             continue
 
         if title_ in game:
             title = game[title_]
 
-            if len(title) > 35:
-                title = title[:30] + '…'
+            if len(title) > 30:
+                title = title[:25] + '…'
         else:
             title = game[title_jp_]
 
             if len(title) > 30:
                 title = title[:25] + '…'
 
+        # Making titles as url is possible
         if country in game[websites_]:
             title = "[{}]({})".format(title, game[websites_][country])
 
+        # Getting last price
         price = details[-1]
+
+        # Game has no discount
+        if price[discount_] is None:
+            continue
+
+        # Game discount expired
+        if price[end_date_] < now:
+            continue
 
         currency = country_details[currency_]
         sale_price = format_float(price[sale_price_], country_details[digits_])
         full_price = format_float(price[full_price_], 0)
         discount = price[discount_]
 
-        if price[end_date_] < now:
-            continue
-
         time_left = price[end_date_] - now
 
+        # Formating remaining time
         if time_left.days > 0:
             days = time_left.days
             time = "{}d".format(days)
@@ -69,6 +79,7 @@ def make_comment(games, country, country_details):
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
+            # To low remaining time to show
             if hours <= 1:
                 continue
 
@@ -76,6 +87,7 @@ def make_comment(games, country, country_details):
 
         players = game[number_of_players_]
 
+        # Formatting number of players
         if players is None or players == 0:
             players = '- tbd -'
         elif players == 1:
@@ -87,12 +99,14 @@ def make_comment(games, country, country_details):
 
         score = ''
 
+        # Formatting metacritic score
         if scores_ in game and len(game[scores_]) > 0:
             if metascore_ in game[scores_] and game[scores_][metascore_] is not None:
                 score = "{} `{}`".format(EMOJI_METACRITIC, int(game[scores_][metascore_]))
             elif userscore_ in game[scores_] and game[scores_][userscore_] is not None:
                 score = "{} `{}`".format(EMOJI_USER, "%.1f" % game[scores_][userscore_])
 
+        # Creating row
         text.append(
             '{title} {new}{warning} | '
             '*{end_date} ({time_left})* | '
@@ -108,6 +122,7 @@ def make_comment(games, country, country_details):
 
         deal_count += 1
 
+    # Inserting comment headers
     text.insert(0, '')
     text.insert(0, '##{} {} ({} deals)'.format(country_details[flag_], country_details[name_], deal_count))
     text.insert(0, '')
@@ -124,6 +139,7 @@ def make_post(games, countries):
 
     text = []
 
+    # Building table header
     columns = 'Title'
     separator = '---'
 
@@ -143,8 +159,10 @@ def make_post(games, countries):
     count = 0
 
     for game in games:
+        # Game title is EN or JP
         if title_ in game:
             title = game[title_]
+
         else:
             title = game[title_jp_]
 
@@ -152,6 +170,7 @@ def make_post(games, countries):
 
         row = title
 
+        # Building discount table
         for country, country_details in countries:
             LOG.info('Adding {} discount for {}'.format(title, country))
 
@@ -163,10 +182,7 @@ def make_post(games, countries):
 
             price = game[prices_][country][-1]
 
-            if price[end_date_] is None:
-                continue
-
-            if price[end_date_] < now:
+            if price[discount_] is None or price[end_date_] < now:
                 LOG.info('No {} discount for {}'.format(title, country))
 
                 row += ' | '
@@ -193,7 +209,7 @@ def make_post(games, countries):
                 if len(prices) == 0:
                     continue
 
-                if prices[-1][end_date_] is None:
+                if prices[-1][discount_] is None:
                     continue
 
                 if len(prices) > 0 and prices[-1][end_date_] > now:
@@ -209,7 +225,7 @@ def make_post(games, countries):
             else:
                 best_discount = ''
 
-            row += '|`{discount}% {new}{best}{warning}`'.format(discount=discount, new=new, best=best_discount, warning=warning)
+            row += '|`{discount}%{new}{best}{warning}`'.format(discount=discount, new=new, best=best_discount, warning=warning)
 
         text.append(row)
         count += 1
