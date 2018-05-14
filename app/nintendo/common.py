@@ -72,6 +72,9 @@ def find_prices_and_scores(games):
                 game[prices_] = {}
 
         if title_ in game:
+            if 'Â®' in game[title_]:
+                game[title_] = game[title_].replace('Â®', '®')
+
             title = game[title_]
         else:
             title = game[title_jp_]
