@@ -32,7 +32,6 @@ def run():
 
     for system, system_details in SYSTEMS.items():
         games = {}
-        countries = []
 
         for region, alias in system_details[system_].items():
             LOG.info('Fetching deals for region: {}'.format(region))
@@ -42,9 +41,11 @@ def run():
             LOG.info('Deals found on {} region: {}'.format(region, len(region_games)))
             games = merge(games, region_games)
 
-            for country, country_details in COUNTRIES.items():
-                if country_details[region_] == region:
-                    countries.append((country, country_details))
+        countries = [
+            (country, country_details)
+            for country, country_details in COUNTRIES.items()
+            if country_details[region_] in system_details[system_].keys()
+        ]
 
         LOG.info('Total deals found: {}'.format(len(games)))
 

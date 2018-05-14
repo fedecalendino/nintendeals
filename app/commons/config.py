@@ -6,7 +6,7 @@ from app.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "4.1"
+VERSION = "4.2"
 
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
@@ -65,15 +65,15 @@ REGIONS = {
 }
 
 COUNTRIES = {
-    US_: {
-        key_: US_,
-        name_: 'United States of America',
-        websites_: 'https://www.nintendo.com/games/detail/{}',
-        flag_: '🇺🇸',
-        region_: NA_,
+    AU_: {
+        key_: AU_,
+        name_: 'Australia',
+        flag_: '🇦🇺',
+        region_: EU_,
         digits_: 5,
-        currency_: '$'  # 'USD '
+        currency_: '$'  # 'AUD '
     },
+
     CA_: {
         key_: CA_,
         name_: 'Canada',
@@ -84,14 +84,6 @@ COUNTRIES = {
         currency_: '$'  # 'CAD '
     },
 
-    MX_: {
-        key_: 'MX',
-        name_: 'Mexico',
-        flag_: '🇲🇽',
-        region_: NA_,
-        digits_: 6,
-        currency_: '$'  # 'MXN '
-    },
     EU_: {
         key_: EU_,
         name_: 'European Union',
@@ -101,6 +93,7 @@ COUNTRIES = {
         digits_: 5,
         currency_: '€'  # 'EUR '
     },
+
     GB_: {
         key_: GB_,
         name_: 'Great Britain',
@@ -110,14 +103,26 @@ COUNTRIES = {
         digits_: 5,
         currency_: '£'  # 'GBP '
     },
-    AU_: {
-        key_: AU_,
-        name_: 'Australia',
-        flag_: '🇦🇺',
-        region_: EU_,
-        digits_: 5,
-        currency_: '$'  # 'AUD '
+
+    JP_: {
+        key_: JP_,
+        name_: 'Japan',
+        websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
+        flag_: '🇯🇵',
+        region_: JP_,
+        digits_: 7,
+        currency_: '¥'  # 'JPY '
     },
+
+    MX_: {
+        key_: 'MX',
+        name_: 'Mexico',
+        flag_: '🇲🇽',
+        region_: NA_,
+        digits_: 6,
+        currency_: '$'  # 'MXN '
+    },
+
     RU_: {
         key_: RU_,
         name_: 'Russia',
@@ -127,13 +132,25 @@ COUNTRIES = {
         digits_: 7,
         currency_: '₽'  # 'RUB '
     },
-    JP_: {
-        key_: JP_,
-        name_: 'Japan',
-        websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
-        flag_: '🇯🇵',
-        region_: JP_,
-        digits_: 7,
-        currency_: '¥'  # 'JPY '
-    }
+
+    US_: {
+        key_: US_,
+        name_: 'United States of America',
+        websites_: 'https://www.nintendo.com/games/detail/{}',
+        flag_: '🇺🇸',
+        region_: NA_,
+        digits_: 5,
+        currency_: '$'  # 'USD '
+    },
+
+    ZA_: {
+        key_: ZA_,
+        name_: 'South Africa',
+        websites_: 'https://www.nintendo.co.za/Games/Nintendo-Switch/{}',
+        flag_: '🇿🇦',
+        region_: EU_,
+        digits_: 6,
+        currency_: 'R'  # 'ZAR '
+    },
+
 }

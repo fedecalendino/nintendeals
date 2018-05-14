@@ -148,8 +148,8 @@ def make_post(games, countries):
         separator += ' | ---'
 
     text.append('')
-    text.append('`{} new deal` `{} best deal` `{} expires in 48hs` `{} expires in 24hs`'.format(
-        EMOJI_NEW, EMOJI_MAX_DISCOUNT, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
+    text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(
+        EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
     text.append('')
     text.append('___')
     text.append('')
@@ -201,31 +201,30 @@ def make_post(games, countries):
 
             new = EMOJI_NEW if (now - price[start_date_]).days < 2 else ''
 
-            best_discount = discount
-            all_equals = True
+            # best_discount = discount
+            # all_equals = True
 
-            for _, prices in game[prices_].items():
+            # for _, prices in game[prices_].items():
 
-                if len(prices) == 0:
-                    continue
+            #    if len(prices) == 0:
+            #        continue
 
-                if prices[-1][discount_] is None:
-                    continue
+            #    if prices[-1][discount_] is None:
+            #        continue
 
-                if len(prices) > 0 and prices[-1][end_date_] > now:
+            #     if len(prices) > 0 and prices[-1][end_date_] > now:
+            #        if prices[-1][discount_] > best_discount:
+            #            best_discount = prices[-1][discount_]
 
-                    if prices[-1][discount_] > best_discount:
-                        best_discount = prices[-1][discount_]
+            #        if prices[-1][discount_] != best_discount:
+            #            all_equals = False
 
-                    if prices[-1][discount_] != best_discount:
-                        all_equals = False
+            # if not all_equals and best_discount == discount:
+            #     best_discount = EMOJI_MAX_DISCOUNT
+            # else:
+            #    best_discount = ''
 
-            if not all_equals and best_discount == discount:
-                best_discount = EMOJI_MAX_DISCOUNT
-            else:
-                best_discount = ''
-
-            row += '|`{discount}%{new}{best}{warning}`'.format(discount=discount, new=new, best=best_discount, warning=warning)
+            row += '|`{discount}%{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 
         text.append(row)
         count += 1
