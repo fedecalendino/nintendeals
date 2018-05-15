@@ -53,6 +53,9 @@ def get_score(system, title):
         LOG.error("Fetching scores for {} on {}: {} ({})".format(title, system, e, url))
         pass
 
+    if system != 'pc' and metascore is None and userscore is None:
+        return get_score('pc', title)
+
     return metascore, userscore
 
 
