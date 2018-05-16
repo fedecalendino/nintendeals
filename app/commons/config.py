@@ -49,12 +49,14 @@ REGIONS = {
     NA_: {
         key_: NA_,
         name_: 'North America',
-        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&sale=true'
+        # api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&sale=true'
+        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&availability=now'
     },
     EU_: {
         key_: EU_,
         name_: 'Europe & Friends',
-        api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"'
+        # api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"'
+        api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND system_names_txt:"{system}"'
     },
     JP_: {
         key_: JP_,
@@ -143,14 +145,14 @@ COUNTRIES = {
         currency_: '$'  # 'USD '
     },
 
-    ZA_: {
-        key_: ZA_,
-        name_: 'South Africa',
-        websites_: 'https://www.nintendo.co.za/Games/Nintendo-Switch/{}',
-        flag_: '🇿🇦',
-        region_: EU_,
-        digits_: 6,
-        currency_: 'R'  # 'ZAR '
-    },
+    #ZA_: {
+    #    key_: ZA_,
+    #    name_: 'South Africa',
+    #    websites_: 'https://www.nintendo.co.za/Games/Nintendo-Switch/{}',
+    #    flag_: '🇿🇦',
+    #    region_: EU_,
+    #    digits_: 6,
+    #    currency_: 'R'  # 'ZAR '
+    #},
 
 }

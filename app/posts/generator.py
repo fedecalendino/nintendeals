@@ -159,6 +159,8 @@ def make_post(games, countries):
     count = 0
 
     for game in games:
+        has_discount = False
+
         # Game title is EN or JP
         if title_ in game:
             title = game[title_]
@@ -187,6 +189,8 @@ def make_post(games, countries):
 
                 row += ' | '
                 continue
+
+            has_discount = True
 
             discount = price[discount_]
 
@@ -226,7 +230,8 @@ def make_post(games, countries):
 
             row += '|`{discount}%{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 
-        text.append(row)
-        count += 1
+        if has_discount:
+            text.append(row)
+            count += 1
 
     return '\n'.join(text)

@@ -45,7 +45,8 @@ def get_sales_ids(system, id_map):
 
         new_map[id] = id_map[id]
 
-    return new_map
+    # return new_map
+    return id_map
 
 
 def get_deals(system):

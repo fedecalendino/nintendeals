@@ -28,6 +28,12 @@ def get_deals(system, start=0):
     games = {}
 
     for data in json['response']['docs']:
+        if 'product_code_txt' not in data:
+            continue
+
+        if 'nsuid_txt' not in data:
+            continue
+
         game_id = "{}-{}".format(system, data['product_code_txt'][0][-5:])
 
         categories = [cat.lower() for cat in data['game_categories_txt']]
@@ -42,7 +48,7 @@ def get_deals(system, start=0):
             websites_: {},
             system_: system,
             release_date_: data['dates_released_dts'][0][:10],
-            number_of_players_: data['players_to'],
+            number_of_players_: data['players_to'] if 'players_to' in data else 0,
             genres_: categories
         }
 

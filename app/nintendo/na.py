@@ -42,6 +42,9 @@ def get_deals(system, limit=100, offset=0):
 
         categories.sort()
 
+        if 'nsuid' not in data:
+            continue
+
         game = {
             id_: game_id,
             ids_: {

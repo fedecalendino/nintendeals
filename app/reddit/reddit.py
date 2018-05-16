@@ -81,16 +81,6 @@ class Reddit:
                     "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20the%20nintendeals%20bot)")
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
 
-        text.append("* Changelog ({}):".format(VERSION))
-        text.append("")
-        text.append("  * Sorted flags alphabetically")
-
-        if system == SWITCH_:
-            text.append("  * Added {} {} and {} {}".format(
-                COUNTRIES[RU_][flag_], COUNTRIES[RU_][name_],
-                COUNTRIES[ZA_][flag_], COUNTRIES[ZA_][name_])
-            )
-
         text.append("")
         text.append("---")
         text.append("")
@@ -110,6 +100,12 @@ class Reddit:
         text.append("> i'll be able to detect them and filtering them out.")
 
         content = content + "\n" + "\n".join(text)
+
+        print("")
+        print("")
+        print(content)
+        print("")
+        print("")
 
         current = db.load_last(subreddit, system, frequency)
 
@@ -164,6 +160,12 @@ class Reddit:
     def comment(self, post_id, country, content):
         db = PostsDatabase.instance()
         post = db.load(post_id)
+
+        print("")
+        print("")
+        print(content)
+        print("")
+        print("")
 
         if comments_ not in post:
             post[comments_] = {}

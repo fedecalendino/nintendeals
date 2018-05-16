@@ -52,7 +52,7 @@ def run():
         games = common.find_prices_and_scores(games)
 
         LOG.info('Sorting deals by game title')
-        games = sorted(games, key=lambda x: x[title_] if title_ in x else x[title_jp_])
+        games = sorted(games, key=lambda x: x[title_].lower() if title_ in x else x[title_jp_].lower())
 
         LOG.info(' ')
         LOG.info('Building reddit post')

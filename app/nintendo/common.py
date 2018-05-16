@@ -20,7 +20,9 @@ from app.commons.keys import *
 LOG = logging.getLogger('nintendo.common')
 
 
-def get_price(country, id):
+def get_price(country, id, title):
+    now = datetime.utcnow().replace(tzinfo=None)
+
     if country == EU_:
         country = ES_
 
@@ -43,11 +45,15 @@ def get_price(country, id):
             price[discount_] = round(
                 100 * (1 - (price[sale_price_] / price[full_price_]))
             )
+
+            LOG.info("New sale found for {} on {}".format(title, country))
         else:
             price[sale_price_] = None
             price[discount_] = None
             price[start_date_] = None
             price[end_date_] = None
+
+        price[last_update_] = now
 
         return price
     except Exception as e:
@@ -91,23 +97,35 @@ def find_prices_and_scores(games):
             if country not in game[prices_]:
                 game[prices_][country] = []
 
+            current = None
+
             if len(game[prices_][country]) > 0:
                 current = game[prices_][country][-1]
 
-                if current[end_date_] is None or current[end_date_] > now:
+                if (now - current[last_update_]).total_seconds() < UPDATE_FREQUENCY * 3/2:
+                    continue
+
+                if current[end_date_] is not None and current[end_date_] > now:
                     LOG.info("Sale for {} on {} still up".format(title, country))
                     continue
 
             region = country_details[region_]
 
             if region in game[ids_]:
-                LOG.info("Fetching prices for {} on {}".format(title, country))
+                LOG.info("Fetching price for {} on {}".format(title, country))
 
-                price = get_price(country, game[ids_][region])
+                price = get_price(country, game[ids_][region], title)
 
                 if price is not None:
-                    game[prices_][country].append(price)
-                    LOG.info("New sale found for {} on {}".format(title, country))
+                    if price[discount_] is None:
+                        if current is not None:
+                            current[last_update_] = now
+                        else:
+                            game[prices_][country].append(price)
+                    else:
+                        game[prices_][country].append(price)
+
+
 
         GamesDatabase.instance().save(game)
         updated_games.append(game)
