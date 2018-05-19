@@ -13,6 +13,7 @@ LOG = logging.getLogger('metacritic')
 
 def normalize(string):
     string = string.lower()
+    string = string.replace('é', 'e')
     string = re.sub(r'[\']', '', string)
     string = re.sub(r'[^a-zA-Z0-9\\+!]', '-', string)
     string = re.sub(r'-+', '-', string)

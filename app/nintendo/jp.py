@@ -81,6 +81,10 @@ def find_games(system):
             }
 
             LOG.info("New game {} ({}) found on JP".format(game[title_jp_], game[id_]))
+        else:
+            if JP_ in game[ids_] and game[ids_][JP_] != nsuid:
+                print('Found duplicate for {} on JP'.format(game_id))
+                continue
 
         game[websites_][JP_] = url
         game[ids_][JP_] = nsuid

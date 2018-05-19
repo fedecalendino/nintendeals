@@ -51,9 +51,10 @@ def find_games(system, limit=100, offset=0):
 
         game = GAMES_DB.load(game_id)
 
-        if game is None:
-            title = data['title']
+        title = data['title']
+        title = title.replace('Â®', '®').replace('Ã©', 'é')
 
+        if game is None:
             release_date = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
             number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
 
@@ -76,8 +77,13 @@ def find_games(system, limit=100, offset=0):
             }
 
             LOG.info("New game {} ({}) found on NA".format(game[title_], game[id_]))
+        else:
+            if NA_ in game[ids_] and game[ids_][NA_] != nsuid:
+                print('Found duplicate for {} on NA: {}'.format(game_id, title))
+                continue
 
         game[ids_][NA_] = nsuid
+
         games[game_id] = game
 
         price = PRICES_DB.load(nsuid)

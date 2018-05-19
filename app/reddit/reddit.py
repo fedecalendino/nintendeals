@@ -80,7 +80,7 @@ class Reddit:
         text.append("---")
         text.append("")
         text.append("* Developed by [uglyasablasphemy](https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=about%20nintendeals%20bot)")
-        text.append("* GitHub repo: https://github.com/federicocalendino/nintendeals")
+        # text.append("* GitHub repo: https://github.com/federicocalendino/nintendeals")
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
 
         content = content + "\n" + "\n".join(text)

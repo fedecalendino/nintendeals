@@ -18,14 +18,15 @@ GAMES_DB = GamesDatabase.instance()
 
 
 def fetch_scores():
+
     for game in GAMES_DB.load_all():
         if scores_ not in game:
             game[scores_] = {}
 
         if last_update_ not in game[scores_]:
-            game[scores_][last_update_] = datetime.now() + relativedelta(days=-10)
+            game[scores_][last_update_] = datetime.now() + relativedelta(days=-30)
 
-        if game[scores_][last_update_] + relativedelta(days=+7) > datetime.now():
+        if game[scores_][last_update_] + relativedelta(days=+14) > datetime.now():
             continue
 
         if title_ in game:
@@ -44,5 +45,7 @@ def fetch_scores():
             LOG.info('Scores for {} found: {}/{}'.format(title, metascore, userscore))
         else:
             LOG.info('Scores for {} not found'.format(title))
+
+        game[scores_][last_update_] = datetime.now()
 
         GAMES_DB.save(game)

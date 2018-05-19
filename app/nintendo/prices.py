@@ -56,7 +56,16 @@ def get_prices(country, ids):
     return prices
 
 
-def fetch_prices():
+def fetch_prices(system=None):
+
+    if system is None:
+        prefix = ''
+    elif system == SWITCH_:
+        prefix = '7001'
+    elif system == N3DS_:
+        prefix = '5001'
+    else:
+        prefix = ''
 
     ids_by_country = {}
 
@@ -65,12 +74,13 @@ def fetch_prices():
             if country not in ids_by_country:
                 ids_by_country[country] = []
 
-            ids_by_country[country].append(price[id_])
+            if price[id_].startswith(prefix):
+                ids_by_country[country].append(price[id_])
 
     for country, ids in ids_by_country.items():
 
         for index in range(0, int(len(ids)/50) + 1):
-            print("Looking for prices from {} to {} for {}".format(50 * index, 50 * (index + 1), country))
+            LOG.info("Looking for prices from {} to {} for {}".format(50 * index, 50 * (index + 1), country))
 
             segment = ids[50 * index:50 * (index + 1)]
 
@@ -86,7 +96,7 @@ def fetch_prices():
                 price[countries_][country][full_price_] = data[full_price_]
 
                 if data[sale_] is not None:
-                    print("Deal found for {} on {}".format(nsuid, country))
+                    LOG.info("Deal found for {} on {}".format(nsuid, country))
 
                     deal = {
                         sale_price_: data[sale_][sale_price_],

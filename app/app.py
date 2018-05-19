@@ -46,7 +46,7 @@ def run():
 
         LOG.info(' ')
         LOG.info('Fetching prices for each game')
-        prices.fetch_prices()
+        prices.fetch_prices(system)
 
         LOG.info(' ')
         LOG.info('Sorting games by title')

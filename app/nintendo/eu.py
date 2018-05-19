@@ -52,9 +52,10 @@ def find_games(system, start=0):
 
         game = GAMES_DB.load(game_id)
 
-        if game is None:
-            title = data['title']
+        title = data['title']
+        title = title.replace('Â®', '®').replace('Ã©', 'é')
 
+        if game is None:
             categories = [cat.lower() for cat in data['game_categories_txt']]
             categories.sort()
 
@@ -70,6 +71,10 @@ def find_games(system, start=0):
             }
 
             LOG.info("New game {} ({}) found on EU".format(game[title_], game[id_]))
+        else:
+            if EU_ in game[ids_] and game[ids_][EU_] != nsuid:
+                print('Found duplicate for {} on EU: {}'.format(game_id, title))
+                continue
 
         game[ids_][EU_] = nsuid
         games[game_id] = game

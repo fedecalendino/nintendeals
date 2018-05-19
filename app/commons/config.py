@@ -67,15 +67,6 @@ REGIONS = {
 }
 
 COUNTRIES = {
-    AU_: {
-        key_: AU_,
-        name_: 'Australia',
-        flag_: '🇦🇺',
-        region_: EU_,
-        digits_: 5,
-        currency_: '$'  # 'AUD '
-    },
-
     CA_: {
         key_: CA_,
         name_: 'Canada',
@@ -84,6 +75,34 @@ COUNTRIES = {
         region_: NA_,
         digits_: 5,
         currency_: '$'  # 'CAD '
+    },
+
+    MX_: {
+        key_: 'MX',
+        name_: 'Mexico',
+        flag_: '🇲🇽',
+        region_: NA_,
+        digits_: 6,
+        currency_: '$'  # 'MXN '
+    },
+
+    US_: {
+        key_: US_,
+        name_: 'United States of America',
+        websites_: 'https://www.nintendo.com/games/detail/{}',
+        flag_: '🇺🇸',
+        region_: NA_,
+        digits_: 5,
+        currency_: '$'  # 'USD '
+    },
+
+    AU_: {
+        key_: AU_,
+        name_: 'Australia',
+        flag_: '🇦🇺',
+        region_: EU_,
+        digits_: 5,
+        currency_: '$'  # 'AUD '
     },
 
     EU_: {
@@ -106,25 +125,6 @@ COUNTRIES = {
         currency_: '£'  # 'GBP '
     },
 
-    JP_: {
-        key_: JP_,
-        name_: 'Japan',
-        websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
-        flag_: '🇯🇵',
-        region_: JP_,
-        digits_: 7,
-        currency_: '¥'  # 'JPY '
-    },
-
-    MX_: {
-        key_: 'MX',
-        name_: 'Mexico',
-        flag_: '🇲🇽',
-        region_: NA_,
-        digits_: 6,
-        currency_: '$'  # 'MXN '
-    },
-
     RU_: {
         key_: RU_,
         name_: 'Russia',
@@ -135,24 +135,24 @@ COUNTRIES = {
         currency_: '₽'  # 'RUB '
     },
 
-    US_: {
-        key_: US_,
-        name_: 'United States of America',
-        websites_: 'https://www.nintendo.com/games/detail/{}',
-        flag_: '🇺🇸',
-        region_: NA_,
-        digits_: 5,
-        currency_: '$'  # 'USD '
-    },
+    # ZA_: {
+    #     key_: ZA_,
+    #     name_: 'South Africa',
+    #     websites_: 'https://www.nintendo.co.za/Games/Nintendo-Switch/{}',
+    #     flag_: '🇿🇦',
+    #     region_: EU_,
+    #     digits_: 6,
+    #     currency_: 'R'  # 'ZAR '
+    # },
 
-    #ZA_: {
-    #    key_: ZA_,
-    #    name_: 'South Africa',
-    #    websites_: 'https://www.nintendo.co.za/Games/Nintendo-Switch/{}',
-    #    flag_: '🇿🇦',
-    #    region_: EU_,
-    #    digits_: 6,
-    #    currency_: 'R'  # 'ZAR '
-    #},
+    JP_: {
+        key_: JP_,
+        name_: 'Japan',
+        websites_: 'https://ec.nintendo.com/JP/ja/titles/{}',
+        flag_: '🇯🇵',
+        region_: JP_,
+        digits_: 7,
+        currency_: '¥'  # 'JPY '
+    },
 
 }
