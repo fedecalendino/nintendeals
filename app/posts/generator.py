@@ -1,15 +1,20 @@
 # Standard
-from datetime import datetime
 import logging
+from datetime import datetime
 
 # Modules
+from app.db.mongo import PricesDatabase
 from app.commons.util import *
 
 # Constants
 from app.commons.config import *
 from app.commons.keys import *
 
+
 LOG = logging.getLogger('posts.generator')
+
+
+PRICES_DB = PricesDatabase.instance()
 
 
 def make_comment(games, country, country_details):
@@ -24,14 +29,23 @@ def make_comment(games, country, country_details):
     deal_count = 0
 
     for game in games:
-        # Game has no prices for this country
-        if country not in game[prices_]:
+
+        region = country_details[region_]
+
+        if region not in game[ids_]:
             continue
 
-        details = game[prices_][country]
+        prices = PRICES_DB.load(game[ids_][region])
 
-        # Game has no prices for this country
-        if len(details) < 1:
+        if country not in prices[countries_] or prices[countries_][country] is None:
+            continue
+
+        if sales_ not in prices[countries_][country]:
+            continue
+
+        current_sale = prices[countries_][country][sales_][-1]
+
+        if current_sale[end_date_] < now:
             continue
 
         if title_ in game:
@@ -49,23 +63,12 @@ def make_comment(games, country, country_details):
         if country in game[websites_]:
             title = "[{}]({})".format(title, game[websites_][country])
 
-        # Getting last price
-        price = details[-1]
-
-        # Game has no discount
-        if price[discount_] is None:
-            continue
-
-        # Game discount expired
-        if price[end_date_] < now:
-            continue
-
         currency = country_details[currency_]
-        sale_price = format_float(price[sale_price_], country_details[digits_])
-        full_price = format_float(price[full_price_], 0)
-        discount = price[discount_]
+        sale_price = format_float(current_sale[sale_price_], country_details[digits_])
+        full_price = format_float(prices[countries_][country][full_price_], 0)
+        discount = current_sale[discount_]
 
-        time_left = price[end_date_] - now
+        time_left = current_sale[end_date_] - now
 
         # Formating remaining time
         if time_left.days > 0:
@@ -83,7 +86,7 @@ def make_comment(games, country, country_details):
             if hours <= 1:
                 continue
 
-        new = EMOJI_NEW if (now - price[start_date_]).days < 2 else ''
+        new = EMOJI_NEW if (now - current_sale[start_date_]).days < 2 else ''
 
         players = game[number_of_players_]
 
@@ -114,7 +117,7 @@ def make_comment(games, country, country_details):
             '`{discount}%`| '
             '{players} | {score}'.format(
                 title=title, new=new, warning=warning,
-                end_date=price[end_date_].strftime("%b %d"), time_left=time,
+                end_date=current_sale[end_date_].strftime("%b %d"), time_left=time,
                 currency=currency, sale_price=sale_price, full_price=full_price,
                 discount=discount, players=players,
                 score=score)
@@ -144,12 +147,11 @@ def make_post(games, countries):
     separator = '---'
 
     for country, country_details in countries:
-        columns += ' | {} {}'.format(country_details[flag_], country)
+        columns += ' | {}{}'.format(country_details[flag_], country)
         separator += ' | ---'
 
     text.append('')
-    text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(
-        EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
+    text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
     text.append('')
     text.append('___')
     text.append('')
@@ -164,7 +166,6 @@ def make_post(games, countries):
         # Game title is EN or JP
         if title_ in game:
             title = game[title_]
-
         else:
             title = game[title_jp_]
 
@@ -174,27 +175,35 @@ def make_post(games, countries):
 
         # Building discount table
         for country, country_details in countries:
+            region = country_details[region_]
+
+            if region not in game[ids_]:
+                row += ' | '
+                continue
+
+            prices = PRICES_DB.load(game[ids_][region])
+
+            if country not in prices[countries_] or prices[countries_][country] is None:
+                row += ' | '
+                continue
+
+            if sales_ not in prices[countries_][country]:
+                row += ' | '
+                continue
+
+            current_sale = prices[countries_][country][sales_][-1]
+
+            if current_sale[end_date_] < now:
+                row += ' | '
+                continue
+
             LOG.info('Adding {} discount for {}'.format(title, country))
-
-            if country in game[prices_] and len(game[prices_][country]) == 0:
-                LOG.info('No {} discount for {}'.format(title, country))
-
-                row += ' | '
-                continue
-
-            price = game[prices_][country][-1]
-
-            if price[discount_] is None or price[end_date_] < now:
-                LOG.info('No {} discount for {}'.format(title, country))
-
-                row += ' | '
-                continue
 
             has_discount = True
 
-            discount = price[discount_]
+            discount = current_sale[discount_]
 
-            time_left = price[end_date_] - now
+            time_left = current_sale[end_date_] - now
 
             if time_left.days > 0:
                 days = time_left.days
@@ -203,30 +212,7 @@ def make_post(games, countries):
                 hours = round(time_left.seconds / 60 / 60)
                 warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-            new = EMOJI_NEW if (now - price[start_date_]).days < 2 else ''
-
-            # best_discount = discount
-            # all_equals = True
-
-            # for _, prices in game[prices_].items():
-
-            #    if len(prices) == 0:
-            #        continue
-
-            #    if prices[-1][discount_] is None:
-            #        continue
-
-            #     if len(prices) > 0 and prices[-1][end_date_] > now:
-            #        if prices[-1][discount_] > best_discount:
-            #            best_discount = prices[-1][discount_]
-
-            #        if prices[-1][discount_] != best_discount:
-            #            all_equals = False
-
-            # if not all_equals and best_discount == discount:
-            #     best_discount = EMOJI_MAX_DISCOUNT
-            # else:
-            #    best_discount = ''
+            new = EMOJI_NEW if (now - current_sale[start_date_]).days < 2 else ''
 
             row += '|`{discount}%{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 

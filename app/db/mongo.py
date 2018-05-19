@@ -20,7 +20,6 @@ class Database:
         self.db = mongodb[database]
 
     def save(self, obj):
-
         result = self.load(obj[id_])
 
         if result:
@@ -30,6 +29,14 @@ class Database:
 
     def load(self, _id):
         return self.db[self.collection].find_one({id_: _id})
+
+    def load_all(self, filter={}):
+        result = []
+
+        for item in self.db[self.collection].find(filter):
+            result.append(item)
+
+        return result
 
     def remove(self, _id):
         self.db[self.collection].remove({id_: _id})
@@ -49,20 +56,38 @@ class GamesDatabase(Database):
     def __init__(self):
         super(GamesDatabase, self).__init__('games')
 
+    def find_by_region_and_nsuid(self, region, nsuid):
+        return self.db[self.collection].find_one({ids_: {region: nsuid}})
 
-class PostsDatabase(Database):
+
+class PricesDatabase(Database):
 
     _instance = None
 
     @staticmethod
     def instance():
-        if PostsDatabase._instance is None:
-            PostsDatabase._instance = PostsDatabase()
+        if PricesDatabase._instance is None:
+            PricesDatabase._instance = PricesDatabase()
 
-        return PostsDatabase._instance
+        return PricesDatabase._instance
 
     def __init__(self):
-        super(PostsDatabase, self).__init__('posts')
+        super(PricesDatabase, self).__init__('prices')
+
+
+class RedditDatabase(Database):
+
+    _instance = None
+
+    @staticmethod
+    def instance():
+        if RedditDatabase._instance is None:
+            RedditDatabase._instance = RedditDatabase()
+
+        return RedditDatabase._instance
+
+    def __init__(self):
+        super(RedditDatabase, self).__init__('reddit')
 
     def load_last(self, subreddit, system, frequency):
         try:

@@ -4,6 +4,10 @@ import logging
 # Dependencies
 import requests
 
+# Modules
+from app.db.mongo import GamesDatabase
+from app.db.mongo import PricesDatabase
+
 # Constants
 from app.commons.config import *
 from app.commons.keys import *
@@ -15,8 +19,13 @@ LOG = logging.getLogger('nintendo.eu')
 REGION = REGIONS[EU_]
 LIST_API = REGION[api_]
 
+GAMES_DB = GamesDatabase.instance()
+PRICES_DB = PricesDatabase.instance()
 
-def get_deals(system, start=0):
+
+def find_games(system, start=0):
+    LOG.info('Looking for games {} to {} in EU'.format(start, start + 10))
+
     r = requests.get(LIST_API.format(system=SYSTEMS[system][system_][EU_], start=start))
     json = r.json()
 
@@ -28,38 +37,64 @@ def get_deals(system, start=0):
     games = {}
 
     for data in json['response']['docs']:
+        if 'nsuid_txt' not in data:
+            continue
+
         if 'product_code_txt' not in data:
             continue
 
-        if 'nsuid_txt' not in data:
+        nsuid = data['nsuid_txt'][0]
+
+        if GAMES_DB.find_by_region_and_nsuid(EU_, nsuid) is not None:
             continue
 
         game_id = "{}-{}".format(system, data['product_code_txt'][0][-5:])
 
-        categories = [cat.lower() for cat in data['game_categories_txt']]
-        categories.sort()
+        game = GAMES_DB.load(game_id)
 
-        game = {
-            id_: game_id,
-            ids_: {
-                EU_: data['nsuid_txt'][0]
-            },
-            title_: data['title'],
-            websites_: {},
-            system_: system,
-            release_date_: data['dates_released_dts'][0][:10],
-            number_of_players_: data['players_to'] if 'players_to' in data else 0,
-            genres_: categories
-        }
+        if game is None:
+            title = data['title']
+
+            categories = [cat.lower() for cat in data['game_categories_txt']]
+            categories.sort()
+
+            game = {
+                id_: game_id,
+                ids_: {},
+                title_: title,
+                websites_: {},
+                system_: system,
+                release_date_: data['dates_released_dts'][0][:10],
+                number_of_players_: data['players_to'] if 'players_to' in data else 0,
+                genres_: categories
+            }
+
+            LOG.info("New game {} ({}) found on EU".format(game[title_], game[id_]))
+
+        game[ids_][EU_] = nsuid
+        games[game_id] = game
+
+        price = PRICES_DB.load(nsuid)
+
+        if price is None:
+            price = {
+                id_: nsuid,
+                countries_: {}
+            }
 
         for country, country_details in COUNTRIES.items():
             if country_details[region_] == EU_:
+
+                if country not in price[countries_]:
+                    price[countries_][country] = None
+
                 if websites_ in country_details:
                     game[websites_][country] = country_details[websites_].format(data['url'].rsplit('/', 1)[-1])
 
-        games[game_id] = game
+        GAMES_DB.save(game)
+        PRICES_DB.save(price)
 
     if total > start + 10:
-        games.update(get_deals(system, start + 10))
+        games.update(find_games(system, start + 10))
 
     return games

@@ -1,4 +1,5 @@
 # Standard
+import time
 from datetime import datetime
 import logging
 
@@ -6,7 +7,7 @@ import logging
 from praw import Reddit as RedditApi
 
 # Modules
-from app.db.mongo import PostsDatabase
+from app.db.mongo import RedditDatabase
 
 # Statics
 from app.commons.config import *
@@ -14,6 +15,9 @@ from app.commons.keys import *
 
 
 LOG = logging.getLogger('reddit')
+
+
+REDDIT_DB = RedditDatabase.instance()
 
 
 class Reddit:
@@ -69,51 +73,25 @@ class Reddit:
         if submission is not None:
             submission.delete()
 
-    def post(self, subreddit, system, frequency, title, content):
-        db = PostsDatabase.instance()
-
+    def submit(self, subreddit, system, frequency, title, content):
         text = []
 
         text.append("")
         text.append("---")
         text.append("")
-        text.append("* Developed by [uglyasablasphemy]"
-                    "(https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=comments%20for%20the%20nintendeals%20bot)")
+        text.append("* Developed by [uglyasablasphemy](https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=about%20nintendeals%20bot)")
+        text.append("* GitHub repo: https://github.com/federicocalendino/nintendeals")
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
-
-        text.append("")
-        text.append("---")
-        text.append("")
-        text.append("FAQ:")
-        text.append("Why did you changed the format?")
-        text.append("> When the ammount of deals increase i had to take countries out to be able to show everything on one post,")
-        text.append("> with this new format i can include as many countries as you like. This solution will scale in the future, no matter ")
-        text.append("> how many deals are active on a give time.")
-        text.append("> note: after the comments are created a list of quick links will be added on top of the post for you to get to your country without scrolling.")
-        text.append("> **If you don't like the discount/country table on the post, i'd love to hear some feedback to improve it or change it.**")
-        text.append("")
-        text.append("Why is there a 0 after some prices?")
-        text.append("> This is to be able to sort correctly using the sorters in the reddit tables. [Example](https://www.reddit.com/r/NintendoSwitchDeals/comments/8i0ofo/current_nintendo_switch_eshop_deals/dyoaouj/)")
-        text.append("")
-        text.append("Why is there lot of games that seem to be always on discount?")
-        text.append("> Some devs seem to exploit the deal system to gain more exposure. Once i have enough historical data on prices")
-        text.append("> i'll be able to detect them and filtering them out.")
 
         content = content + "\n" + "\n".join(text)
 
-        print("")
-        print("")
-        print(content)
-        print("")
-        print("")
-
-        current = db.load_last(subreddit, system, frequency)
+        current = REDDIT_DB.load_last(subreddit, system, frequency)
 
         if current is not None and self.exists(current[id_]) is None:
             current = None
 
         if current is None:
-            LOG.info(" Creating a post on {}".format(subreddit))
+            LOG.info(" Submitting to /r/{}".format(subreddit))
 
             current = {
                 subreddit_: subreddit,
@@ -122,15 +100,20 @@ class Reddit:
             }
 
             sub_id = self.create(subreddit, title, content)
-
             current[id_] = sub_id
 
-            db.save(current)
+            LOG.info(" Submitted to /r/{}: https://redd.it/{}".format(subreddit, sub_id))
 
-            LOG.info(" Created a new post on {}: https://redd.it/{}".format(subreddit, sub_id))
+            time.sleep(5)
 
+            comment = self.api.submission(id=sub_id).reply('🔥⬇️ DEALS LISTS ⬇️🔥')
+            current[main_comment_] = comment.id
+
+            LOG.info(" Added main comment: https://reddit.com/comments/{}/_/{}".format(sub_id, comment.id))
+
+            REDDIT_DB.save(current)
         else:
-            LOG.info(" Updating post on {}".format(subreddit))
+            LOG.info(" Updating submission on /r/{}".format(subreddit))
 
             if comments_ in current:
                 links = []
@@ -138,48 +121,42 @@ class Reddit:
                 for country, country_details in COUNTRIES.items():
                     if country in current[comments_]:
                         links.append(
-                            '[{flag} {name}](https://reddit.com/comments/{post_id}/_/{comment_id})'.format(
+                            '[{flag} {name}](https://reddit.com/comments/{sub_id}/_/{comment_id}/?context=2)'.format(
                                 flag=country_details[flag_],
                                 name=country,
-                                post_id=current[id_],
+                                sub_id=current[id_],
                                 comment_id=current[comments_][country]
                             )
                         )
 
-                content = 'Quick links: {}\n___\n{}'.format(' | '.join(links), content)
+                content = 'Shortcuts: {}\n___\n{}'.format(' | '.join(links), content)
 
             self.edit(current[id_], content)
 
             current[updated_at_] = datetime.now()
-            db.save(current)
+            REDDIT_DB.save(current)
 
-            LOG.info(" Updated post on {}: https://redd.it/{}".format(subreddit, current[id_]))
+            LOG.info(" Updated submission on /r/{}: https://redd.it/{}".format(subreddit, current[id_]))
 
         return current[id_]
 
-    def comment(self, post_id, country, content):
-        db = PostsDatabase.instance()
-        post = db.load(post_id)
+    def comment(self, sub_id, country, content):
+        submission = REDDIT_DB.load(sub_id)
+        main_comment_id = submission[main_comment_]
 
-        print("")
-        print("")
-        print(content)
-        print("")
-        print("")
+        if comments_ not in submission:
+            submission[comments_] = {}
 
-        if comments_ not in post:
-            post[comments_] = {}
+        if country not in submission[comments_]:
+            comment = self.api.comment(id=main_comment_id).reply(content)
+            submission[comments_][country] = comment.id
 
-        if country not in post[comments_]:
-            comment = self.api.submission(id=post_id).reply(content)
-            post[comments_][country] = comment.id
-
-            LOG.info("Created comment https://reddit.com/comments/{}//{}".format(post_id, comment.id))
+            LOG.info("Created comment https://reddit.com/comments/{}//{}".format(sub_id, comment.id))
         else:
-            comment_id = post[comments_][country]
+            comment_id = submission[comments_][country]
             self.api.comment(comment_id).edit(content)
 
-            LOG.info("Updated comment https://reddit.com/comments/{}//{}".format(post_id, comment_id))
+            LOG.info("Updated comment https://reddit.com/comments/{}//{}".format(sub_id, comment_id))
 
-        db.save(post)
+        REDDIT_DB.save(submission)
 

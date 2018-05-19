@@ -1,15 +1,10 @@
 # Standard
 import re
 import logging
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
 # Dependencies
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-
-# Statics
-from app.commons.keys import *
 
 METACRITIC_URL = 'http://www.metacritic.com/game/{system}/{title}'
 
@@ -53,28 +48,8 @@ def get_score(system, title):
         LOG.error("Fetching scores for {} on {}: {} ({})".format(title, system, e, url))
         pass
 
-    if system != 'pc' and metascore is None and userscore is None:
-        return get_score('pc', title)
+    if metascore is None and userscore is None:
+        if system != 'pc':
+            return get_score('pc', title)
 
     return metascore, userscore
-
-
-def find_scores(game):
-    if scores_ not in game:
-        game[scores_] = {}
-
-    if last_update_ not in game[scores_] or game[scores_][last_update_] + relativedelta(days=+14) < datetime.now():
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
-
-        metascore, userscore = get_score(game[system_], title)
-
-        game[scores_][last_update_] = datetime.now()
-
-        if metascore is not None or userscore is not None:
-            game[scores_][metascore_] = metascore
-            game[scores_][userscore_] = userscore
-
-    return game
