@@ -82,6 +82,12 @@ class Reddit:
         text.append("* Developed by [uglyasablasphemy](https://www.reddit.com/message/compose?to=uglyasablasphemy&subject=about%20nintendeals%20bot)")
         # text.append("* GitHub repo: https://github.com/federicocalendino/nintendeals")
         text.append("* Last update: {}".format(datetime.now().strftime("%B %d, %H:%M:%S UTC")))
+        text.append("* Changes:")
+        text.append("")
+        text.append("  * Major refactor of the code.")
+        text.append("  * Pushed code to github (pm /u/uglyasablasphemy for repo).")
+        text.append("  * All countries' deals list are replies to one top level comment.")
+        text.append("  * Fixed bug (all games on sale should appear correctly now).")
 
         content = content + "\n" + "\n".join(text)
 
