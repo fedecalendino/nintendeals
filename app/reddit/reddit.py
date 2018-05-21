@@ -88,6 +88,7 @@ class Reddit:
         text.append("  * Pushed code to github (pm /u/uglyasablasphemy for repo).")
         text.append("  * All countries' deals list are replies to one top level comment.")
         text.append("  * Fixed bug (all games on sale should appear correctly now).")
+        text.append("  * Changed how the metacritic scores are displayed.Also, if there are no scores for switch, the bot will lookup for the pc version.")
 
         content = content + "\n" + "\n".join(text)
 

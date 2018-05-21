@@ -23,8 +23,8 @@ def make_comment(games, country, country_details):
     text = []
     text.append('')
 
-    text.append('Title | Expiration | Price | % | Players | Score')
-    text.append('--- | --- | --- | --- | --- | ---')
+    text.append('Title | Expiration | Price | % | Players | MS/US')
+    text.append('--- | --- | --- | --- | --- | :---: ')
 
     deal_count = 0
 
@@ -104,10 +104,16 @@ def make_comment(games, country, country_details):
 
         # Formatting metacritic score
         if scores_ in game and len(game[scores_]) > 0:
+            ms = '-'
+            us = '-'
+
             if metascore_ in game[scores_] and game[scores_][metascore_] is not None:
-                score = "{} `{}`".format(EMOJI_METACRITIC, int(game[scores_][metascore_]))
-            elif userscore_ in game[scores_] and game[scores_][userscore_] is not None:
-                score = "{} `{}`".format(EMOJI_USER, "%.1f" % game[scores_][userscore_])
+                ms = int(game[scores_][metascore_])
+
+            if userscore_ in game[scores_] and game[scores_][userscore_] is not None:
+                us = "%.1f" % game[scores_][userscore_]
+
+            score = '{}/{}'.format(ms, us)
 
         # Creating row
         text.append(
@@ -131,8 +137,8 @@ def make_comment(games, country, country_details):
     text.insert(0, '')
     text.insert(0, '___')
     text.insert(0, '')
-    text.insert(0, '`{} new` `{} expires in 48hs` `{} expires in 24hs` `{}️ metascore` `{} userscore`'.format(
-        EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY, EMOJI_METACRITIC, EMOJI_USER))
+    text.insert(0, '`{} new` `{} expires in 48hs` `{} expires in 24hs`'.format(
+        EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
 
     return '\n'.join(text)
 
