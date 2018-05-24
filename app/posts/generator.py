@@ -117,11 +117,11 @@ def make_comment(games, country, country_details):
 
         # Creating row
         text.append(
-            '{title} {new}{warning} | '
-            '*{end_date} ({time_left})* | '
-            '**{currency}{sale_price}** ~~{full_price}~~ | '
-            '`{discount}%`| '
-            '{players} | {metascore} | {userscore}'.format(
+            '{title}{new}{warning}|'
+            '*{end_date} ({time_left})*|'
+            '**{currency}{sale_price}** ~~{full_price}~~|'
+            '`%{discount}`|'
+            '{players}|{metascore}|{userscore}'.format(
                 title=title, new=new, warning=warning,
                 end_date=current_sale[end_date_].strftime("%b %d"), time_left=time,
                 currency=currency, sale_price=sale_price, full_price=full_price,
@@ -220,7 +220,7 @@ def make_post(games, countries):
 
             new = EMOJI_NEW if (now - current_sale[start_date_]).days < 2 else ''
 
-            row += '|`{discount}%{new}{warning}`'.format(discount=discount, new=new, warning=warning)
+            row += '|`%{discount}{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 
         if has_discount:
             text.append(row)
