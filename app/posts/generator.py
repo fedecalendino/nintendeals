@@ -23,8 +23,8 @@ def make_comment(games, country, country_details):
     text = []
     text.append('')
 
-    text.append('Title | Expiration | Price | % | Players | MS/US')
-    text.append('--- | --- | --- | --- | --- | :---: ')
+    text.append('Title | Expiration | Price | % | Players | MS | US')
+    text.append('--- | --- | --- | --- | --- | :---: | :---: ')
 
     deal_count = 0
 
@@ -104,8 +104,8 @@ def make_comment(games, country, country_details):
 
         # Formatting metacritic score
         if scores_ in game and len(game[scores_]) > 0:
-            ms = '-'
-            us = '-'
+            ms = ''
+            us = ''
 
             if metascore_ in game[scores_] and game[scores_][metascore_] is not None:
                 ms = int(game[scores_][metascore_])
@@ -121,12 +121,12 @@ def make_comment(games, country, country_details):
             '*{end_date} ({time_left})* | '
             '**{currency}{sale_price}** ~~{full_price}~~ | '
             '`{discount}%`| '
-            '{players} | {score}'.format(
+            '{players} | {metascore} | {userscore}'.format(
                 title=title, new=new, warning=warning,
                 end_date=current_sale[end_date_].strftime("%b %d"), time_left=time,
                 currency=currency, sale_price=sale_price, full_price=full_price,
                 discount=discount, players=players,
-                score=score)
+                metascore=ms, userscore=us)
         )
 
         deal_count += 1
