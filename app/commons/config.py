@@ -8,6 +8,8 @@ MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo'
 
 VERSION = "5"
 
+PORT = int(os.environ.get("PORT", 5000))
+
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
 REDDIT_CLIENTID = os.environ.get("REDDIT_CLIENTID")
@@ -20,10 +22,14 @@ EMOJI_EXP_TODAY = '❗'
 EMOJI_MAX_DISCOUNT = '🔥'
 EMOJI_METACRITIC = 'Ⓜ️'
 EMOJI_USER = '👤'
+EMOJI_PLUS = '➕'
+EMOJI_MINUS = '➖'
 
-UPDATE_FREQUENCY = int(os.environ.get('UPDATE_TIME_FRAME', 6 * 60 * 60))
+UPDATE_FREQUENCY = int(os.environ.get('UPDATE_TIME_FRAME', 15))
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
+
+WISHLIST_URL = 'https://nintendo-deals-ui.herokuapp.com'
 
 SYSTEMS = {
     SWITCH_: {
@@ -156,3 +162,8 @@ COUNTRIES = {
     },
 
 }
+
+CMD_ADD = 'add'
+CMD_REMOVE = 'remove'
+CMD_LIST = 'list'
+

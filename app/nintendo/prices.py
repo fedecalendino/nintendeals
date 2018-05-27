@@ -102,7 +102,7 @@ def fetch_prices(system=None):
                         sale_price_: data[sale_][sale_price_],
                         start_date_: data[sale_][start_date_],
                         end_date_: data[sale_][end_date_],
-                        discount_: data[sale_][discount_]
+                        discount_: data[sale_][discount_],
                     }
 
                     if sales_ not in price[countries_][country]:

@@ -82,10 +82,6 @@ def make_comment(games, country, country_details):
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-            # To low remaining time to show
-            if hours <= 1:
-                continue
-
         new = EMOJI_NEW if (now - current_sale[start_date_]).days < 2 else ''
 
         players = game[number_of_players_]
@@ -225,5 +221,33 @@ def make_post(games, countries):
         if has_discount:
             text.append(row)
             count += 1
+
+    return '\n'.join(text)
+
+
+def make_wishlist_post(games):
+    countries = ' '.join(COUNTRIES.keys())
+
+    text = []
+    text.append('')
+    text.append('> To add game to your wishlist click on {}'.format(EMOJI_PLUS))
+    text.append('')
+    text.append('')
+    text.append('Title | Actions')
+    text.append('--- | :---: ')
+
+    for game in games[:50]:
+        if title_ in game:
+            title = game[title_]
+        else:
+            title = game[title_jp_]
+
+        text.append(
+            '{}|{}'.format(
+                title,
+                '[{emoji}](http://www.reddit.com/message/compose?to={to}&subject=add: {game_id}&message={body})'.format(
+                    emoji=EMOJI_PLUS, to=REDDIT_USERNAME, game_id=game[id_], body=countries),
+            )
+        )
 
     return '\n'.join(text)

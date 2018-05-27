@@ -75,6 +75,21 @@ class PricesDatabase(Database):
         super(PricesDatabase, self).__init__('prices')
 
 
+class WishlistDatabase(Database):
+
+    _instance = None
+
+    @staticmethod
+    def instance():
+        if WishlistDatabase._instance is None:
+            WishlistDatabase._instance = WishlistDatabase()
+
+        return WishlistDatabase._instance
+
+    def __init__(self):
+        super(WishlistDatabase, self).__init__('wishlist')
+
+
 class RedditDatabase(Database):
 
     _instance = None

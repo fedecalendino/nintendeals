@@ -1,5 +1,6 @@
 # Standard
 import time
+import traceback
 import logging
 
 # Modules
@@ -15,6 +16,8 @@ from app.metacritic import scores
 from app.posts import generator
 
 from app.reddit.reddit import Reddit
+
+from app.wishlist.wishlist import notify
 
 
 # Statics
@@ -35,18 +38,35 @@ def run():
     LOG.info(' ')
 
     for system, system_details in SYSTEMS.items():
+
         for region, alias in system_details[system_].items():
             LOG.info(' ')
             LOG.info('Fetching games for {}'.format(region))
             fetchers[region](system)
+
+            LOG.info(' ')
+            LOG.info(' Checking reddit inbox')
+            Reddit.instance().inbox()
+
+        LOG.info(' ')
+        LOG.info(' Checking reddit inbox')
+        Reddit.instance().inbox()
 
         LOG.info(' ')
         LOG.info('Fetching scores for each game')
         scores.fetch_scores()
 
         LOG.info(' ')
+        LOG.info(' Checking reddit inbox')
+        Reddit.instance().inbox()
+
+        LOG.info(' ')
         LOG.info('Fetching prices for each game')
         prices.fetch_prices(system)
+
+        LOG.info(' ')
+        LOG.info(' Checking reddit inbox')
+        Reddit.instance().inbox()
 
         LOG.info(' ')
         LOG.info('Sorting games by title')
@@ -76,7 +96,6 @@ def run():
 
             for country, country_details in countries:
                 LOG.info('Building reddit comment for {} {} on {}'.format(country_details[flag_], country, sub_id))
-
                 comment_content = generator.make_comment(games, country, country_details)
 
                 Reddit.instance().comment(
@@ -87,6 +106,10 @@ def run():
 
                 time.sleep(15)
 
+                LOG.info(' ')
+                LOG.info(' Checking reddit inbox')
+                Reddit.instance().inbox()
+
             LOG.info('Updating post with comment links')
 
             Reddit.instance().submit(
@@ -96,3 +119,43 @@ def run():
                 'Current {} eShop deals'.format(system_details[name_]),
                 sub_content
             )
+
+    LOG.info(' ')
+    LOG.info(' Checking reddit inbox')
+    Reddit.instance().inbox()
+
+    LOG.info(' ')
+    LOG.info('Sending wishlist notifications')
+    notify()
+
+def main():
+    LOG.info(' Start up')
+    LOG.info(' ')
+
+    LOG.info("  Mongo: {}".format(MONGODB_URI))
+    LOG.info("  Reddit Username: {}".format(REDDIT_USERNAME))
+    LOG.info(' ')
+
+    reset = 60
+
+    count = reset
+
+    while True:
+        try:
+            LOG.info(' Checking reddit inbox ({})'.format(count))
+            Reddit.instance().inbox()
+
+            if count >= reset:
+                LOG.info(' Running Bot ({})'.format(count))
+                run()
+        except Exception as e:
+            LOG.error(e)
+            traceback.print_exc()
+
+        if count >= reset:
+            count = 0
+        else:
+            count += 1
+
+        LOG.info(' Sleeping for {} seconds'.format(UPDATE_FREQUENCY))
+        time.sleep(UPDATE_FREQUENCY)

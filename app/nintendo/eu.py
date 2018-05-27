@@ -55,28 +55,29 @@ def find_games(system, start=0):
         title = data['title']
         title = title.replace('Â®', '®').replace('Ã©', 'é')
 
+        categories = [cat.lower() for cat in data['game_categories_txt']]
+        categories.sort()
+        
         if game is None:
-            categories = [cat.lower() for cat in data['game_categories_txt']]
-            categories.sort()
-
             game = {
                 id_: game_id,
                 ids_: {},
-                title_: title,
                 websites_: {},
                 system_: system,
                 release_date_: data['dates_released_dts'][0][:10],
-                number_of_players_: data['players_to'] if 'players_to' in data else 0,
-                genres_: categories
+                number_of_players_: data['players_to'] if 'players_to' in data else 0
             }
 
-            LOG.info("New game {} ({}) found on EU".format(game[title_], game[id_]))
+            LOG.info("New game {} ({}) found on EU".format(title, game[id_]))
         else:
             if EU_ in game[ids_] and game[ids_][EU_] != nsuid:
                 print('Found duplicate for {} on EU: {}'.format(game_id, title))
                 continue
 
+        game[title_] = title
         game[ids_][EU_] = nsuid
+        game[genres_] = categories
+
         games[game_id] = game
 
         price = PRICES_DB.load(nsuid)

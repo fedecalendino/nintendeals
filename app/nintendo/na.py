@@ -54,35 +54,35 @@ def find_games(system, limit=100, offset=0):
         title = data['title']
         title = title.replace('Â®', '®').replace('Ã©', 'é')
 
+        categories = data['categories']['category']
+
+        if type(categories) == str:
+            categories = [categories]
+
+        categories.sort()
+
         if game is None:
             release_date = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
             number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
 
-            categories = data['categories']['category']
-
-            if type(categories) == str:
-                categories = [categories]
-
-            categories.sort()
-
             game = {
                 id_: game_id,
                 ids_: {},
-                title_: title,
                 system_: system,
                 websites_: {},
                 release_date_: release_date,
-                number_of_players_: int(number_of_players) if len(number_of_players) else 0,
-                genres_: [cat.lower() for cat in categories]
+                number_of_players_: int(number_of_players) if len(number_of_players) else 0
             }
 
-            LOG.info("New game {} ({}) found on NA".format(game[title_], game[id_]))
+            LOG.info("New game {} ({}) found on NA".format(title, game[id_]))
         else:
             if NA_ in game[ids_] and game[ids_][NA_] != nsuid:
                 print('Found duplicate for {} on NA: {}'.format(game_id, title))
                 continue
 
+        game[title_] = title
         game[ids_][NA_] = nsuid
+        game[genres_] = [cat.lower() for cat in categories]
 
         games[game_id] = game
 

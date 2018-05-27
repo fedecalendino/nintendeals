@@ -7,7 +7,9 @@ import logging
 from praw import Reddit as RedditApi
 
 # Modules
+from app.db.mongo import GamesDatabase
 from app.db.mongo import RedditDatabase
+from app.db.mongo import WishlistDatabase
 
 # Statics
 from app.commons.config import *
@@ -16,8 +18,9 @@ from app.commons.keys import *
 
 LOG = logging.getLogger('reddit')
 
-
+GAMES_DB = GamesDatabase.instance()
 REDDIT_DB = RedditDatabase.instance()
+WISHLIST_DB = WishlistDatabase.instance()
 
 
 class Reddit:
@@ -57,7 +60,7 @@ class Reddit:
             .subreddit(subreddit)\
             .submit(title, selftext=content)
 
-        # submission.disable_inbox_replies()
+        submission.disable_inbox_replies()
 
         return submission.id
 
@@ -74,20 +77,25 @@ class Reddit:
             submission.delete()
 
     def submit(self, subreddit, system, frequency, title, content):
-        text = []
+        header = ['']
 
-        text.append("")
-        text.append("---")
-        text.append("")
-        text.append("* Developed by /u/uglyasablasphemy")
-        # text.append("* GitHub repo: https://github.com/federicocalendino/nintendeals")
-        text.append("* Consider using RES for table sorting: https://redditenhancementsuite.com")
-        text.append("* Changes:")
-        text.append("")
-        text.append("  * Changed how the metacritic scores are displayed.")
-        text.append("  * If there are no scores for switch, the bot will lookup for the pc version.")
+        if system == SWITCH_:
+            header.append("⭐ NEW FEATURE: WISHLIST ⭐")
+            header.append("")
+            header.append("For more information you can go to: {}".format(WISHLIST_URL))
+            header.append("")
+            header.append("---")
+            header.append("")
 
-        content = content + "\n" + "\n".join(text)
+        footer = []
+
+        footer.append("")
+        footer.append("---")
+        footer.append("")
+        footer.append("* Developed by /u/uglyasablasphemy")
+        footer.append("* Consider using RES for table sorting: https://redditenhancementsuite.com")
+
+        content = "\n".join(header) + content + "\n" + "\n".join(footer)
 
         current = REDDIT_DB.load_last(subreddit, system, frequency)
 
@@ -163,4 +171,180 @@ class Reddit:
             LOG.info("Updated comment https://reddit.com/comments/{}//{}".format(sub_id, comment_id))
 
         REDDIT_DB.save(submission)
+
+    def inbox(self):
+        for message in self.api.inbox.all(limit=50):
+            if message.was_comment:
+                continue
+
+            if not message.new:
+                continue
+
+            valid_command = False
+
+            for command in [CMD_ADD, CMD_REMOVE, CMD_LIST]:
+                if message.subject.startswith(command):
+                    valid_command = True
+
+            if not valid_command:
+                continue
+
+            if message.subject.startswith(CMD_LIST):
+                self.reply(message, '')
+                continue
+
+            command, game_id = message.subject.split(': ')
+
+            if game_id is None:
+                self.reply(message, '`Error`: missing game id on subject.')
+                continue
+
+            game = GAMES_DB.load(game_id)
+
+            if game is None:
+                self.reply(message, '`Error`: game with id {} was not found.'.format(game_id))
+                continue
+
+            username = message.author.name
+
+            if command == CMD_ADD:
+                self.wishlist_add(message, username, game)
+            elif command == CMD_REMOVE:
+                self.wishlist_remove(message, username, game)
+
+    def send(self, username, title, content):
+        content = self.make_response(username, content)
+
+        self.api.redditor(username).message(title, content)
+
+        time.sleep(10)
+
+    def reply(self, message, content):
+        username = message.author.name
+
+        content = self.make_response(username, content)
+
+        message.reply(content)
+        message.mark_read()
+
+    def make_response(self, username, content):
+        text = []
+        text.append('##Hi {}'.format(username))
+        text.append('')
+        text.append(content)
+        text.append('')
+        text.append('___')
+        text.append('')
+
+        obj = WISHLIST_DB.load(username)
+
+        if obj is None or games_ not in obj or len(obj[games_]) is 0:
+            text.append('###Your wishlist is empty'.format(username))
+
+            return '\n'.join(text)
+
+        text.append('###Your current wishlist:'.format(username))
+
+        text.append('')
+        text.append('Title | Countries | Actions')
+        text.append('--- | --- | :---: ')
+
+        for game_id, game_details in obj[games_].items():
+            game = GAMES_DB.load(game_id)
+
+            if title_ in game:
+                title = game[title_]
+            else:
+                title = game[title_jp_]
+
+            country_list = []
+
+            for country in game_details[countries_]:
+                country_details = COUNTRIES[country]
+
+                country_list.append('{} {}'.format(country_details[flag_], country_details[key_]))
+
+            text.append(
+                '{}|{}|{}'.format(
+                    title,
+                    ' '.join(country_list),
+                    '[{emoji}](http://www.reddit.com/message/compose?to={to}&subject={cmd}: {game_id}&message={body})'.format(
+                        cmd=CMD_REMOVE, emoji=EMOJI_MINUS, to=REDDIT_USERNAME, game_id=game_id, body='.'),
+                )
+            )
+
+        text.append('___')
+        text.append('You can add games to your wishlist [HERE]({}).'.format(WISHLIST_URL))
+
+        return '\n'.join(text)
+
+    def wishlist_add(self, message, username, game):
+        countries = message.body.split(' ')
+
+        invalid_countries = []
+
+        for country in countries:
+            if country not in COUNTRIES.keys():
+                invalid_countries.append(country)
+
+        if len(invalid_countries) != 0:
+            self.reply(message, '`Error`: {} are not valid countries.'.format(', '.join(invalid_countries)))
+            return
+
+        wishlist = WISHLIST_DB.load(username)
+
+        if wishlist is None:
+            wishlist = {
+                id_: username,
+                games_: {}
+            }
+
+        limit = 25
+
+        if len(wishlist[games_]) >= limit:
+            self.reply(message, '`Error`: a maximum of {} wishlisted games has been reached.'.format(limit))
+            return
+
+        game_id = game[id_]
+
+        if title_ in game:
+            title = game[title_]
+        else:
+            title = game[title_jp_]
+
+        if game_id not in wishlist[games_]:
+            wishlist[games_][game_id] = {}
+
+        countries = sorted(list(countries))
+
+        wishlist[games_][game_id][countries_] = countries
+        wishlist[games_][game_id][last_update_] = datetime.now()
+
+        WISHLIST_DB.save(wishlist)
+
+        self.reply(message, '*{}* was added to your wishlist :)'.format(title))
+
+        LOG.info('{} wishlisted {}'.format(username, title))
+
+    def wishlist_remove(self, message, username, game):
+
+        game_id = game[id_]
+
+        if title_ in game:
+            title = game[title_]
+        else:
+            title = game[title_jp_]
+
+        wishlist = WISHLIST_DB.load(username)
+
+        if wishlist is None or game_id not in wishlist[games_]:
+            self.reply(message, '`Error`: {} is not on your wishlist'.format(title))
+
+        del wishlist[games_][game_id]
+
+        WISHLIST_DB.save(wishlist)
+
+        self.reply(message, '*{}* was deleted from your wishlist :('.format(title))
+
+        LOG.info('{} deleted {}'.format(username, title))
 
