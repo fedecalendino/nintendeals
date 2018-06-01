@@ -15,6 +15,8 @@ from app.db.mongo import PricesDatabase
 from app.commons.config import *
 from app.commons.keys import *
 
+from app.nintendo.commons import alt_versions
+
 
 LOG = logging.getLogger('nintendo.jp')
 
@@ -53,6 +55,9 @@ def find_games(system):
             continue
 
         game_id = "{}-{}".format(system, game_id)
+
+        if nsuid in alt_versions:
+            game_id = alt_versions[nsuid]
 
         game = GAMES_DB.load(game_id)
 
