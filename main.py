@@ -42,7 +42,7 @@ def activate_job():
 
 @api.route("/heartbeat")
 def hello():
-    return "i'm alive"
+    return "🌿 Yahaha! You found me! 🌿"
 
 
 def start_runner():

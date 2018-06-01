@@ -24,7 +24,7 @@ def make_comment(games, country, country_details):
     text.append('')
 
     text.append('Title | Expiration | Price | % | Players | MS | US')
-    text.append('--- | --- | --- | --- | --- | :---: | :---: ')
+    text.append('--- | --- | --- | :---: | --- | :---: | :---: ')
 
     deal_count = 0
 
@@ -61,7 +61,10 @@ def make_comment(games, country, country_details):
 
         # Making titles as url is possible
         if country in game[websites_]:
-            title = "[{}]({})".format(title, game[websites_][country])
+            title = "[{}]({})".format(
+                title,
+                game[websites_][country].replace('https://www.', '//')
+            )
 
         currency = country_details[currency_]
         sale_price = format_float(current_sale[sale_price_], country_details[digits_])
@@ -90,9 +93,9 @@ def make_comment(games, country, country_details):
         if players is None or players == 0:
             players = '- tbd -'
         elif players == 1:
-            players = '1 player'
+            players = '1 pl.'
         elif players == 2:
-            players = '1-2 players'
+            players = '2 pls.'
         else:
             players = 'up to {}'.format(players)
 
