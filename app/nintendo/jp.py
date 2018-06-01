@@ -38,7 +38,7 @@ def get_id_map(system):
     id_map = {}
 
     for title_info in game_list['TitleInfoList']['TitleInfo']:
-        id_map[title_info['LinkURL'].rsplit('/', 1)[-1]] = title_info['InitialCode'][-5:]
+        id_map[title_info['LinkURL'].rsplit('/', 1)[-1]] = title_info['InitialCode'][-5:-1]
 
     return id_map
 

@@ -48,7 +48,7 @@ def find_games(system, start=0):
         if GAMES_DB.find_by_region_and_nsuid(EU_, nsuid) is not None:
             continue
 
-        game_id = "{}-{}".format(system, data['product_code_txt'][0][-5:])
+        game_id = "{}-{}".format(system, data['product_code_txt'][0][-5:-1])
 
         game = GAMES_DB.load(game_id)
 

@@ -49,7 +49,7 @@ def find_games(system, limit=100, offset=0):
         if GAMES_DB.find_by_region_and_nsuid(NA_, nsuid) is not None:
             continue
 
-        game_id = "{}-{}".format(system, data['game_code'][-5:])
+        game_id = "{}-{}".format(system, data['game_code'][-5:-1])
 
         if nsuid in alt_versions:
             game_id = alt_versions[nsuid]
