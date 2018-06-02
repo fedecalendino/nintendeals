@@ -6,6 +6,7 @@ import threading
 # Requirements
 import requests
 from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 
 # Modules
@@ -38,6 +39,13 @@ def activate_job():
 
     thread = threading.Thread(target=run_job)
     thread.start()
+
+
+@api.route("/")
+@api.route("/wishlist")
+@api.route("/wishlist/")
+def wishlist():
+    return send_from_directory('web', 'wishlist.html')
 
 
 @api.route("/heartbeat")

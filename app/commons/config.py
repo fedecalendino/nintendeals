@@ -29,7 +29,7 @@ UPDATE_FREQUENCY = int(os.environ.get('UPDATE_TIME_FRAME', 15))
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
-WISHLIST_URL = 'https://nintendo-deals-ui.herokuapp.com'
+WISHLIST_URL = 'https://nintendo-deals.herokuapp.com/wishlist'
 
 SYSTEMS = {
     SWITCH_: {
