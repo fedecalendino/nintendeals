@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	
+	<title>Nintendo Switch .:. /u/nintendeals</title>
+
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<link href="./css/style.css" rel="stylesheet" id="style-css">
+
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body onload='fill_table()'>
+	<div class="container">
+
+	    <h2>Add games to your wishlist</h2>
+	    <p class="lead" id="list"></p>
+	    
+	    <div class="alert alert-info">
+	        <h4>Instructions</h4>
+	        <p>The reddit <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a> now has a wishlist feature. You can add games to your wishlist by clicking the ➕ icon.</p>
+	        <p>This will create a PM for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>, if you send that PM the bot will notify you the next time that game goes on sale (via a reddit PM).</p>
+	        <p>The body of the PM has a list of countries, you may deleted the countries you're not interested to be notified.</p>
+	       	<p></p>
+			<p>In the PMs you'll see a ➖ icon, that one is used to remove games from your wishlist.</p>
+	    </div>
+
+	    <div class="alert alert-info">
+	        <h4>FAQ</h4>
+	        <p><strong>Why another website for the game list?</strong></p>
+	        <p>Reddit limits the ammount of characters per post to 40k and the comment to 10k, so to fit all games with their ➕ link i would need something close to 3 posts or 13 comments which is a lot.</p>
+	        <p></p>
+	       	<p><strong>Would there be a limit for the ammount of games in the wishlist?</strong></p>
+	       	<p>Yes, reddit also limits the characters on PMs to 10k so the bot can only send the wishlist as a response with the ➖ links, if you have less than 25 games.</p>
+	       	<p></p>
+	       	<p><strong>Why this have to be done with PMs?</strong></p>
+	       	<p>This way i don't need to access your reddit account, since everything is done with PMs between you and the bot. This website will only provide the format for the PMs but everything else is done securely inside the reddit.com site.</p>
+	    </div>
+
+	    <div class="alert alert-warning">
+	    	This feature is still in BETA, if you want to participate i'd love to get some feedback (<a href="http://www.reddit.com/message/compose?to=uglyasablasphemy&subject=wishlist feedback" target="_blank">/u/uglyasablasphemy</a>).
+	    </div>
+
+	    <hr />
+
+	    <div id="table" class="method">
+	        <div class="row margin-0 list-header hidden-sm hidden-xs">
+	            <div class="col-md-5"><div class="header">Name</div></div>
+	            <div class="col-md-6"><div class="header">Available on</div></div>
+	            <div class="col-md-1"><div class="header">Actions</div></div>
+	        </div>
+	    </div>
+
+	    <script type="text/javascript">
+	    	function fill_table() {
+	    		server = 'https://nintendo-deals.herokuapp.com/api/v1';
+
+	    		if (window.location.href.includes('localhost')) {
+	    			server = 'http://localhost:5000/api/v1';
+	    		}
+
+				list = $('#list')
+
+				$.ajax({
+					method: "GET",
+					url: server + "/config",
+					async: false
+				}).done(function(msg) {
+    				config = msg
+  				});
+
+  				link = 'You can check your current wishlist <a href="http://www.reddit.com/message/compose?to={0}&subject=list&message=." target="_blank">HERE</a>'
+  				link = link.replace('{0}', config['username'])
+
+  				list.append(link)
+
+  				table = $('#table')
+
+				$.ajax({
+					method: "GET",
+					url: server + "/games",
+				}).done(function(msg) {
+					$.each(msg, function(index) {
+						game = msg[index]
+
+						row = '<div class="row margin-0">';
+						row += '<div class="col-md-5"><div class="cell">{0}</div></div>';
+						row += '<div class="col-md-6"><div class="cell">{1}</div></div>';
+						row += '<div class="col-md-1"><div class="cell">{2}</div></div>';
+	        			row += '</div>';
+
+	        			country_codes = ''
+	        			countries = ''
+	        			$.each(game['region'], function(index, region) {
+		        			$.each(config['countries'], function(index, country) {
+		        				if (country['region'] == region) {
+		        					countries += country['flag'] + ' ' + country['key'] + ' '
+		        					country_codes += country['key'] + ' '
+		        				}
+		        			});
+	        			});
+
+
+	        			link = '<a href="http://www.reddit.com/message/compose?to={0}&subject=add: {1}&message={2}" target="_blank">➕</a>'
+	        			link = link.replace('{0}', config['username'])
+	        			link = link.replace('{1}', game['_id'])
+	        			link = link.replace('{2}', country_codes)
+
+	        			row = row.replace('{0}', game['title'])
+						row = row.replace('{1}', countries)
+						row = row.replace('{2}', link)
+
+	        			table.append(row);
+					})
+  				});
+	    	}
+	    </script>
+	</div>
+</body>
+</html>
