@@ -4,17 +4,17 @@ from datetime import datetime
 import logging
 
 # Modules
-from app.db.mongo import GamesDatabase
-from app.db.mongo import PricesDatabase
-from app.db.mongo import RedditDatabase
-from app.db.mongo import WishlistDatabase
+from bot.db.mongo import GamesDatabase
+from bot.db.mongo import PricesDatabase
+from bot.db.mongo import RedditDatabase
+from bot.db.mongo import WishlistDatabase
 
-from app.reddit.reddit import Reddit
+from bot.reddit.reddit import Reddit
 
 # Statics
-from app.commons.config import *
-from app.commons.keys import *
-from app.commons.util import *
+from bot.commons.config import *
+from bot.commons.keys import *
+from bot.commons.util import *
 
 
 LOG = logging.getLogger('wishlist')

@@ -7,13 +7,13 @@ import logging
 from praw import Reddit as RedditApi
 
 # Modules
-from app.db.mongo import GamesDatabase
-from app.db.mongo import RedditDatabase
-from app.db.mongo import WishlistDatabase
+from bot.db.mongo import GamesDatabase
+from bot.db.mongo import RedditDatabase
+from bot.db.mongo import WishlistDatabase
 
 # Statics
-from app.commons.config import *
-from app.commons.keys import *
+from bot.commons.config import *
+from bot.commons.keys import *
 
 
 LOG = logging.getLogger('reddit')

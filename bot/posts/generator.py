@@ -3,12 +3,12 @@ import logging
 from datetime import datetime
 
 # Modules
-from app.db.mongo import PricesDatabase
-from app.commons.util import *
+from bot.db.mongo import PricesDatabase
+from bot.commons.util import *
 
 # Constants
-from app.commons.config import *
-from app.commons.keys import *
+from bot.commons.config import *
+from bot.commons.keys import *
 
 
 LOG = logging.getLogger('posts.generator')

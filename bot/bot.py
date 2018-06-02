@@ -4,24 +4,24 @@ import traceback
 import logging
 
 # Modules
-from app.db.mongo import GamesDatabase
+from bot.db.mongo import GamesDatabase
 
-from app.nintendo import eu
-from app.nintendo import jp
-from app.nintendo import na
-from app.nintendo import prices
+from bot.nintendo import eu
+from bot.nintendo import jp
+from bot.nintendo import na
+from bot.nintendo import prices
 
-from app.metacritic import scores
+from bot.metacritic import scores
 
-from app.posts import generator
+from bot.posts import generator
 
-from app.reddit.reddit import Reddit
+from bot.reddit.reddit import Reddit
 
-from app.wishlist.wishlist import notify
+from bot.wishlist.wishlist import notify
 
 
 # Statics
-from app.commons.config import *
+from bot.commons.config import *
 
 LOG = logging.getLogger('bot')
 

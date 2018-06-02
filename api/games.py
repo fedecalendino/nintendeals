@@ -6,10 +6,10 @@ from flask import Blueprint
 from flask import Response
 
 # Modules
-from app.db.mongo import GamesDatabase
+from bot.db.mongo import GamesDatabase
 
 # Statics
-from app.commons.keys import *
+from bot.commons.keys import *
 
 
 GAMES_DB = GamesDatabase.instance()

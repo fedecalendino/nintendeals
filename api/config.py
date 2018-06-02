@@ -6,8 +6,8 @@ from flask import Blueprint
 from flask import Response
 
 # Statics
-from app.commons.config import *
-from app.commons.keys import *
+from bot.commons.config import *
+from bot.commons.keys import *
 
 TAG = 'config'
 

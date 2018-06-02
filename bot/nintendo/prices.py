@@ -7,11 +7,11 @@ import dateutil.parser
 import requests
 
 # Modules
-from app.db.mongo import PricesDatabase
+from bot.db.mongo import PricesDatabase
 
 # Constants
-from app.commons.config import *
-from app.commons.keys import *
+from bot.commons.config import *
+from bot.commons.keys import *
 
 
 LOG = logging.getLogger('nintendo.prices')

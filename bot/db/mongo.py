@@ -6,8 +6,8 @@ from datetime import datetime
 from pymongo import MongoClient
 
 # Statics
-from app.commons.config import MONGODB_URI
-from app.commons.keys import *
+from bot.commons.config import MONGODB_URI
+from bot.commons.keys import *
 
 
 class Database:

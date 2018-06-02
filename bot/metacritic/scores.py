@@ -4,11 +4,11 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 # Modules
-from app.db.mongo import GamesDatabase
-from app.metacritic import metacritic
+from bot.db.mongo import GamesDatabase
+from bot.metacritic import metacritic
 
 # Constants
-from app.commons.keys import *
+from bot.commons.keys import *
 
 
 LOG = logging.getLogger('metacritic.scores')

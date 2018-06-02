@@ -6,30 +6,60 @@ import threading
 # Requirements
 import requests
 from flask import Flask
-from flask import Flask, send_from_directory
+from flask import send_from_directory
 from flask_cors import CORS
 
 # Modules
-from app import bot
-from app.commons.config import PORT
-from app.services import games, config
+from bot import bot
+from bot.commons.config import PORT
+from api import games, config
 
 
 LOG = logging.getLogger('main')
 
 
-def register_blueprint(app, blueprint):
-    app.register_blueprint(blueprint, url_prefix=blueprint.prefix)
+def register_blueprint(application, blueprint):
+    application.register_blueprint(blueprint, url_prefix=blueprint.prefix)
 
 
-api = Flask(__name__)
-CORS(api)
+app = Flask(__name__)
+CORS(app)
 
-register_blueprint(api, games.blueprint)
-register_blueprint(api, config.blueprint)
+# Api =========================================================================
 
 
-@api.before_first_request
+@app.route("/heartbeat")
+def hello():
+    return "🌿 Yahaha! You found me! 🌿"
+
+
+register_blueprint(app, games.blueprint)
+register_blueprint(app, config.blueprint)
+
+# Web =========================================================================
+
+
+@app.route("/")
+@app.route("/wishlist")
+@app.route("/wishlist/")
+def wishlist():
+    return send_from_directory('web', 'wishlist.html')
+
+
+@app.route('/css/<path:path>')
+@app.route('/wishlist/css/<path:path>')
+def send_css(path):
+    return send_from_directory('web/css', path)
+
+
+@app.route('/js/<path:path>')
+@app.route('/wishlist/js/<path:path>')
+def send_js(path):
+    return send_from_directory('web/js', path)
+
+
+# Bot =========================================================================
+@app.before_first_request
 def activate_job():
     def run_job():
         while True:
@@ -39,18 +69,6 @@ def activate_job():
 
     thread = threading.Thread(target=run_job)
     thread.start()
-
-
-@api.route("/")
-@api.route("/wishlist")
-@api.route("/wishlist/")
-def wishlist():
-    return send_from_directory('web', 'wishlist.html')
-
-
-@api.route("/heartbeat")
-def hello():
-    return "🌿 Yahaha! You found me! 🌿"
 
 
 def start_runner():
@@ -78,10 +96,13 @@ def start_runner():
     thread.start()
 
 
+# Main ========================================================================
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     start_runner()
 
-    api.run(host='0.0.0.0', port=PORT)
+    app.run(host='0.0.0.0', port=PORT)
 
