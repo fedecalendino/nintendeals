@@ -33,12 +33,18 @@ def track():
         else:
             title = game[title_jp_]
 
-        response.append(
-            {
-                id_: game[id_],
-                title_: title,
-                region_: [key for key in game[ids_].keys()]
+        item = {
+            id_: game[id_],
+            title_: title,
+            region_: [key for key in game[ids_].keys()]
+        }
+
+        if scores_ in game:
+            item[scores_] = {
+                metascore_: game[scores_][metascore_] if metascore_ in game[scores_] else None,
+                userscore_: game[scores_][userscore_] if userscore_ in game[scores_] else None
             }
-        )
+
+        response.append(item)
 
     return Response(json.dumps(response),  mimetype='application/json')

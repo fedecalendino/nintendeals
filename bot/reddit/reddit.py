@@ -274,7 +274,20 @@ class Reddit:
             )
 
         text.append('___')
-        text.append('You can add games to your wishlist [HERE]({}).'.format(WISHLIST_URL))
+        text.append('Add games to your wishlist [HERE]({}).'.format(WISHLIST_URL))
+        text.append('')
+        text.append('Check the latest deals on:')
+        text.append('')
+
+        for system_details in SYSTEMS[SWITCH_]:
+            for subreddit in system_details[subreddit_]:
+                current = REDDIT_DB.load_last(subreddit, SWITCH_, system_details[frequency_])
+
+                text.append(
+                    '* [/r/{}](https://redd.it/{})'.format(subreddit, current[id_])
+                )
+
+        text.append('')
 
         return '\n'.join(text)
 
@@ -299,7 +312,7 @@ class Reddit:
                 games_: {}
             }
 
-        limit = 25
+        limit = 50
 
         if len(wishlist[games_]) >= limit:
             self.reply(message, '`Error`: a maximum of {} wishlisted games has been reached.'.format(limit))

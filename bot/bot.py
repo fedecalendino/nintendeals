@@ -128,6 +128,7 @@ def run():
     LOG.info('Sending wishlist notifications')
     notify()
 
+
 def main():
     LOG.info(' Start up')
     LOG.info(' ')
