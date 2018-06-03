@@ -5,52 +5,76 @@
 	
 	<title>Nintendo Switch .:. /u/nintendeals</title>
 
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<link href="./css/style.css" rel="stylesheet" id="style-css">
-
-	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
 </head>
-<body onload='fill_table()'>
+<body>
 	<div class="container">
+        <div class="row">
+            <h2>Add games to your wishlist</h2>
+            <p class="lead" id="list"></p>
 
-	    <h2>Add games to your wishlist</h2>
-	    <p class="lead" id="list"></p>
-	    
-	    <div class="alert alert-info">
-	        <h4>Instructions</h4>
-	        <p>The reddit <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a> now has a wishlist feature. You can add games to your wishlist by clicking the ➕ icon.</p>
-	        <p>This will create a PM for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>, if you send that PM the bot will notify you the next time that game goes on sale (via a reddit PM).</p>
-	        <p>The body of the PM has a list of countries, you may deleted the countries you're not interested to be notified.</p>
-	       	<p></p>
-			<p>In the PMs you'll see a ➖ icon, that one is used to remove games from your wishlist.</p>
-	    </div>
+            <div class="alert alert-info">
+                <h4>Instructions</h4>
+                <p>The reddit <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a> now has a wishlist feature. You can add games to your wishlist by clicking the ➕ icon.</p>
+                <p>This will create a PM for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>, if you send that PM the bot will notify you the next time that game goes on sale (via a reddit PM).</p>
+                <p>The body of the PM has a list of countries, you may deleted the countries you're not interested to be notified.</p>
+                <p></p>
+                <p>In the PMs you'll see a ➖ icon, that one is used to remove games from your wishlist.</p>
+            </div>
 
-	    <div class="alert alert-info">
-	        <h4>FAQ</h4>
-	        <p><strong>Why another website for the game list?</strong></p>
-	        <p>Reddit limits the ammount of characters per post to 40k and the comment to 10k, so to fit all games with their ➕ link i would need something close to 3 posts or 13 comments which is a lot.</p>
-	        <p></p>
-	       	<p><strong>Would there be a limit for the ammount of games in the wishlist?</strong></p>
-	       	<p>Yes, reddit also limits the characters on PMs to 10k so the bot can only send the wishlist as a response with the ➖ links, if you have less than 25 games.</p>
-	       	<p></p>
-	       	<p><strong>Why this have to be done with PMs?</strong></p>
-	       	<p>This way i don't need to access your reddit account, since everything is done with PMs between you and the bot. This website will only provide the format for the PMs but everything else is done securely inside the reddit.com site.</p>
-	    </div>
-
-	    <div class="alert alert-warning">
-	    	This feature is still in BETA, if you want to participate i'd love to get some feedback (<a href="http://www.reddit.com/message/compose?to=uglyasablasphemy&subject=wishlist feedback" target="_blank">/u/uglyasablasphemy</a>).
-	    </div>
+            <div class="alert alert-warning">
+                This feature is still in BETA, if you want to participate i'd love to get some feedback (<a href="http://www.reddit.com/message/compose?to=uglyasablasphemy&subject=wishlist feedback" target="_blank">/u/uglyasablasphemy</a>).
+            </div>
+        </div>
 
 	    <hr />
 
-	    <div id="table" class="method">
-	        <div class="row margin-0 list-header hidden-sm hidden-xs">
-	            <div class="col-md-5"><div class="header">Name</div></div>
-	            <div class="col-md-6"><div class="header">Available on</div></div>
-	            <div class="col-md-1"><div class="header">Actions</div></div>
-	        </div>
-	    </div>
+        <div class="row">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group has-feedback">
+                        <label for="search_input" class="sr-only">Search</label>
+                        <input type="text" class="form-control" name="search" id="search_input" onkeyup="search()" placeholder="Search for title..">
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+		    <table class="table table-bordered sortable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Available on</th>
+                        <th scope="col" align="center">Metascore</th>
+                        <th scope="col" align="center">Userscore</th>
+                        <th scope="col" align="center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row">
+            <div class="alert alert-info">
+                <h4>FAQ</h4>
+                <p><strong>Why another website for the game list?</strong></p>
+                <p>Reddit limits the ammount of characters per post to 40k and the comment to 10k, so to fit all games with their ➕ link i would need something close to 3 posts or 13 comments which is a lot.</p>
+                <p></p>
+                <p><strong>Would there be a limit for the ammount of games in the wishlist?</strong></p>
+                <p>Yes, reddit also limits the characters on PMs to 10k so the bot can only send the wishlist as a response with the ➖ links, if you have less than 50 games.</p>
+                <p></p>
+                <p><strong>Why this have to be done with PMs?</strong></p>
+                <p>This way i don't need to access your reddit account, since everything is done with PMs between you and the bot. This website will only provide the format for the PMs but everything else is done securely inside the reddit.com site.</p>
+            </div>
+        </div>
+
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.js"></script>
 
 	    <script type="text/javascript">
 	    	function fill_table() {
@@ -84,10 +108,12 @@
 					$.each(msg, function(index) {
 						game = msg[index]
 
-						row = '<div class="row margin-0">';
-						row += '<div class="col-md-5"><div class="cell">{0}</div></div>';
-						row += '<div class="col-md-6"><div class="cell">{1}</div></div>';
-						row += '<div class="col-md-1"><div class="cell">{2}</div></div>';
+						row =  '<tr>';
+						row += '  <td scope="row"><strong>{title}</strong></td>';
+						row += '  <td>{countries}</td>';
+						row += '  <td align="center">{metascore}</td>';
+						row += '  <td align="center">{userscore}</td>';
+						row += '  <td align="center">{link}</td>';
 	        			row += '</div>';
 
 	        			country_codes = ''
@@ -102,20 +128,62 @@
 	        			});
 
 
-	        			link = '<a href="http://www.reddit.com/message/compose?to={0}&subject=add: {1}&message={2}" target="_blank">➕</a>'
-	        			link = link.replace('{0}', config['username'])
-	        			link = link.replace('{1}', game['_id'])
-	        			link = link.replace('{2}', country_codes)
+	        			link = '<a href="http://www.reddit.com/message/compose?to={username}&subject=add: {id}&message={countries}" target="_blank">➕</a>'
+	        			link = link.replace('{username}', config['username'])
+	        			link = link.replace('{id}', game['_id'])
+	        			link = link.replace('{countries}', country_codes)
 
-	        			row = row.replace('{0}', game['title'])
-						row = row.replace('{1}', countries)
-						row = row.replace('{2}', link)
+	        			row = row.replace('{title}', game['title'])
+						row = row.replace('{countries}', countries)
+
+						if (game["scores"]["metascore"] != null) {
+						    row = row.replace('{metascore}', game["scores"]["metascore"])
+						} else {
+						    row = row.replace('{metascore}', '')
+						}
+
+						if (game["scores"]["userscore"] != null) {
+						    row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
+						} else {
+						    row = row.replace('{userscore}', '')
+						}
+
+						row = row.replace('{link}', link)
 
 	        			table.append(row);
 					})
   				});
 	    	}
+
+	    	fill_table();
 	    </script>
-	</div>
+
+        <script>
+            function search() {
+                // Declare variables
+                var input, filter, table, tr, td, i;
+
+                input = document.getElementById("search_input");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("table");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+
+                    if (td) {
+                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                                tr[i].style.display = "";
+                            } else {
+                                tr[i].style.display = "none";
+                            }
+                    }
+                }
+            }
+        </script>
+
+        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+    </div>
 </body>
 </html>
