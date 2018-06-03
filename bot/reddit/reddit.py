@@ -241,37 +241,36 @@ class Reddit:
         if obj is None or games_ not in obj or len(obj[games_]) is 0:
             text.append('###Your wishlist is empty'.format(username))
 
-            return '\n'.join(text)
+        else:
+            text.append('###Your current wishlist:'.format(username))
 
-        text.append('###Your current wishlist:'.format(username))
+            text.append('')
+            text.append('Title | Countries | Actions')
+            text.append('--- | --- | :---: ')
 
-        text.append('')
-        text.append('Title | Countries | Actions')
-        text.append('--- | --- | :---: ')
+            for game_id, game_details in obj[games_].items():
+                game = GAMES_DB.load(game_id)
 
-        for game_id, game_details in obj[games_].items():
-            game = GAMES_DB.load(game_id)
+                if title_ in game:
+                    title = game[title_]
+                else:
+                    title = game[title_jp_]
 
-            if title_ in game:
-                title = game[title_]
-            else:
-                title = game[title_jp_]
+                country_list = []
 
-            country_list = []
+                for country in game_details[countries_]:
+                    country_details = COUNTRIES[country]
 
-            for country in game_details[countries_]:
-                country_details = COUNTRIES[country]
+                    country_list.append('{} {}'.format(country_details[flag_], country_details[key_]))
 
-                country_list.append('{} {}'.format(country_details[flag_], country_details[key_]))
-
-            text.append(
-                '{}|{}|{}'.format(
-                    title,
-                    ' '.join(country_list),
-                    '[{emoji}](http://www.reddit.com/message/compose?to={to}&subject={cmd}: {game_id}&message={body})'.format(
-                        cmd=CMD_REMOVE, emoji=EMOJI_MINUS, to=REDDIT_USERNAME, game_id=game_id, body='.'),
+                text.append(
+                    '{}|{}|{}'.format(
+                        title,
+                        ' '.join(country_list),
+                        '[{emoji}](http://www.reddit.com/message/compose?to={to}&subject={cmd}: {game_id}&message={body})'.format(
+                            cmd=CMD_REMOVE, emoji=EMOJI_MINUS, to=REDDIT_USERNAME, game_id=game_id, body='.'),
+                    )
                 )
-            )
 
         text.append('___')
         text.append('Add games to your wishlist [HERE]({}).'.format(WISHLIST_URL))
@@ -279,13 +278,13 @@ class Reddit:
         text.append('Check the latest deals on:')
         text.append('')
 
-        for system_details in SYSTEMS[SWITCH_]:
-            for subreddit in system_details[subreddit_]:
-                current = REDDIT_DB.load_last(subreddit, SWITCH_, system_details[frequency_])
+        system_details = SYSTEMS[SWITCH_]
+        for subreddit in system_details[subreddit_]:
+            current = REDDIT_DB.load_last(subreddit, SWITCH_, system_details[frequency_])
 
-                text.append(
-                    '* [/r/{}](https://redd.it/{})'.format(subreddit, current[id_])
-                )
+            text.append(
+                '* [/r/{}](https://redd.it/{})'.format(subreddit, current[id_])
+            )
 
         text.append('')
 
