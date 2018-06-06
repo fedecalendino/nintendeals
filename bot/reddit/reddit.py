@@ -275,12 +275,16 @@ class Reddit:
         text.append('___')
         text.append('Add games to your wishlist [HERE]({}).'.format(WISHLIST_URL))
         text.append('')
+
         text.append('Check the latest deals on:')
         text.append('')
 
         system_details = SYSTEMS[SWITCH_]
         for subreddit in system_details[subreddit_]:
             current = REDDIT_DB.load_last(subreddit, SWITCH_, system_details[frequency_])
+
+            if current is None:
+                continue
 
             text.append(
                 '* [/r/{}](https://redd.it/{})'.format(subreddit, current[id_])
