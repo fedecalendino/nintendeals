@@ -41,7 +41,7 @@ def generate_message(sales):
         current_sale = sale[sale_]
 
         currency = country_details[currency_]
-        sale_price = format_float(current_sale[sale_price_], country_details[digits_])
+        sale_price = format_float(current_sale[sale_price_], 0)
         full_price = format_float(price[full_price_], 0)
         discount = current_sale[discount_]
 
@@ -69,7 +69,10 @@ def notify():
                 continue
 
             for country in wishlist_details[countries_]:
-                nsuid = game[ids_][COUNTRIES[country][region_]]
+                try:
+                    nsuid = game[ids_][COUNTRIES[country][region_]]
+                except:
+                    continue
 
                 price = PRICES_DB.load(nsuid)[countries_][country]
 
@@ -92,7 +95,7 @@ def notify():
 
                 sales_to_notify.append({title_: title, country_: country, prices_: price, sale_: sale})
 
-                wishlist[games_][game_id][last_update_] = sale[end_date_] + timedelta(days=1)
+                wishlist[games_][game_id][last_update_] = sale[end_date_] + timedelta(hours=1)
 
         content = generate_message(sales_to_notify)
 

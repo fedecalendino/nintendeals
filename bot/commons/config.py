@@ -56,7 +56,7 @@ REGIONS = {
         key_: NA_,
         name_: 'North America',
         # api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&sale=true'
-        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&availability=now'
+        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc'
     },
     EU_: {
         key_: EU_,
@@ -80,7 +80,7 @@ COUNTRIES = {
         flag_: '🇨🇦',
         region_: NA_,
         digits_: 5,
-        currency_: '$'  # 'CAD '
+        currency_: 'CAD '  # '$'
     },
 
     MX_: {
@@ -88,8 +88,8 @@ COUNTRIES = {
         name_: 'Mexico',
         flag_: '🇲🇽',
         region_: NA_,
-        digits_: 6,
-        currency_: '$'  # 'MXN '
+        digits_: 7,
+        currency_: 'MXN '  # '$'
     },
 
     US_: {
@@ -99,7 +99,7 @@ COUNTRIES = {
         flag_: '🇺🇸',
         region_: NA_,
         digits_: 5,
-        currency_: '$'  # 'USD '
+        currency_: 'USD '  # '$'
     },
 
     AU_: {
@@ -108,7 +108,7 @@ COUNTRIES = {
         flag_: '🇦🇺',
         region_: EU_,
         digits_: 5,
-        currency_: '$'  # 'AUD '
+        currency_: 'AUD '  # '$'
     },
 
     EU_: {
@@ -118,7 +118,7 @@ COUNTRIES = {
         flag_: '🇪🇺',
         region_: EU_,
         digits_: 5,
-        currency_: '€'  # 'EUR '
+        currency_: 'EUR '  # '€'
     },
 
     GB_: {
@@ -128,7 +128,7 @@ COUNTRIES = {
         flag_: '🇬🇧',
         region_: EU_,
         digits_: 5,
-        currency_: '£'  # 'GBP '
+        currency_: 'GBP '  # '£'
     },
 
     RU_: {
@@ -138,7 +138,7 @@ COUNTRIES = {
         flag_: '🇷🇺',
         region_: EU_,
         digits_: 7,
-        currency_: '₽'  # 'RUB '
+        currency_: 'RUB '  # '₽'
     },
 
     # ZA_: {
@@ -148,7 +148,7 @@ COUNTRIES = {
     #     flag_: '🇿🇦',
     #     region_: EU_,
     #     digits_: 6,
-    #     currency_: 'R'  # 'ZAR '
+    #     currency_: 'ZAR '  # 'R'
     # },
 
     JP_: {
@@ -158,7 +158,7 @@ COUNTRIES = {
         flag_: '🇯🇵',
         region_: JP_,
         digits_: 7,
-        currency_: '¥'  # 'JPY '
+        currency_: 'JPY '  # '¥'
     },
 
 }

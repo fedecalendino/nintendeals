@@ -23,8 +23,8 @@ def make_comment(games, country, country_details):
     text = []
     text.append('')
 
-    text.append('Title | Expiration | Price | % | Players | MS | US')
-    text.append('--- | --- | --- | :---: | --- | :---: | :---: ')
+    text.append('Title | - | Expiration | Price | % | Players | MS | US')
+    text.append('--- | :---: | --- | --- | :---: | --- | :---: | :---: ')
 
     deal_count = 0
 
@@ -60,11 +60,11 @@ def make_comment(games, country, country_details):
                 title = title[:25] + '…'
 
         # Making titles as url is possible
-        if country in game[websites_]:
-            title = "[{}]({})".format(
-                title,
-                game[websites_][country].replace('https://www.', '//')
-            )
+        #if country in game[websites_]:
+        #    title = "[{}]({})".format(
+        #        title,
+        #        game[websites_][country].replace('https://www.', '//')
+        #    )
 
         currency = country_details[currency_]
         sale_price = format_float(current_sale[sale_price_], country_details[digits_])
@@ -85,7 +85,7 @@ def make_comment(games, country, country_details):
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-        new = EMOJI_NEW if (now - current_sale[start_date_]).days < 2 else ''
+        new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
         players = game[number_of_players_]
 
@@ -116,7 +116,7 @@ def make_comment(games, country, country_details):
 
         # Creating row
         text.append(
-            '{title}{new}{warning}|'
+            '{title}|{new}{warning}|'
             '*{end_date} ({time_left})*|'
             '**{currency}{sale_price}** ~~{full_price}~~|'
             '`%{discount}`|'
@@ -217,7 +217,7 @@ def make_post(games, countries):
                 hours = round(time_left.seconds / 60 / 60)
                 warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-            new = EMOJI_NEW if (now - current_sale[start_date_]).days < 2 else ''
+            new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
             row += '|`%{discount}{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 

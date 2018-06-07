@@ -41,7 +41,13 @@ def find_games(system, limit=100, offset=0):
     games = {}
 
     for data in json['games']['game']:
-        if 'nsuid' not in data:
+        if 'nsuid' not in data and 'game_code' not in data:
+            continue
+
+        if 'nsuid' not in data and 'game_code' in data:
+            data['nsuid'] = data['game_code']
+
+        if data['nsuid'] == 'HAC':
             continue
 
         nsuid = data['nsuid']

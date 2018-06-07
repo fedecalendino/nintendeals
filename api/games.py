@@ -9,6 +9,7 @@ from flask import Response
 from bot.db.mongo import GamesDatabase
 
 # Statics
+from bot.commons.config import *
 from bot.commons.keys import *
 
 
@@ -33,10 +34,13 @@ def track():
         else:
             title = game[title_jp_]
 
+        regions = [key for key in REGIONS.keys() if key in game[ids_].keys()]
+
         item = {
             id_: game[id_],
             title_: title,
-            region_: [key for key in game[ids_].keys()]
+            region_: regions,
+            release_date_: game[release_date_]
         }
 
         if scores_ in game:
