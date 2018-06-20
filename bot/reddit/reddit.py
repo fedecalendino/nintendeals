@@ -141,7 +141,7 @@ class Reddit:
                             )
                         )
 
-                content = 'Shortcuts: {}\n___\n{}'.format(' | '.join(links), content)
+                content = 'Detailed information here -->> {}\n___\n{}'.format(' | '.join(links), content)
 
             self.edit(current[id_], content)
 

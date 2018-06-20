@@ -85,6 +85,10 @@ def make_comment(games, country, country_details):
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
+            if hours == 0:
+                minutes = round(time_left.seconds / 60)
+                time = "{}m".format(minutes)
+
         new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
         players = game[number_of_players_]
@@ -212,6 +216,7 @@ def make_post(games, countries):
             else:
                 hours = round(time_left.seconds / 60 / 60)
                 warning = EMOJI_EXP_TODAY if hours <= 24 else ''
+
 
             new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
