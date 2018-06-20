@@ -27,7 +27,7 @@ GAMES_DB = GamesDatabase.instance()
 PRICES_DB = PricesDatabase.instance()
 
 
-def find_games(system, limit=100, offset=0):
+def find_games(system, limit=200, offset=0):
     LOG.info('Looking for games {} to {} in NA'.format(offset, offset + limit))
 
     r = requests.get(LIST_API.format(system=SYSTEMS[system][system_][NA_], limit=limit, offset=offset))

@@ -69,8 +69,8 @@ REGIONS = {
     EU_: {
         key_: EU_,
         name_: 'Europe & Friends',
-        # api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"'
-        api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&wt=json&sort=title asc&fq=type:GAME AND system_names_txt:"{system}"'
+        # api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&rows={limit}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"'
+        api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&rows={limit}&wt=json&sort=title asc&fq=type:GAME AND system_names_txt:"{system}"'
     },
     JP_: {
         key_: JP_,

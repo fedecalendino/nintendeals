@@ -23,10 +23,10 @@ GAMES_DB = GamesDatabase.instance()
 PRICES_DB = PricesDatabase.instance()
 
 
-def find_games(system, start=0):
-    LOG.info('Looking for games {} to {} in EU'.format(start, start + 10))
+def find_games(system, start=0, limit=200):
+    LOG.info('Looking for games {} to {} in EU'.format(start, start + limit))
 
-    r = requests.get(LIST_API.format(system=SYSTEMS[system][system_][EU_], start=start))
+    r = requests.get(LIST_API.format(system=SYSTEMS[system][system_][EU_], start=start, limit=limit))
     json = r.json()
 
     total = json['response']['numFound']
@@ -114,7 +114,7 @@ def find_games(system, start=0):
         GAMES_DB.save(game)
         PRICES_DB.save(price)
 
-    if total > start + 10:
-        games.update(find_games(system, start + 10))
+    if total > start + limit:
+        games.update(find_games(system, start + limit, limit))
 
     return games
