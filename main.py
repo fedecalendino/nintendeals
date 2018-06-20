@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 # Modules
 from bot import bot
-from bot.commons.config import PORT
+from bot.commons.config import IP, PORT
 from api import games, config
 
 
@@ -79,7 +79,7 @@ def start_runner():
             print('Checking if server is alive...')
 
             try:
-                r = requests.get('http://0.0.0.0:{}/heartbeat'.format(PORT))
+                r = requests.get('http://{}:{}/heartbeat'.format(IP, PORT))
 
                 if r.status_code == 200:
                     print('Server started...')
@@ -104,5 +104,5 @@ if __name__ == "__main__":
 
     start_runner()
 
-    app.run(host='0.0.0.0', port=PORT)
+    app.run(host=IP, port=PORT)
 

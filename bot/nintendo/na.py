@@ -55,7 +55,12 @@ def find_games(system, limit=100, offset=0):
         if GAMES_DB.find_by_region_and_nsuid(NA_, nsuid) is not None:
             continue
 
-        game_id = "{}-{}".format(system, data['game_code'][-5:-1])
+        if system == SWITCH_:
+            game_id = "{}-{}".format(system, data['game_code'][-5:-1])
+        elif system == N3DS_:
+            game_id = "{}-{}".format(system, data['game_code'][-4:-1])
+        else:
+            raise Exception()
 
         if nsuid in alt_versions:
             game_id = alt_versions[nsuid]

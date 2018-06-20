@@ -10,6 +10,12 @@ VERSION = "5"
 
 PORT = int(os.environ.get("PORT", 5000))
 
+if PORT == 5000:
+    IP = '127.0.0.1'
+else:
+    IP = '0.0.0.0'
+
+
 REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
 REDDIT_PASSWORD = os.environ.get("REDDIT_PASSWORD")
 REDDIT_CLIENTID = os.environ.get("REDDIT_CLIENTID")
@@ -41,12 +47,14 @@ SYSTEMS = {
             EU_: 'Nintendo Switch',
             JP_: 'switch'
         }
-    }, N3DS_: {
+    },
+    N3DS_: {
         name_: 'Nintendo 3DS',
         subreddit_: os.environ.get('3DS_SUBREDDIT', 'test4').split('|'),
         frequency_: int(os.environ.get('3DS_POST_TIME_FRAME', '2')),
         system_: {
-            NA_: '3ds'
+            NA_: '3ds',
+            EU_: '3DS',
         }
     }
 }

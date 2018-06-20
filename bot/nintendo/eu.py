@@ -43,12 +43,26 @@ def find_games(system, start=0):
         if 'product_code_txt' not in data:
             continue
 
-        nsuid = data['nsuid_txt'][0]
+        product_ids = [
+            prod_id
+            for prod_id in data['product_code_txt']
+            if prod_id[:3] in ['CTR', 'HAC'] and '-' not in prod_id
+        ]
+
+        if len(product_ids) == 0:
+            continue
+
+        nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
 
         if GAMES_DB.find_by_region_and_nsuid(EU_, nsuid) is not None:
             continue
 
-        game_id = "{}-{}".format(system, data['product_code_txt'][0][-5:-1])
+        if system == SWITCH_:
+            game_id = "{}-{}".format(system, product_ids[0][-5:-1])
+        elif system == N3DS_:
+            game_id = "{}-{}".format(system, product_ids[0][-4:-1])
+        else:
+            raise Exception()
 
         game = GAMES_DB.load(game_id)
 
