@@ -114,12 +114,8 @@ class RedditDatabase(Database):
                 .sort([(created_at_, -1)])\
                 .limit(1)
 
-            post = result.next()
+            return result.next()
 
-            if post[created_at_] + timedelta(days=frequency) < datetime.now():
-                return None
-
-            return post
         except:
             return None
 

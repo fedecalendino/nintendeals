@@ -1,6 +1,7 @@
 # Standard
 import time
 from datetime import datetime
+from datetime import timedelta
 import logging
 
 # Dependencies
@@ -43,16 +44,34 @@ class Reddit:
             user_agent=REDDIT_USERAGENT
         )
 
-    def exists(self, submission_id):
+    def usable(self, post, frequency):
         try:
-            submission = self.api.submission(id=submission_id)
+            submission = self.api.submission(id=post[id_])
 
-            if submission.author.name == REDDIT_USERNAME:
-                return submission
-            else:
-                return None
+            # Checking for deletion
+            if submission.author.name != REDDIT_USERNAME:
+                LOG.info(" https://redd.it/{} was deleted".format(post[id_]))
+                return False
+
+            # Checking if archived
+            if post[created_at_] + timedelta(days=180) < datetime.now():
+                LOG.info(" https://redd.it/{} was archived".format(post[id_]))
+                return False
+
+            # Checking if stickied
+            if submission.stickied:
+                LOG.info(" https://redd.it/{} is stickied".format(post[id_]))
+                return True
+
+            # Checking if active
+            if post[created_at_] + timedelta(days=frequency) < datetime.now():
+                LOG.info(" https://redd.it/{} is old".format(post[id_]))
+                return False
+
         except Exception as e:
-            return None
+            return False
+
+        return True
 
     def create(self, subreddit, title, content):
 
@@ -99,7 +118,7 @@ class Reddit:
 
         current = REDDIT_DB.load_last(subreddit, system, frequency)
 
-        if current is not None and self.exists(current[id_]) is None:
+        if current is not None and not self.usable(current, frequency):
             current = None
 
         if current is None:

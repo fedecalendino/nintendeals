@@ -40,7 +40,7 @@ WISHLIST_URL = 'https://nintendo-deals.herokuapp.com/wishlist'
 SYSTEMS = {
     SWITCH_: {
         name_: 'Nintendo Switch',
-        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'test|test3').split('|'),
+        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'supermarioposters|test3').split('|'),
         frequency_: int(os.environ.get('SWITCH_POST_TIME_FRAME', '2')),
         system_: {
             NA_: 'switch',
