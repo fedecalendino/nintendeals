@@ -89,7 +89,6 @@ def run():
             sub_id = Reddit.instance().submit(
                 subreddit,
                 system,
-                system_details[frequency_],
                 'Current {} eShop deals'.format(system_details[name_]),
                 sub_content
             )
@@ -115,7 +114,6 @@ def run():
             Reddit.instance().submit(
                 subreddit,
                 system,
-                system_details[frequency_],
                 'Current {} eShop deals'.format(system_details[name_]),
                 sub_content
             )

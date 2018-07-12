@@ -44,28 +44,37 @@ class Reddit:
             user_agent=REDDIT_USERAGENT
         )
 
-    def usable(self, post, frequency):
+    def usable(self, post):
         try:
             submission = self.api.submission(id=post[id_])
 
             # Checking for deletion
             if submission.author.name != REDDIT_USERNAME:
-                LOG.info(" https://redd.it/{} was deleted".format(post[id_]))
+                LOG.info(" https://redd.it/{}: deleted".format(post[id_]))
                 return False
 
+            created_at = post[created_at_]
+
             # Checking if archived
-            if post[created_at_] + timedelta(days=180) < datetime.now():
-                LOG.info(" https://redd.it/{} was archived".format(post[id_]))
+            if created_at + timedelta(days=30 * 5) < datetime.now():
+                LOG.info(" https://redd.it/{}: archived".format(post[id_]))
                 return False
 
             # Checking if stickied
             if submission.stickied:
-                LOG.info(" https://redd.it/{} is stickied".format(post[id_]))
+                LOG.info(" https://redd.it/{}: stickied".format(post[id_]))
                 return True
 
-            # Checking if active
-            if post[created_at_] + timedelta(days=frequency) < datetime.now():
-                LOG.info(" https://redd.it/{} is old".format(post[id_]))
+            now = datetime.now()
+
+            if now.today().weekday() != 3:  # now is not thursday
+                LOG.info(" https://redd.it/{}: not thursday yet".format(post[id_]))
+                return True
+            elif now.hour < 17:  # now is not 14 yet
+                LOG.info(" https://redd.it/{}: not 14:00 yet".format(post[id_]))
+                return True
+            elif created_at.day != now.day:
+                LOG.info(" https://redd.it/{}: old post, *its thursday my dudes*".format(post[id_]))
                 return False
 
         except Exception as e:
@@ -95,7 +104,7 @@ class Reddit:
         if submission is not None:
             submission.delete()
 
-    def submit(self, subreddit, system, frequency, title, content):
+    def submit(self, subreddit, system, title, content):
         header = ['']
 
         if system == SWITCH_:
@@ -116,9 +125,9 @@ class Reddit:
 
         content = "\n".join(header) + content + "\n" + "\n".join(footer)
 
-        current = REDDIT_DB.load_last(subreddit, system, frequency)
+        current = REDDIT_DB.load_last(subreddit, system)
 
-        if current is not None and not self.usable(current, frequency):
+        if current is not None and not self.usable(current):
             current = None
 
         if current is None:
@@ -300,7 +309,7 @@ class Reddit:
 
         system_details = SYSTEMS[SWITCH_]
         for subreddit in system_details[subreddit_]:
-            current = REDDIT_DB.load_last(subreddit, SWITCH_, system_details[frequency_])
+            current = REDDIT_DB.load_last(subreddit, SWITCH_)
 
             if current is None:
                 continue

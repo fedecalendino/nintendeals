@@ -104,7 +104,7 @@ class RedditDatabase(Database):
     def __init__(self):
         super(RedditDatabase, self).__init__('reddit')
 
-    def load_last(self, subreddit, system, frequency):
+    def load_last(self, subreddit, system):
         try:
             result = self.db[self.collection]\
                 .find({

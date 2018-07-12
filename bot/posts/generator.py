@@ -60,7 +60,7 @@ def make_comment(games, country, country_details):
                 title = title[:25] + '…'
 
         # Making titles as url is possible
-        #if country in game[websites_]:
+        # if country in game[websites_]:
         #    title = "[{}]({})".format(
         #        title,
         #        game[websites_][country].replace('https://www.', '//')
@@ -174,7 +174,7 @@ def make_post(games, countries):
         else:
             title = game[title_jp_]
 
-        LOG.info('Adding {} to post'.format(title))
+        # LOG.info('Adding {} to post'.format(title))
 
         row = title
 

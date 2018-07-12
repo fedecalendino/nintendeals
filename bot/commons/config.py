@@ -40,8 +40,7 @@ WISHLIST_URL = 'https://nintendo-deals.herokuapp.com/wishlist'
 SYSTEMS = {
     SWITCH_: {
         name_: 'Nintendo Switch',
-        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'supermarioposters|test3').split('|'),
-        frequency_: int(os.environ.get('SWITCH_POST_TIME_FRAME', '2')),
+        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'test3|supermarioposters').split('|'),
         system_: {
             NA_: 'switch',
             EU_: 'Nintendo Switch',
@@ -51,7 +50,6 @@ SYSTEMS = {
     N3DS_: {
         name_: 'Nintendo 3DS',
         subreddit_: os.environ.get('3DS_SUBREDDIT', 'test4').split('|'),
-        frequency_: int(os.environ.get('3DS_POST_TIME_FRAME', '2')),
         system_: {
             NA_: '3ds',
             EU_: '3DS',
