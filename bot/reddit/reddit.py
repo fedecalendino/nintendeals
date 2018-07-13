@@ -74,7 +74,10 @@ class Reddit:
                 LOG.info(" https://redd.it/{}: not 14:00 yet".format(post[id_]))
                 return True
             elif created_at.day != now.day:
-                LOG.info(" https://redd.it/{}: old post, *its thursday my dudes*".format(post[id_]))
+                LOG.info(" https://redd.it/{}: *its thursday my dudes*".format(post[id_]))
+                submission.mod.nsfw()
+                LOG.info(" https://redd.it/{}: marked as nsfw".format(post[id_]))
+
                 return False
 
         except Exception as e:

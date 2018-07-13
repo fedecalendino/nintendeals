@@ -34,6 +34,12 @@ fetchers = {
 }
 
 
+def check_inbox():
+    LOG.info(' ')
+    LOG.info(' Checking reddit inbox')
+    Reddit.instance().inbox()
+
+
 def run():
     LOG.info(' ')
 
@@ -44,29 +50,19 @@ def run():
             LOG.info('Fetching games for {}'.format(region))
             fetchers[region](system)
 
-            LOG.info(' ')
-            LOG.info(' Checking reddit inbox')
-            Reddit.instance().inbox()
+            check_inbox()
 
-        LOG.info(' ')
-        LOG.info(' Checking reddit inbox')
-        Reddit.instance().inbox()
+        check_inbox()
 
         LOG.info(' ')
         LOG.info('Fetching scores for each game')
         scores.fetch_scores()
 
-        LOG.info(' ')
-        LOG.info(' Checking reddit inbox')
-        Reddit.instance().inbox()
+        check_inbox()
 
         LOG.info(' ')
         LOG.info('Fetching prices for each game')
         prices.fetch_prices(system)
-
-        LOG.info(' ')
-        LOG.info(' Checking reddit inbox')
-        Reddit.instance().inbox()
 
         LOG.info(' ')
         LOG.info('Sorting games by title')
@@ -105,9 +101,7 @@ def run():
 
                 time.sleep(15)
 
-                LOG.info(' ')
-                LOG.info(' Checking reddit inbox')
-                Reddit.instance().inbox()
+                check_inbox()
 
             LOG.info('Updating post with comment links')
 
@@ -118,9 +112,7 @@ def run():
                 sub_content
             )
 
-    LOG.info(' ')
-    LOG.info(' Checking reddit inbox')
-    Reddit.instance().inbox()
+    check_inbox()
 
     LOG.info(' ')
     LOG.info('Sending wishlist notifications')
@@ -141,8 +133,7 @@ def main():
 
     while True:
         try:
-            LOG.info(' Checking reddit inbox ({})'.format(count))
-            Reddit.instance().inbox()
+            check_inbox()
 
             if count >= reset:
                 LOG.info(' Running Bot ({})'.format(count))
