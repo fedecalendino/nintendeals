@@ -60,11 +60,11 @@ def make_comment(games, country, country_details):
                 title = title[:25] + '…'
 
         # Making titles as url is possible
-        # if country in game[websites_]:
-        #    title = "[{}]({})".format(
-        #        title,
-        #        game[websites_][country].replace('https://www.', '//')
-        #    )
+        if country in game[websites_]:
+            title = "[{}]({})".format(
+                title,
+                game[websites_][country].replace('https://www.', '//')
+            )
 
         currency = country_details[currency_]
         sale_price = format_float(current_sale[sale_price_], country_details[digits_])
