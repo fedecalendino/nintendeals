@@ -60,11 +60,11 @@ def make_comment(games, country, country_details):
                 title = title[:25] + '…'
 
         # Making titles as url is possible
-        if country in game[websites_]:
-            title = "[{}]({})".format(
-                title,
-                game[websites_][country].replace('https://www.', '//')
-            )
+        # if country in game[websites_]:
+        #    title = "[{}]({})".format(
+        #        title,
+        #        game[websites_][country].replace('https://www.', '//')
+        #    )
 
         currency = country_details[currency_]
         sale_price = format_float(current_sale[sale_price_], country_details[digits_])
@@ -176,7 +176,8 @@ def make_post(games, countries):
 
         # LOG.info('Adding {} to post'.format(title))
 
-        row = title
+        row = ''
+        has_new_discount = False
 
         # Building discount table
         for country, country_details in countries:
@@ -217,10 +218,18 @@ def make_post(games, countries):
                 hours = round(time_left.seconds / 60 / 60)
                 warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-
-            new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
+            if (now - current_sale[start_date_]).days < 1:
+                new = EMOJI_NEW
+                has_new_discount = True
+            else:
+                new = ''
 
             row += '|`%{discount}{new}{warning}`'.format(discount=discount, new=new, warning=warning)
+
+        if has_new_discount:
+            row = "**" + title + "**" + row
+        else:
+            row = title + row
 
         if has_discount:
             text.append(row)

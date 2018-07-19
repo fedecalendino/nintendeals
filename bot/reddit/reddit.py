@@ -70,7 +70,7 @@ class Reddit:
             if now.today().weekday() not in [0, 3]:  # now is not monday/thursday
                 LOG.info(" https://redd.it/{}: not monday/thursday yet".format(post[id_]))
                 return True
-            elif now.hour < 17:  # now is not 14 yet
+            elif now.hour < 16:  # now is not 14 yet
                 LOG.info(" https://redd.it/{}: not 14:00 yet".format(post[id_]))
                 return True
             elif created_at.day != now.day:
