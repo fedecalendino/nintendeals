@@ -1,10 +1,10 @@
 # Standard
-import re
 import logging
 
 # Dependencies
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
+from slugify import slugify_filename
 
 METACRITIC_URL = 'http://www.metacritic.com/game/{system}/{title}'
 
@@ -12,14 +12,12 @@ LOG = logging.getLogger('metacritic')
 
 
 def normalize(string):
-    string = string.lower()
-    string = string.replace('é', 'e')
-    string = re.sub(r'[\'\.]', '', string)
-    string = re.sub(r'[^a-zA-Z0-9\\+\-!]', '|', string)
-    string = re.sub(r'\|+', '|', string)
-    string = re.sub(r'\|$', '', string)
+    slugify_filename.set_safe_chars('!-')
 
-    string = re.sub(r'\|', '-', string)
+    string = string.replace('™', '')
+    string = string.replace('/', '')
+    string = slugify_filename(string, to_lower=True)
+    string = string.replace('_', '-')
 
     return string
 
@@ -33,26 +31,35 @@ def extract_number(soup, tag, properties):
         return None
 
 
-def get_score(system, title):
-    url = METACRITIC_URL.format(system=system.lower(), title=normalize(title))
+def get_score(base_system, title):
+    systems = [base_system.lower(), 'pc', 'playstation-4', 'xbox-one']
+
+    slug = normalize(title)
 
     metascore = None
     userscore = None
 
-    try:
-        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        webpage = urlopen(req).read()
+    score_system = None
 
-        soup = BeautifulSoup(webpage, "html.parser")
+    for system in systems:
+        try:
+            url = METACRITIC_URL.format(system=system, title=slug)
 
-        metascore = extract_number(soup, 'span', {'itemprop': 'ratingValue'})
-        userscore = extract_number(soup, 'div', {'class': lambda value: value and value.startswith('metascore_w user')})
-    except Exception as e:
-        LOG.error("Fetching scores for {} on {}: {} ({})".format(title, system, e, url))
-        pass
+            LOG.error("Fetching scores for {} on {}: {}".format(title, system, url))
 
-    if metascore is None and userscore is None:
-        if system != 'pc':
-            return get_score('pc', title)
+            request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            content = urlopen(request).read()
 
-    return metascore, userscore
+            soup = BeautifulSoup(content, "html.parser")
+
+            metascore = extract_number(soup, 'span', {'itemprop': 'ratingValue'})
+            userscore = extract_number(soup, 'div', {'class': lambda value: value and value.startswith('metascore_w user')})
+
+            if metascore is not None or userscore is not None:
+                score_system = system
+                break
+
+        except Exception as e:
+            pass
+
+    return metascore, userscore, score_system

@@ -34,15 +34,14 @@ def fetch_scores():
         else:
             title = game[title_jp_]
 
-        metascore, userscore = metacritic.get_score(game[system_], title)
-
-        game[scores_][last_update_] = datetime.now()
+        metascore, userscore, system = metacritic.get_score(game[system_], title)
 
         if metascore is not None or userscore is not None:
             game[scores_][metascore_] = metascore
             game[scores_][userscore_] = userscore
+            game[scores_][system_] = system
 
-            LOG.info('Scores for {} found: {}/{}'.format(title, metascore, userscore))
+            LOG.info('Scores for {} found on {}: {}/{}'.format(title, system, metascore, userscore))
         else:
             LOG.info('Scores for {} not found'.format(title))
 
