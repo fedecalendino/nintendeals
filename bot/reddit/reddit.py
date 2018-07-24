@@ -172,7 +172,13 @@ class Reddit:
                             )
                         )
 
-                content = 'Detailed information here -->> {}\n___\n{}'.format(' | '.join(links), content)
+
+                        #
+
+                content = '#Click on your country/region to get more info likes prices and scores: \n' \
+                          '#{}\n' \
+                          '___\n' \
+                          '{}'.format(' | '.join(links), content)
 
             self.edit(current[id_], content)
 
