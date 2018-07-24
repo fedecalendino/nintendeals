@@ -91,6 +91,9 @@ def make_comment(games, country, country_details):
 
         new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
+        if new:
+            title = "**{}**".format(title)
+
         players = game[number_of_players_]
 
         # Formatting number of players
@@ -227,9 +230,9 @@ def make_post(games, countries):
             row += '|`%{discount}{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 
         if has_new_discount:
-            row = "**" + title + "**" + row
+            row = "**{}**{}".format(title, row)
         else:
-            row = title + row
+            row = "{}{}".format(title, row)
 
         if has_discount:
             text.append(row)
