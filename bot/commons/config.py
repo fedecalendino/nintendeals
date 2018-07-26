@@ -86,7 +86,8 @@ COUNTRIES = {
         flag_: '🇨🇦',
         region_: NA_,
         digits_: 5,
-        currency_: 'CAD '  # '$'
+        currency_: '$',
+        currency_code_: 'CAD'
     },
 
     MX_: {
@@ -95,7 +96,8 @@ COUNTRIES = {
         flag_: '🇲🇽',
         region_: NA_,
         digits_: 7,
-        currency_: 'MXN '  # '$'
+        currency_: '$',
+        currency_code_: 'MXN'
     },
 
     US_: {
@@ -105,7 +107,8 @@ COUNTRIES = {
         flag_: '🇺🇸',
         region_: NA_,
         digits_: 5,
-        currency_: 'USD '  # '$'
+        currency_: '$',
+        currency_code_: 'USD'
     },
 
     AU_: {
@@ -114,7 +117,8 @@ COUNTRIES = {
         flag_: '🇦🇺',
         region_: EU_,
         digits_: 5,
-        currency_: 'AUD '  # '$'
+        currency_: '$',
+        currency_code_: 'AUD'
     },
 
     EU_: {
@@ -124,7 +128,8 @@ COUNTRIES = {
         flag_: '🇪🇺',
         region_: EU_,
         digits_: 5,
-        currency_: 'EUR '  # '€'
+        currency_: '€',
+        currency_code_: 'EUR'
     },
 
     GB_: {
@@ -134,7 +139,8 @@ COUNTRIES = {
         flag_: '🇬🇧',
         region_: EU_,
         digits_: 5,
-        currency_: 'GBP '  # '£'
+        currency_: '£',
+        currency_code_: 'GBP'
     },
 
     RU_: {
@@ -144,18 +150,9 @@ COUNTRIES = {
         flag_: '🇷🇺',
         region_: EU_,
         digits_: 7,
-        currency_: 'RUB '  # '₽'
+        currency_: '₽',
+        currency_code_: 'RUB'
     },
-
-    # ZA_: {
-    #     key_: ZA_,
-    #     name_: 'South Africa',
-    #     websites_: 'https://www.nintendo.co.za/Games/Nintendo-Switch/{}',
-    #     flag_: '🇿🇦',
-    #     region_: EU_,
-    #     digits_: 6,
-    #     currency_: 'ZAR '  # 'R'
-    # },
 
     JP_: {
         key_: JP_,
@@ -164,7 +161,8 @@ COUNTRIES = {
         flag_: '🇯🇵',
         region_: JP_,
         digits_: 7,
-        currency_: 'JPY '  # '¥'
+        currency_: '¥',
+        currency_code_: 'JPY'
     },
 
 }

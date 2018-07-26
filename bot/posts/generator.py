@@ -51,12 +51,12 @@ def make_comment(games, country, country_details):
         if title_ in game:
             title = game[title_]
 
-            if len(title) > 30:
+            if len(title) > 27:
                 title = title[:25] + '…'
         else:
             title = game[title_jp_]
 
-            if len(title) > 30:
+            if len(title) > 27:
                 title = title[:25] + '…'
 
         # Making titles as url is possible
@@ -76,23 +76,24 @@ def make_comment(games, country, country_details):
         # Formating remaining time
         if time_left.days > 0:
             days = time_left.days
-            time = "{}d".format(days)
+
+            if days < 5:
+                time = " ({}d)".format(days)
+            else:
+                time = ""
 
             warning = EMOJI_EXP_TOMORROW if days < 2 else ''
         else:
             hours = round(time_left.seconds / 60 / 60)
-            time = "{}h".format(hours)
+            time = " ({}h)".format(hours)
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
             if hours == 0:
                 minutes = round(time_left.seconds / 60)
-                time = "{}m".format(minutes)
+                time = " ({}m)".format(minutes)
 
         new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
-
-        if new:
-            title = "**{}**".format(title)
 
         players = game[number_of_players_]
 
@@ -117,11 +118,14 @@ def make_comment(games, country, country_details):
             if userscore_ in game[scores_] and game[scores_][userscore_] is not None:
                 us = "%.1f" % game[scores_][userscore_]
 
+        if new:
+            title = "**{}**".format(title)
+
         # Creating row
         text.append(
             '{title}|{new}{warning}|'
-            '*{end_date} ({time_left})*|'
-            '**{currency}{sale_price}** ~~{full_price}~~|'
+            '*{end_date}{time_left}*|'
+            '{currency}{sale_price} ~~{full_price}~~|'
             '`%{discount}`|'
             '{players}|{metascore}|{userscore}'.format(
                 title=title, new=new, warning=warning,
@@ -132,6 +136,10 @@ def make_comment(games, country, country_details):
         )
 
         deal_count += 1
+
+    if country_details[currency_] == COUNTRIES[US_][currency_]:
+        text.append('___')
+        text.append('> prices in {}'.format(country_details[currency_code_]))
 
     # Inserting comment headers
     text.insert(0, '')

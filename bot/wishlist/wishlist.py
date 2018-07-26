@@ -40,7 +40,7 @@ def generate_message(sales):
         price = sale[prices_]
         current_sale = sale[sale_]
 
-        currency = country_details[currency_]
+        currency = country_details[currency_code_]
         sale_price = format_float(current_sale[sale_price_], 0)
         full_price = format_float(price[full_price_], 0)
         discount = current_sale[discount_]
