@@ -24,7 +24,7 @@ def make_comment(games, country, country_details):
     text.append('')
 
     text.append('Title | - | Expiration | Price | % | Players | MS | US')
-    text.append('--- | :---: | --- | --- | :---: | --- | :---: | :---: ')
+    text.append('--- | :---: | --- | --- | :---: | :---: | :---: | :---: ')
 
     deal_count = 0
 
@@ -71,6 +71,9 @@ def make_comment(games, country, country_details):
         full_price = format_float(prices[countries_][country][full_price_], 0)
         discount = current_sale[discount_]
 
+        if discount < 1:
+            continue
+
         time_left = current_sale[end_date_] - now
 
         # Formating remaining time
@@ -99,13 +102,13 @@ def make_comment(games, country, country_details):
 
         # Formatting number of players
         if players is None or players == 0:
-            players = '- tbd -'
+            players = 'tbd'
         elif players == 1:
-            players = '1 pl.'
+            players = '1'
         elif players == 2:
-            players = '2 pls.'
+            players = '2'
         else:
-            players = 'up to {}'.format(players)
+            players = '1-{}'.format(players)
 
         ms = ''
         us = ''
@@ -139,7 +142,7 @@ def make_comment(games, country, country_details):
 
     if country_details[currency_] == COUNTRIES[US_][currency_]:
         text.append('___')
-        text.append('> prices in {}'.format(country_details[currency_code_]))
+        text.append('> prices in **{}**'.format(country_details[currency_code_]))
 
     # Inserting comment headers
     text.insert(0, '')
@@ -219,6 +222,9 @@ def make_post(games, countries):
             has_discount = True
 
             discount = current_sale[discount_]
+
+            if discount < 1:
+                continue
 
             time_left = current_sale[end_date_] - now
 

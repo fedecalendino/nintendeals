@@ -2,14 +2,9 @@ def format_float(value, total_digits=0):
     value = "%.2f" % value
 
     if total_digits == 0:
-        result = value
+        return value
     else:
-        result = "0" * (total_digits - len(value)) + value
-
-    if result.endswith(".00"):
-        result = result.replace(".00", "")
-
-    return result
+        return "0" * (total_digits - len(value)) + value
 
 
 def merge(source, destination):

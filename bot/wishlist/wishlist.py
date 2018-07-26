@@ -47,7 +47,7 @@ def generate_message(sales):
 
         # Creating row
         text.append(
-            '{title}|*{end_date}*|{flag} **{currency}{sale_price}** ~~{full_price}~~|`%{discount}`'.format(
+            '{title}|*{end_date}*|{flag} **{currency} {sale_price}** ~~{full_price}~~|`%{discount}`'.format(
                 title=sale[title_], end_date=current_sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
                 currency=currency, sale_price=sale_price, full_price=full_price, discount=discount)
         )
@@ -84,6 +84,9 @@ def notify():
                     continue
 
                 sale = price[sales_][-1]
+
+                if sale[discount_] < 1:
+                    continue
 
                 if sale[end_date_] < datetime.now():
                     continue
