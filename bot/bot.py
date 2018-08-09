@@ -48,7 +48,12 @@ def run():
         for region, alias in system_details[system_].items():
             LOG.info(' ')
             LOG.info('Fetching games for {}'.format(region))
-            fetchers[region](system)
+
+            try:
+                fetchers[region](system)
+            except Exception as e:
+                print(e)
+                print('error fetching {} games'.format(region))
 
             check_inbox()
 
@@ -93,11 +98,25 @@ def run():
                 LOG.info('Building reddit comment for {} {} on {}'.format(country_details[flag_], country, sub_id))
                 comment_content = generator.make_comment(games, country, country_details)
 
-                Reddit.instance().comment(
-                    sub_id,
-                    country,
-                    comment_content
-                )
+                if len(comment_content) > 10000:
+                    comment_content = generator.make_comment(games, country, country_details, disable_urls=True)
+
+                    if len(comment_content) > 10000:
+                        comment_content = generator.make_comment(games, country, country_details, disable_urls=True, disable_fullprice=True)
+
+                        if len(comment_content) > 10000:
+                            comment_content = generator.make_comment(games, country, country_details, disable_urls=True,
+                                                                     disable_fullprice=True, disable_decimals=True)
+
+                try:
+                    Reddit.instance().comment(
+                        sub_id,
+                        country,
+                        comment_content
+                    )
+                except Exception as e:
+                    print(e)
+                    print(comment_content)
 
                 time.sleep(15)
 

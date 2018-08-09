@@ -17,7 +17,7 @@ LOG = logging.getLogger('posts.generator')
 PRICES_DB = PricesDatabase.instance()
 
 
-def make_comment(games, country, country_details):
+def make_comment(games, country, country_details, disable_urls=False, disable_fullprice=False, disable_decimals=False):
     now = datetime.utcnow().replace(tzinfo=None)
 
     text = []
@@ -50,51 +50,51 @@ def make_comment(games, country, country_details):
 
         if title_ in game:
             title = game[title_]
-
-            if len(title) > 27:
-                title = title[:25] + '…'
         else:
             title = game[title_jp_]
 
-            if len(title) > 27:
-                title = title[:25] + '…'
+        if len(title) > 25:
+            title = title[:23] + '…'
 
-        # Making titles as url is possible
-        # if country in game[websites_]:
-        #    title = "[{}]({})".format(
-        #        title,
-        #        game[websites_][country].replace('https://www.', '//')
-        #    )
+        # Making titles as url if possible
+        if not disable_urls:
+            if country in game[websites_]:
+                title = "[{}]({})".format(
+                    title,
+                    game[websites_][country].replace('https://www.', '//')
+                )
 
-        currency = country_details[currency_]
-        sale_price = format_float(current_sale[sale_price_], country_details[digits_])
-        full_price = format_float(prices[countries_][country][full_price_], 0)
         discount = current_sale[discount_]
 
         if discount < 1:
             continue
 
+        currency = country_details[currency_]
+
+        sale_price = format_float(current_sale[sale_price_], country_details[digits_])
+        full_price = format_float(prices[countries_][country][full_price_], 0)
+
+        if disable_decimals:
+            sale_price = sale_price[:-2]
+            full_price = full_price[:-2]
+
         time_left = current_sale[end_date_] - now
+        time_format = "{}".format(current_sale[end_date_].strftime("%b %d"))
 
         # Formating remaining time
         if time_left.days > 0:
             days = time_left.days
 
-            if days < 5:
-                time = " ({}d)".format(days)
-            else:
-                time = ""
-
             warning = EMOJI_EXP_TOMORROW if days < 2 else ''
         else:
             hours = round(time_left.seconds / 60 / 60)
-            time = " ({}h)".format(hours)
+            time_format = "{} ({}h)".format(time_format, hours)
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
             if hours == 0:
                 minutes = round(time_left.seconds / 60)
-                time = " ({}m)".format(minutes)
+                time_format = "{} ({}m)".format(time_format, minutes)
 
         new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
@@ -124,17 +124,16 @@ def make_comment(games, country, country_details):
         if new:
             title = "**{}**".format(title)
 
+        if disable_fullprice:
+            price_format = '{currency}{sale_price}'.format(currency=currency, sale_price=sale_price)
+        else:
+            price_format = '{currency}{sale_price} ~~{full_price}~~'.format(currency=currency, sale_price=sale_price, full_price=full_price)
+
         # Creating row
         text.append(
-            '{title}|{new}{warning}|'
-            '*{end_date}{time_left}*|'
-            '{currency}{sale_price} ~~{full_price}~~|'
-            '`%{discount}`|'
-            '{players}|{metascore}|{userscore}'.format(
-                title=title, new=new, warning=warning,
-                end_date=current_sale[end_date_].strftime("%b %d"), time_left=time,
-                currency=currency, sale_price=sale_price, full_price=full_price,
-                discount=discount, players=players,
+            '{title}|{new}{warning}|*{time_left}*|{price}|`%{discount}`|{players}|{metascore}|{userscore}'.format(
+                title=title, new=new, warning=warning, time_left=time_format,
+                currency=currency, price=price_format, discount=discount, players=players,
                 metascore=ms, userscore=us)
         )
 
