@@ -111,9 +111,8 @@ class Reddit:
         header = ['']
 
         if system == SWITCH_:
-            header.append("⭐ NEW FEATURE: WISHLIST ⭐")
-            header.append("")
-            header.append("For more information you can go to: {}".format(WISHLIST_URL))
+            header.append("⭐Add games to your WISHLIST ⭐: {}".format(WISHLIST_URL))
+            header.append("> You'll get a PM when a wishlisted game is discounted.")
             header.append("")
             header.append("---")
             header.append("")
