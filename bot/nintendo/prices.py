@@ -1,5 +1,5 @@
 # Standard
-from datetime import datetime
+import time
 import logging
 
 # Dependencies
@@ -52,6 +52,8 @@ def get_prices(country, ids):
             prices[data['title_id']] = price
         except:
             continue
+
+    time.sleep(1)
 
     return prices
 
