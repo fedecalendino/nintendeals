@@ -122,7 +122,7 @@ class Reddit:
         footer.append("")
         footer.append("---")
         footer.append("")
-        footer.append("* Developed by /u/uglyasablasphemy")
+        footer.append("* Developed by /u/uglyasablasphemy | [Friend Code](https://nin.codes/uglyasablasphemy)")
         footer.append("* Consider using RES for table sorting: https://redditenhancementsuite.com")
 
         content = "\n".join(header) + content + "\n" + "\n".join(footer)
