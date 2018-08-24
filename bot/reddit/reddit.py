@@ -122,13 +122,16 @@ class Reddit:
         footer.append("")
         footer.append("---")
         footer.append("")
-        
+
         if system == SWITCH_:
             footer.append("* Developed by /u/uglyasablasphemy | [Friend Code](https://nin.codes/uglyasablasphemy)")
         else:
             footer.append("* Developed by /u/uglyasablasphemy")
 
-        footer.append("* Consider using RES for table sorting: https://redditenhancementsuite.com")
+        footer.append("* Use [RES](https://redditenhancementsuite.com) for table sorting and more")
+        footer.append("* If you have perfomance issues, you might want to check out:")
+        footer.append("   * [Reddit is Fun/Android](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)")
+        footer.append("   * [Apollo for Reddit/iOS](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)")
 
         content = "\n".join(header) + content + "\n" + "\n".join(footer)
 
