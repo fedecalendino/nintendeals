@@ -38,6 +38,9 @@ fetchers = {
 def update_posts():
 
     for system, system_details in SYSTEMS.items():
+        LOG.info('🏷️ > Looking up prices for {}'.format(system))
+        prices.fetch_prices(system)
+
         LOG.info('Sorting games by title')
         games = GAMES_DB.load_all({system_: system})
         games = sorted(games, key=lambda x: x[title_].lower() if title_ in x else x[title_jp_].lower())
@@ -140,19 +143,6 @@ def score_lookup():
         time.sleep(20 * 60)
 
 
-def price_lookup():
-    while True:
-        try:
-            for system, system_details in SYSTEMS.items():
-                LOG.info('🏷️ > Looking up prices for {}'.format(system))
-                prices.fetch_prices(system)
-        except Exception as e:
-            LOG.error(e)
-            traceback.print_exc()
-
-        time.sleep(10 * 60)
-
-
 def wishlist_notifications():
     while True:
         try:
@@ -178,13 +168,8 @@ def main():
     LOG.info('Setting up score lookup thread')
     threading.Thread(target=score_lookup).start()
 
-    LOG.info('Setting up price lookup thread')
-    threading.Thread(target=price_lookup).start()
-
     LOG.info('Setting up wishlist lookup thread')
     threading.Thread(target=wishlist_notifications).start()
-
-    time.sleep(10 * 60)
 
     while True:
         try:
