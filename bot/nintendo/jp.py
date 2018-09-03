@@ -18,7 +18,7 @@ from bot.commons.keys import *
 from bot.nintendo.commons import alt_versions
 
 
-LOG = logging.getLogger('nintendo.jp')
+LOG = logging.getLogger('🎮.🇯🇵 ')
 
 
 REGION = REGIONS[JP_]
@@ -85,10 +85,10 @@ def find_games(system):
                 number_of_players_: players
             }
 
-            LOG.info("New game {} ({}) found on JP".format(game[title_jp_], game[id_]))
+            LOG.info('New game {} ({}) found on JP'.format(game[title_jp_], game[id_]))
         else:
             if JP_ in game[ids_] and game[ids_][JP_] != nsuid:
-                print('Found duplicate for {} on JP'.format(game_id))
+                LOG.info('Found duplicate for {} on JP'.format(game_id))
                 continue
 
         game[websites_][JP_] = url

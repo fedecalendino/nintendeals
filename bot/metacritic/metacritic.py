@@ -8,7 +8,7 @@ from slugify import slugify_filename
 
 METACRITIC_URL = 'http://www.metacritic.com/game/{system}/{title}'
 
-LOG = logging.getLogger('metacritic')
+LOG = logging.getLogger('💯')
 
 
 def normalize(string):
@@ -45,7 +45,7 @@ def get_score(base_system, title):
         try:
             url = METACRITIC_URL.format(system=system, title=slug)
 
-            LOG.error("Fetching scores for {} on {}: {}".format(title, system, url))
+            LOG.error('Fetching scores for {} on {}: {}'.format(title, system, url))
 
             request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             content = urlopen(request).read()

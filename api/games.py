@@ -1,5 +1,6 @@
 # Standard
 import json
+from datetime import datetime
 
 # Dependencies
 from flask import Blueprint
@@ -28,6 +29,8 @@ def track():
     games = GAMES_DB.load_all({system_: SWITCH_})
     games = sorted(games, key=lambda x: x[title_].lower() if title_ in x else x[title_jp_].lower())
 
+    now = datetime.now()
+
     for game in games:
         if title_ in game:
             title = game[title_]
@@ -39,9 +42,13 @@ def track():
         item = {
             id_: game[id_],
             title_: title,
-            region_: regions,
-            release_date_: game[release_date_]
+            region_: regions
         }
+
+        try:
+            item[release_date_] = game[release_date_] if datetime.strptime(game[release_date_], '%Y-%m-%d') > now else ''
+        except:
+            item[release_date_] = game[release_date_]
 
         if scores_ in game:
             item[scores_] = {

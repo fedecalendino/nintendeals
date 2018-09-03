@@ -61,15 +61,15 @@ REGIONS = {
     NA_: {
         key_: NA_,
         name_: 'North America',
-        # api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc&sale=true'
         api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc'
     },
+
     EU_: {
         key_: EU_,
         name_: 'Europe & Friends',
-        # api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&rows={limit}&wt=json&sort=title asc&fq=type:GAME AND price_has_discount_b:"true" AND system_names_txt:"{system}"'
         api_: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&rows={limit}&wt=json&sort=title asc&fq=type:GAME AND system_names_txt:"{system}"'
     },
+
     JP_: {
         key_: JP_,
         name_: 'Japan',
@@ -163,8 +163,7 @@ COUNTRIES = {
         digits_: 7,
         currency_: '¥',
         currency_code_: 'JPY'
-    },
-
+    }
 }
 
 CMD_ADD = 'add'

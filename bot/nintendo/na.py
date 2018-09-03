@@ -17,7 +17,7 @@ from bot.commons.keys import *
 from bot.nintendo.commons import alt_versions
 
 
-LOG = logging.getLogger('nintendo.na')
+LOG = logging.getLogger('🎮.🇺🇸 ')
 
 
 REGION = REGIONS[NA_]
@@ -93,7 +93,7 @@ def find_games(system, limit=200, offset=0):
             LOG.info("New game {} ({}) found on NA".format(title, game[id_]))
         else:
             if NA_ in game[ids_] and game[ids_][NA_] != nsuid:
-                print('Found duplicate for {} on NA: {}'.format(game_id, title))
+                LOG.info('Found duplicate for {} on NA: {}'.format(game_id, title))
                 continue
 
         game[title_] = title

@@ -13,7 +13,7 @@ from bot.commons.config import *
 from bot.commons.keys import *
 
 
-LOG = logging.getLogger('nintendo.eu')
+LOG = logging.getLogger('🎮.🇪🇺 ')
 
 
 REGION = REGIONS[EU_]
@@ -58,9 +58,9 @@ def find_games(system, start=0, limit=200):
             continue
 
         if system == SWITCH_:
-            game_id = "{}-{}".format(system, product_ids[0][-5:-1])
+            game_id = '{}-{}'.format(system, product_ids[0][-5:-1])
         elif system == N3DS_:
-            game_id = "{}-{}".format(system, product_ids[0][-4:-1])
+            game_id = '{}-{}'.format(system, product_ids[0][-4:-1])
         else:
             raise Exception()
 
@@ -82,10 +82,10 @@ def find_games(system, start=0, limit=200):
                 number_of_players_: data['players_to'] if 'players_to' in data else 0
             }
 
-            LOG.info("New game {} ({}) found on EU".format(title, game[id_]))
+            LOG.info('New game {} ({}) found on EU'.format(title, game[id_]))
         else:
             if EU_ in game[ids_] and game[ids_][EU_] != nsuid:
-                print('Found duplicate for {} on EU: {}'.format(game_id, title))
+                LOG.info('Found duplicate for {} on EU: {}'.format(game_id, title))
                 continue
 
         game[title_] = title

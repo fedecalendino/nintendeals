@@ -11,7 +11,7 @@ from bot.metacritic import metacritic
 from bot.commons.keys import *
 
 
-LOG = logging.getLogger('metacritic.scores')
+LOG = logging.getLogger('💯')
 
 
 GAMES_DB = GamesDatabase.instance()
@@ -26,7 +26,7 @@ def fetch_scores():
         if last_update_ not in game[scores_]:
             game[scores_][last_update_] = datetime.now() + relativedelta(days=-30)
 
-        if game[scores_][last_update_] + relativedelta(days=+14) > datetime.now():
+        if game[scores_][last_update_] + relativedelta(days=+10) > datetime.now():
             continue
 
         if title_ in game:

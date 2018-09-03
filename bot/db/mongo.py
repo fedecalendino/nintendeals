@@ -1,7 +1,3 @@
-# Standard
-from datetime import timedelta
-from datetime import datetime
-
 # Dependencies
 from pymongo import MongoClient
 

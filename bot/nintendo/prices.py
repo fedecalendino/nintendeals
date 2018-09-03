@@ -14,7 +14,7 @@ from bot.commons.config import *
 from bot.commons.keys import *
 
 
-LOG = logging.getLogger('nintendo.prices')
+LOG = logging.getLogger('🎮.🏷️ ')
 
 
 PRICES_DB = PricesDatabase.instance()
@@ -82,7 +82,7 @@ def fetch_prices(system=None):
     for country, ids in ids_by_country.items():
 
         for index in range(0, int(len(ids)/50) + 1):
-            LOG.info("Looking for prices from {} to {} for {}".format(50 * index, 50 * (index + 1), country))
+            LOG.info('Looking for prices from {} to {} for {}'.format(50 * index, 50 * (index + 1), country))
 
             segment = ids[50 * index:50 * (index + 1)]
 
@@ -98,7 +98,7 @@ def fetch_prices(system=None):
                 price[countries_][country][full_price_] = data[full_price_]
 
                 if data[sale_] is not None:
-                    LOG.info("Deal found for {} on {}".format(nsuid, country))
+                    LOG.info('Deal found for {} on {}'.format(nsuid, country))
 
                     deal = {
                         sale_price_: data[sale_][sale_price_],

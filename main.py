@@ -92,8 +92,7 @@ def start_runner():
             time.sleep(1)
 
     print('Started runner')
-    thread = threading.Thread(target=start_loop)
-    thread.start()
+    threading.Thread(target=start_loop).start()
 
 
 # Main ========================================================================

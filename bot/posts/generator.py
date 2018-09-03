@@ -11,7 +11,7 @@ from bot.commons.config import *
 from bot.commons.keys import *
 
 
-LOG = logging.getLogger('posts.generator')
+LOG = logging.getLogger('📝')
 
 
 PRICES_DB = PricesDatabase.instance()
@@ -59,7 +59,7 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
         # Making titles as url if possible
         if not disable_urls:
             if country in game[websites_]:
-                title = "[{}]({})".format(
+                title = '[{}]({})'.format(
                     title,
                     game[websites_][country].replace('https://www.', '//')
                 )
@@ -79,7 +79,7 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
             full_price = full_price[:-2]
 
         time_left = current_sale[end_date_] - now
-        time_format = "{}".format(current_sale[end_date_].strftime("%b %d"))
+        time_format = '{}'.format(current_sale[end_date_].strftime('%b %d'))
 
         # Formating remaining time
         if time_left.days > 0:
@@ -88,13 +88,13 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
             warning = EMOJI_EXP_TOMORROW if days < 2 else ''
         else:
             hours = round(time_left.seconds / 60 / 60)
-            time_format = "{} ({}h)".format(time_format, hours)
+            time_format = '{} ({}h)'.format(time_format, hours)
 
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
             if hours == 0:
                 minutes = round(time_left.seconds / 60)
-                time_format = "{} ({}m)".format(time_format, minutes)
+                time_format = '{} ({}m)'.format(time_format, minutes)
 
         new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
 
@@ -119,10 +119,10 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
                 ms = int(game[scores_][metascore_])
 
             if userscore_ in game[scores_] and game[scores_][userscore_] is not None:
-                us = "%.1f" % game[scores_][userscore_]
+                us = '%.1f' % game[scores_][userscore_]
 
         if new:
-            title = "**{}**".format(title)
+            title = '**{}**'.format(title)
 
         if disable_fullprice:
             price_format = '{currency}{sale_price}'.format(currency=currency, sale_price=sale_price)

@@ -17,7 +17,7 @@ from bot.commons.config import *
 from bot.commons.keys import *
 
 
-LOG = logging.getLogger('reddit')
+LOG = logging.getLogger('🌐')
 
 GAMES_DB = GamesDatabase.instance()
 REDDIT_DB = RedditDatabase.instance()
@@ -50,33 +50,33 @@ class Reddit:
 
             # Checking for deletion
             if submission.author.name != REDDIT_USERNAME:
-                LOG.info(" https://redd.it/{}: deleted".format(post[id_]))
+                LOG.info(' https://redd.it/{}: deleted'.format(post[id_]))
                 return False
 
             created_at = post[created_at_]
 
             # Checking if archived
             if created_at + timedelta(days=30 * 5) < datetime.now():
-                LOG.info(" https://redd.it/{}: archived".format(post[id_]))
+                LOG.info(' https://redd.it/{}: archived'.format(post[id_]))
                 return False
 
             # Checking if stickied
             if submission.stickied:
-                LOG.info(" https://redd.it/{}: stickied".format(post[id_]))
+                LOG.info(' https://redd.it/{}: stickied'.format(post[id_]))
                 return True
 
             now = datetime.now()
 
             if now.today().weekday() not in [0, 3]:  # now is not monday/thursday
-                LOG.info(" https://redd.it/{}: not monday/thursday yet".format(post[id_]))
+                LOG.info(' https://redd.it/{}: not monday/thursday yet'.format(post[id_]))
                 return True
             elif now.hour < 16:  # now is not 14 yet
-                LOG.info(" https://redd.it/{}: not 14:00 yet".format(post[id_]))
+                LOG.info(' https://redd.it/{}: not 14:00 yet'.format(post[id_]))
                 return True
             elif created_at.day != now.day:
-                LOG.info(" https://redd.it/{}: *its monday/thursday my dudes*".format(post[id_]))
+                LOG.info(' https://redd.it/{}: *its monday/thursday my dudes*'.format(post[id_]))
                 submission.mod.nsfw()
-                LOG.info(" https://redd.it/{}: marked as nsfw".format(post[id_]))
+                LOG.info(' https://redd.it/{}: marked as nsfw'.format(post[id_]))
 
                 return False
 
@@ -111,29 +111,29 @@ class Reddit:
         header = ['']
 
         if system == SWITCH_:
-            header.append("⭐Add games to your WISHLIST ⭐: {}".format(WISHLIST_URL))
-            header.append("> You'll get a PM when a wishlisted game is discounted.")
-            header.append("")
-            header.append("---")
-            header.append("")
+            header.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))
+            header.append('> You\'ll get a PM when a wishlisted game is discounted.')
+            header.append('')
+            header.append('---')
+            header.append('')
 
         footer = []
 
-        footer.append("")
-        footer.append("---")
-        footer.append("")
+        footer.append('')
+        footer.append('---')
+        footer.append('')
 
         if system == SWITCH_:
-            footer.append("* Developed by /u/uglyasablasphemy | [Friend Code](https://nin.codes/uglyasablasphemy)")
+            footer.append('* Developed by /u/uglyasablasphemy | [Friend Code](https://nin.codes/uglyasablasphemy)')
         else:
-            footer.append("* Developed by /u/uglyasablasphemy")
+            footer.append('* Developed by /u/uglyasablasphemy')
 
-        footer.append("* Use [RES](https://redditenhancementsuite.com) for table sorting and more")
-        footer.append("* If you have perfomance issues, you might want to check out:")
-        footer.append("   * [Reddit is Fun/Android](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)")
-        footer.append("   * [Apollo for Reddit/iOS](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)")
+        footer.append('* Use [RES](https://redditenhancementsuite.com) for table sorting and more')
+        footer.append('* If you have perfomance issues, you might want to check out:')
+        footer.append('   * [Reddit is Fun/Android](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)')
+        footer.append('   * [Apollo for Reddit/iOS](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)')
 
-        content = "\n".join(header) + content + "\n" + "\n".join(footer)
+        content = '\n'.join(header) + content + '\n' + '\n'.join(footer)
 
         current = REDDIT_DB.load_last(subreddit, system)
 
@@ -141,7 +141,7 @@ class Reddit:
             current = None
 
         if current is None:
-            LOG.info(" Submitting to /r/{}".format(subreddit))
+            LOG.info(' Submitting to /r/{}'.format(subreddit))
 
             current = {
                 subreddit_: subreddit,
@@ -152,18 +152,18 @@ class Reddit:
             sub_id = self.create(subreddit, title, content)
             current[id_] = sub_id
 
-            LOG.info(" Submitted to /r/{}: https://redd.it/{}".format(subreddit, sub_id))
+            LOG.info(' Submitted to /r/{}: https://redd.it/{}'.format(subreddit, sub_id))
 
             time.sleep(5)
 
             comment = self.api.submission(id=sub_id).reply('🔥⬇️ DEALS LISTS ⬇️🔥')
             current[main_comment_] = comment.id
 
-            LOG.info(" Added main comment: https://reddit.com/comments/{}/_/{}".format(sub_id, comment.id))
+            LOG.info(' Added main comment: https://reddit.com/comments/{}/_/{}'.format(sub_id, comment.id))
 
             REDDIT_DB.save(current)
         else:
-            LOG.info(" Updating submission on /r/{}".format(subreddit))
+            LOG.info(' Updating submission on /r/{}'.format(subreddit))
 
             if comments_ in current:
                 links = []
@@ -189,12 +189,12 @@ class Reddit:
             current[updated_at_] = datetime.now()
             REDDIT_DB.save(current)
 
-            LOG.info(" Updated submission on /r/{}: https://redd.it/{}".format(subreddit, current[id_]))
+            LOG.info(' Updated submission on /r/{}: https://redd.it/{}'.format(subreddit, current[id_]))
 
         return current[id_]
 
     def comment(self, sub_id, country, content):
-        print("Trying to comment on {} {}: {}".format(sub_id, country, len(content)))
+        LOG.info('Trying to comment on {} {}: {}'.format(sub_id, country, len(content)))
 
         submission = REDDIT_DB.load(sub_id)
         main_comment_id = submission[main_comment_]
@@ -206,12 +206,12 @@ class Reddit:
             comment = self.api.comment(id=main_comment_id).reply(content)
             submission[comments_][country] = comment.id
 
-            LOG.info("Created comment https://reddit.com/comments/{}//{}".format(sub_id, comment.id))
+            LOG.info('Created comment https://reddit.com/comments/{}//{} ({})'.format(sub_id, comment.id, country))
         else:
             comment_id = submission[comments_][country]
             self.api.comment(comment_id).edit(content)
 
-            LOG.info("Updated comment https://reddit.com/comments/{}//{}".format(sub_id, comment_id))
+            LOG.info('Updated comment https://reddit.com/comments/{}//{} ({})'.format(sub_id, comment_id, country))
 
         REDDIT_DB.save(submission)
 
@@ -266,7 +266,7 @@ class Reddit:
 
             time.sleep(10)
         except:
-            print("Error sending to {}: {}".format(username, len(content)))
+            LOG.error('Error sending to {}: {}'.format(username, len(content)))
 
     def reply(self, message, content):
         username = message.author.name
@@ -390,7 +390,7 @@ class Reddit:
 
         self.reply(message, '*{}* was added to your wishlist :)'.format(title))
 
-        LOG.info('{} wishlisted {}'.format(username, title))
+        LOG.info('📥 > {} wishlisted {}'.format(username, title))
 
     def wishlist_remove(self, message, username, game):
 
@@ -412,5 +412,5 @@ class Reddit:
 
         self.reply(message, '*{}* was deleted from your wishlist :('.format(title))
 
-        LOG.info('{} deleted {}'.format(username, title))
+        LOG.info('📥 > {} deleted {}'.format(username, title))
 

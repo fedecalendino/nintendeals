@@ -17,7 +17,7 @@ from bot.commons.keys import *
 from bot.commons.util import *
 
 
-LOG = logging.getLogger('wishlist')
+LOG = logging.getLogger('⭐')
 
 
 GAMES_DB = GamesDatabase.instance()
@@ -77,7 +77,7 @@ def notify():
                 price = PRICES_DB.load(nsuid)[countries_][country]
 
                 if price is None:
-                    print('Price not found: {} {} {}'.format(nsuid, country, username))
+                    LOG.info('Price not found: {} {} {}'.format(nsuid, country, username))
                     continue
 
                 if sales_ not in price:
@@ -106,4 +106,4 @@ def notify():
             LOG.info('Sending notification to {}: {} deals found.'.format(username, len(sales_to_notify)))
 
             WISHLIST_DB.save(wishlist)
-            Reddit.instance().send(username, 'New deals for games in your wishlist!', content)
+            Reddit.instance().send(username, 'New deals for your wishlisted games!', content)
