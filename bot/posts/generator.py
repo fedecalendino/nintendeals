@@ -116,10 +116,10 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
         # Formatting metacritic score
         if scores_ in game and len(game[scores_]) > 0:
             if metascore_ in game[scores_] and game[scores_][metascore_] is not None:
-                ms = int(game[scores_][metascore_])
+                ms = int(game[scores_][metascore_]) if game[scores_][metascore_] != '-' else game[scores_][metascore_]
 
             if userscore_ in game[scores_] and game[scores_][userscore_] is not None:
-                us = '%.1f' % game[scores_][userscore_]
+                us = '%.1f' % game[scores_][userscore_] if game[scores_][userscore_] != '-' else game[scores_][userscore_]
 
         if new:
             title = '**{}**'.format(title)
