@@ -49,6 +49,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Release Date</th>
                         <th scope="col">Available on</th>
+			<th scope="col">Players</th>
                         <th scope="col" align="center">Metascore</th>
                         <th scope="col" align="center">Userscore</th>
                         <th scope="col" align="center">Actions</th>
@@ -113,6 +114,7 @@
 						row += '  <td scope="row"><strong>{title}</strong></td>';
 						row += '  <td align="center">{release_date}</td>';
 						row += '  <td>{countries}</td>';
+						row += '  <td>{number_of_players}</td>';
 						row += '  <td align="center">{metascore}</td>';
 						row += '  <td align="center">{userscore}</td>';
 						row += '  <td align="center">{link}</td>';
@@ -137,29 +139,30 @@
 
 	        			row = row.replace('{title}', game['title'])
 	        			row = row.replace('{release_date}', game['release_date'])
-						row = row.replace('{countries}', countries)
+					row = row.replace('{countries}', countries)
+	        			row = row.replace('{number_of_players}', game['number_of_players'])
 
-						if (game["scores"]["metascore"] == '-') {
-						    row = row.replace('{metascore}', '-')
-						} else if (game["scores"]["metascore"] != null) {
-						    row = row.replace('{metascore}', game["scores"]["metascore"])
-						} else {
-						    row = row.replace('{metascore}', '')
-						}
+					if (game["scores"]["metascore"] == '-') {
+					    row = row.replace('{metascore}', '-')
+					} else if (game["scores"]["metascore"] != null) {
+					    row = row.replace('{metascore}', game["scores"]["metascore"])
+					} else {
+					    row = row.replace('{metascore}', '')
+					}
 
-						if (game["scores"]["userscore"] == '-') {
-						    row = row.replace('{userscore}', '-')
-						} else if (game["scores"]["userscore"] != null) {
-						    row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
-						} else {
-						    row = row.replace('{userscore}', '')
-						}
+					if (game["scores"]["userscore"] == '-') {
+					    row = row.replace('{userscore}', '-')
+					} else if (game["scores"]["userscore"] != null) {
+					    row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
+					} else {
+					    row = row.replace('{userscore}', '')
+					}
 
-						row = row.replace('{link}', link)
+					row = row.replace('{link}', link)
 
-	        			table.append(row);
-					})
-  				});
+				table.append(row);
+				})
+			});
 	    	}
 
 	    	fill_table();
