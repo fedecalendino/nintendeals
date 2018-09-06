@@ -26,8 +26,12 @@ def fetch_scores():
         if last_update_ not in game[scores_]:
             game[scores_][last_update_] = datetime.now() + relativedelta(days=-30)
 
-        if game[scores_][last_update_] + relativedelta(days=+7) > datetime.now():
-            continue
+        if system_ not in game[scores_] or game[scores_][system_] is None:
+            if game[scores_][last_update_] + relativedelta(days=+7) > datetime.now():
+                continue
+        else:
+            if game[scores_][last_update_] + relativedelta(days=+14) > datetime.now():
+                continue
 
         if title_metacritic_ in game:
             title = game[title_metacritic_]
