@@ -42,13 +42,9 @@ def track():
         item = {
             id_: game[id_],
             title_: title,
-            region_: regions
+            region_: regions,
+            release_date_: game[release_date_]
         }
-
-        try:
-            item[release_date_] = game[release_date_] if datetime.strptime(game[release_date_], '%Y-%m-%d') > now else ''
-        except:
-            item[release_date_] = game[release_date_]
 
         if scores_ in game:
             item[scores_] = {
