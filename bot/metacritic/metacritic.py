@@ -14,6 +14,7 @@ LOG = logging.getLogger('💯')
 def normalize(string):
     slugify_filename.set_safe_chars('!-')
 
+    string = string.replace('.', '')
     string = string.replace('™', '')
     string = string.replace('/', '')
     string = slugify_filename(string, to_lower=True)
