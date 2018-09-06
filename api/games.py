@@ -43,13 +43,13 @@ def track():
 
         # Formatting number of players
         if players is None or players == 0:
-            players = 'tbd'
+            players = 'N/A'
         elif players == 1:
-            players = '1'
+            players = '1 player'
         elif players == 2:
-            players = '2'
+            players = '2 players'
         else:
-            players = '1-{}'.format(players)
+            players = 'up to {} players'.format(players)
         
         item = {
             id_: game[id_],
