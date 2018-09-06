@@ -26,7 +26,9 @@ def fetch_scores():
         if last_update_ not in game[scores_]:
             game[scores_][last_update_] = datetime.now() + relativedelta(days=-30)
 
-        if system_ not in game[scores_] or game[scores_][system_] is None:
+        if metascore_ not in game[scores_] or game[scores_][metascore_] == '-' or \
+                userscore_ not in game[scores_] or game[scores_][userscore_] == '-':
+            
             if game[scores_][last_update_] + relativedelta(days=+7) > datetime.now():
                 continue
         else:
