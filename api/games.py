@@ -39,11 +39,24 @@ def track():
 
         regions = [key for key in REGIONS.keys() if key in game[ids_].keys()]
 
+        players = game[number_of_players_]
+
+        # Formatting number of players
+        if players is None or players == 0:
+            players = 'tbd'
+        elif players == 1:
+            players = '1'
+        elif players == 2:
+            players = '2'
+        else:
+            players = '1-{}'.format(players)
+        
         item = {
             id_: game[id_],
             title_: title,
             region_: regions,
-            release_date_: game[release_date_]
+            release_date_: game[release_date_],
+            number_of_players_: players
         }
 
         if scores_ in game:
