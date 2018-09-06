@@ -88,11 +88,11 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
             warning = EMOJI_EXP_TOMORROW if days < 2 else ''
         else:
             hours = round(time_left.seconds / 60 / 60)
-            time_format = '{} ({}h)'.format(time_format, hours)
-
             warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
-            if hours == 0:
+            if hours > 0:
+                time_format = '{} ({}h)'.format(time_format, hours)
+            else:
                 minutes = round(time_left.seconds / 60)
                 time_format = '{} ({}m)'.format(time_format, minutes)
 
