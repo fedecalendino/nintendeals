@@ -62,4 +62,10 @@ def get_score(base_system, title):
         except Exception as e:
             pass
 
+    if score_system is not None:
+        if metascore is None:
+            metascore = '-'
+        if userscore is None:
+            userscore = '-'
+    
     return metascore, userscore, score_system
