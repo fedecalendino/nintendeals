@@ -56,7 +56,8 @@ def track():
             title_: title,
             region_: regions,
             release_date_: game[release_date_],
-            number_of_players_: players
+            number_of_players_: players,
+            websites_: {}
         }
 
         if scores_ in game:
@@ -64,6 +65,9 @@ def track():
                 metascore_: game[scores_][metascore_] if metascore_ in game[scores_] else None,
                 userscore_: game[scores_][userscore_] if userscore_ in game[scores_] else None
             }
+            
+        if websites_ in game:
+            item[websites_] = game[websites_]
 
         response.append(item)
 
