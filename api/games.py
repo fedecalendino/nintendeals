@@ -1,6 +1,5 @@
 # Standard
 import json
-from datetime import datetime
 
 # Dependencies
 from flask import Blueprint
@@ -12,6 +11,7 @@ from bot.db.mongo import GamesDatabase
 # Statics
 from bot.commons.config import *
 from bot.commons.keys import *
+from bot.commons.util import *
 
 
 GAMES_DB = GamesDatabase.instance()
@@ -27,15 +27,10 @@ def track():
     response = []
 
     games = GAMES_DB.load_all({system_: SWITCH_})
-    games = sorted(games, key=lambda x: x[title_].lower() if title_ in x else x[title_jp_].lower())
-
-    now = datetime.now()
+    games = sorted(games, key=lambda g: get_title(g).lower())
 
     for game in games:
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
+        title = get_title(game)
 
         regions = [key for key in REGIONS.keys() if key in game[ids_].keys()]
 
@@ -60,14 +55,14 @@ def track():
             websites_: {}
         }
 
+        if websites_ in game:
+            item[websites_] = game[websites_]
+
         if scores_ in game:
             item[scores_] = {
                 metascore_: game[scores_][metascore_] if metascore_ in game[scores_] else None,
                 userscore_: game[scores_][userscore_] if userscore_ in game[scores_] else None
             }
-            
-        if websites_ in game:
-            item[websites_] = game[websites_]
 
         response.append(item)
 

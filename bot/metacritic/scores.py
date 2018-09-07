@@ -7,8 +7,9 @@ from dateutil.relativedelta import relativedelta
 from bot.db.mongo import GamesDatabase
 from bot.metacritic import metacritic
 
-# Constants
+# Commons
 from bot.commons.keys import *
+from bot.commons.util import *
 
 
 LOG = logging.getLogger('💯')
@@ -37,10 +38,8 @@ def fetch_scores():
 
         if title_metacritic_ in game:
             title = game[title_metacritic_]
-        elif title_ in game:
-            title = game[title_]
         else:
-            title = game[title_jp_]
+            title = get_title(game)
             
         metascore, userscore, system = metacritic.get_score(game[system_], title)
 

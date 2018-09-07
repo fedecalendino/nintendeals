@@ -15,6 +15,7 @@ from bot.db.mongo import WishlistDatabase
 # Statics
 from bot.commons.config import *
 from bot.commons.keys import *
+from bot.commons.util import *
 
 
 LOG = logging.getLogger('🌐')
@@ -236,7 +237,9 @@ class Reddit:
                 self.reply(message, '')
                 continue
 
-            command, game_id = message.subject.split(': ')
+            spl = message.subject.split(' : ')
+            command = spl[0]
+            game_id = spl[1]
 
             if game_id is None:
                 self.reply(message, '`Error`: missing game id on subject.')
@@ -301,10 +304,7 @@ class Reddit:
                 for game_id, game_details in obj[games_].items():
                     game = GAMES_DB.load(game_id)
 
-                    if title_ in game:
-                        title = game[title_]
-                    else:
-                        title = game[title_jp_]
+                    title = get_title(game)
 
                     country_list = []
 
@@ -317,7 +317,7 @@ class Reddit:
                         '{}|{}|{}'.format(
                             title,
                             ' '.join(country_list),
-                            '[{emoji}](http://www.reddit.com/message/compose?to={to}&subject={cmd}: {game_id}&message={body})'.format(
+                            '[{emoji}](//reddit.com/message/compose?to={to}&subject={cmd} : {game_id}&message={body})'.format(
                                 cmd=CMD_REMOVE, emoji=EMOJI_MINUS, to=REDDIT_USERNAME, game_id=game_id, body='.'),
                         )
                     )
@@ -372,11 +372,7 @@ class Reddit:
             return
 
         game_id = game[id_]
-
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
+        title = get_title(game)
 
         if game_id not in wishlist[games_]:
             wishlist[games_][game_id] = {}
@@ -395,11 +391,7 @@ class Reddit:
     def wishlist_remove(self, message, username, game):
 
         game_id = game[id_]
-
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
+        title = get_title(game)
 
         wishlist = WISHLIST_DB.load(username)
 

@@ -9,6 +9,7 @@ from bot.commons.util import *
 # Constants
 from bot.commons.config import *
 from bot.commons.keys import *
+from bot.commons.util import *
 
 
 LOG = logging.getLogger('📝')
@@ -48,10 +49,7 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
         if current_sale[end_date_] < now:
             continue
 
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
+        title = get_title(game)
 
         if len(title) > 25:
             title = title[:23] + '…'
@@ -182,12 +180,7 @@ def make_post(games, countries):
         has_discount = False
 
         # Game title is EN or JP
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
-
-        # LOG.info('Adding {} to post'.format(title))
+        title = get_title(game)
 
         row = ''
         has_new_discount = False
@@ -250,33 +243,5 @@ def make_post(games, countries):
         if has_discount:
             text.append(row)
             count += 1
-
-    return '\n'.join(text)
-
-
-def make_wishlist_post(games):
-    countries = ' '.join(COUNTRIES.keys())
-
-    text = []
-    text.append('')
-    text.append('> To add game to your wishlist click on {}'.format(EMOJI_PLUS))
-    text.append('')
-    text.append('')
-    text.append('Title | Actions')
-    text.append('--- | :---: ')
-
-    for game in games[:50]:
-        if title_ in game:
-            title = game[title_]
-        else:
-            title = game[title_jp_]
-
-        text.append(
-            '{}|{}'.format(
-                title,
-                '[{emoji}](http://www.reddit.com/message/compose?to={to}&subject=add: {game_id}&message={body})'.format(
-                    emoji=EMOJI_PLUS, to=REDDIT_USERNAME, game_id=game[id_], body=countries),
-            )
-        )
 
     return '\n'.join(text)

@@ -26,7 +26,7 @@ REDDIT_DB = RedditDatabase.instance()
 WISHLIST_DB = WishlistDatabase.instance()
 
 
-def generate_message(sales):
+def generate_message(sales, disable_urls=False):
     text = []
     text.append('')
     text.append('###Wishlisted games on sale')
@@ -36,7 +36,10 @@ def generate_message(sales):
     text.append('--- | --- | --- | --- ')
 
     for sale in sales:
-        country_details = COUNTRIES[sale[country_]]
+        country = sale[country_]
+        country_details = COUNTRIES[country]
+
+        game = sale[game_]
         price = sale[prices_]
         current_sale = sale[sale_]
 
@@ -45,10 +48,16 @@ def generate_message(sales):
         full_price = format_float(price[full_price_], 0)
         discount = current_sale[discount_]
 
+        title = get_title(game)
+
+        if not disable_urls:
+            if websites_ in game and country in game[websites_]:
+                title = '[{}]({})'.format(title, game[websites_][country].replace('https://www.', '//'))
+
         # Creating row
         text.append(
             '{title}|*{end_date}*|{flag} **{currency} {sale_price}** ~~{full_price}~~|`%{discount}`'.format(
-                title=sale[title_], end_date=current_sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
+                title=title, end_date=current_sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
                 currency=currency, sale_price=sale_price, full_price=full_price, discount=discount)
         )
 
@@ -91,16 +100,21 @@ def notify():
                 if sale[end_date_] < datetime.now():
                     continue
 
-                if title_ in game:
-                    title = game[title_]
-                else:
-                    title = game[title_jp_]
-
-                sales_to_notify.append({title_: title, country_: country, prices_: price, sale_: sale})
+                sales_to_notify.append(
+                    {
+                        game_: game,
+                        country_: country,
+                        prices_: price,
+                        sale_: sale
+                    }
+                )
 
                 wishlist[games_][game_id][last_update_] = sale[end_date_] + timedelta(hours=1)
 
         content = generate_message(sales_to_notify)
+
+        if len(content) > 10000:
+            content = generate_message(sales_to_notify, disable_urls=True)
 
         if len(sales_to_notify) != 0:
             LOG.info('Sending notification to {}: {} deals found.'.format(username, len(sales_to_notify)))

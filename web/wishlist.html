@@ -132,10 +132,11 @@
 	        			});
 
 
-	        			link = '<a href="http://www.reddit.com/message/compose?to={username}&subject=add: {id}&message={countries}" target="_blank">➕</a>'
+	        			link = '<a href="http://www.reddit.com/message/compose?to={username}&subject=add : {id} : {title}&message={countries}" target="_blank">➕</a>'
 	        			link = link.replace('{username}', config['username'])
 	        			link = link.replace('{id}', game['_id'])
 	        			link = link.replace('{countries}', country_codes)
+	        			link = link.replace('{title}', game['title'])
 
 	        			row = row.replace('{title}', game['title'])
 	        			row = row.replace('{release_date}', game['release_date'])
