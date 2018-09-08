@@ -20,9 +20,10 @@ from bot.reddit.reddit import Reddit
 
 from bot.wishlist.wishlist import notify
 
-
 # Statics
 from bot.commons.config import *
+from bot.commons.util import *
+
 
 LOG = logging.getLogger('🤖')
 
@@ -43,7 +44,8 @@ def update_posts():
 
         LOG.info('Sorting games by title')
         games = GAMES_DB.load_all({system_: system})
-        games = sorted(games, key=lambda x: x[title_].lower() if title_ in x else x[title_jp_].lower())
+        games = sorted(games, key=lambda x: get_title(x).lower(), reverse=False)
+        games = sorted(games, key=lambda x: get_relevance_score(x), reverse=False)
 
         countries = [
             (country, country_details)

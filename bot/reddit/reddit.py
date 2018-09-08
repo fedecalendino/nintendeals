@@ -111,6 +111,10 @@ class Reddit:
     def submit(self, subreddit, system, title, content):
         header = ['']
 
+        header.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
+        header.append('')
+        header.append('---')
+
         if system == SWITCH_:
             header.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))
             header.append('> You\'ll get a PM when a wishlisted game is discounted.')
@@ -237,9 +241,12 @@ class Reddit:
                 self.reply(message, '')
                 continue
 
-            spl = message.subject.split(' : ')
-            command = spl[0]
-            game_id = spl[1]
+            try:
+                spl = message.subject.split(' : ')
+                command = spl[0]
+                game_id = spl[1]
+            except:
+                command, game_id = message.subject.split(': ')
 
             if game_id is None:
                 self.reply(message, '`Error`: missing game id on subject.')

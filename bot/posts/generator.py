@@ -22,6 +22,9 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
     now = datetime.utcnow().replace(tzinfo=None)
 
     text = []
+    text.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
+    text.append('')
+    text.append('---')
     text.append('')
 
     text.append('Title | - | Expiration | Price | % | Players | MS | US')
