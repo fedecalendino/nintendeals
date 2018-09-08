@@ -22,6 +22,7 @@ from bot.wishlist.wishlist import notify
 
 # Statics
 from bot.commons.config import *
+from bot.commons.keys import *
 from bot.commons.util import *
 
 
@@ -42,10 +43,28 @@ def update_posts():
         LOG.info('🏷️ > Looking up prices for {}'.format(system))
         prices.fetch_prices(system)
 
-        LOG.info('Sorting games by title')
+        LOG.info('Loading games')
         games = GAMES_DB.load_all({system_: system})
-        games = sorted(games, key=lambda x: get_title(x).lower(), reverse=False)
-        games = sorted(games, key=lambda x: get_relevance_score(x), reverse=False)
+
+        for game in games:
+            game[relevance_] = get_relevance_score(game)
+
+        LOG.info('Sorting games by relevance')
+        games = sorted(games, key=lambda g: g[relevance_])
+
+        selected = []
+        filtered = []
+        LOG.info('Filter by relevance')
+
+        for game in games:
+            if game[relevance_] < 2500:
+                selected.append(game)
+            else:
+                filtered.append(game)
+
+        LOG.info('Sorting games by title')
+        games = sorted(selected, key=lambda x: get_title(x).lower())
+        filtered = sorted(filtered, key=lambda x: get_title(x).lower())
 
         countries = [
             (country, country_details)
@@ -55,6 +74,11 @@ def update_posts():
 
         LOG.info('Building reddit post')
         sub_content = generator.make_post(games, countries)
+
+        if len(filtered) > 0:
+            sub_filtered_content = generator.make_post(filtered, countries, filtered=True)
+
+            sub_content = sub_content + '\n' + sub_filtered_content
 
         LOG.info('Posting {}\'s deals to subreddit/s: {}'.format(system, system_details[subreddit_]))
 

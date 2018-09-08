@@ -111,9 +111,9 @@ class Reddit:
     def submit(self, subreddit, system, title, content):
         header = ['']
 
-        header.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
-        header.append('')
-        header.append('---')
+        # header.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
+        # header.append('')
+        # header.append('---')
 
         if system == SWITCH_:
             header.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))

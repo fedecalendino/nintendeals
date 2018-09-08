@@ -22,9 +22,9 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
     now = datetime.utcnow().replace(tzinfo=None)
 
     text = []
-    text.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
-    text.append('')
-    text.append('---')
+    # text.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
+    # text.append('')
+    # text.append('---')
     text.append('')
 
     text.append('Title | - | Expiration | Price | % | Players | MS | US')
@@ -150,13 +150,15 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
     text.insert(0, '')
     text.insert(0, '___')
     text.insert(0, '')
+    text.insert(0, '> MS: Metascore | US: Userscore (both from metacritic.com)')
+    text.insert(0, '')
     text.insert(0, '`{} new` `{} expires in 48hs` `{} expires in 24hs`'.format(
         EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
 
     return '\n'.join(text)
 
 
-def make_post(games, countries):
+def make_post(games, countries, filtered=False):
     now = datetime.utcnow().replace(tzinfo=None)
 
     text = []
@@ -169,10 +171,20 @@ def make_post(games, countries):
         columns += ' | {}{}'.format(country_details[flag_], country)
         separator += ' | ---'
 
-    text.append('')
-    text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
-    text.append('')
-    text.append('___')
+    if not filtered:
+        text.append('')
+        text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
+        text.append('')
+        text.append('___')
+        text.append('')
+        text.append('# Relevant deals')
+    else:
+        text.append('')
+        text.append('___')
+        text.append('')
+        text.append('# Games often on sale')
+        text.append('')
+
     text.append('')
     text.append(columns)
     text.append(separator)

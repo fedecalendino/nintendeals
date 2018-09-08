@@ -24,14 +24,15 @@ def merge(source, destination):
 
 def get_title(game):
     if title_ in game:
-        return game[title_]
+        title = game[title_]
     else:
-        return game[title_jp_]
+        title = game[title_jp_]
+
+    return title.replace('\'', '').replace('’', '').title()
 
 
 def get_relevance_score(game):
     from bot.db.mongo import PricesDatabase
-
     PRICES_DB = PricesDatabase.instance()
 
     countries = {}
@@ -39,7 +40,7 @@ def get_relevance_score(game):
     total_sales = 0
     total_countries = 0
     days_on_sale = 0
-    days_on_fullprice = 0
+    first_sale_start_date = None
 
     now = datetime.now()
 
@@ -47,27 +48,27 @@ def get_relevance_score(game):
         for country, prices in PRICES_DB.load(id)[countries_].items():
             countries[country] = prices
 
-            total_countries += 1
-
             if prices is None or sales_ not in prices:
                 continue
+
+            total_countries += 1
 
             for index in range(len(prices[sales_])):
                 total_sales += 1
 
                 sale = prices[sales_][index]
-
                 days_on_sale += (sale[end_date_] - sale[start_date_]).days
 
-                if index + 1 < len(prices[sales_]):
-                    next_sale = prices[sales_][index + 1]
-                    days_on_fullprice += (next_sale[start_date_] - sale[end_date_]).days
+                if first_sale_start_date is None:
+                    first_sale_start_date = sale[start_date_]
 
-    try:
-        game_release = datetime.strptime(game[release_date_], '%Y-%m-%d')
-    except:
-        game_release = now
+    if total_countries == 0:
+        return 0
 
-    days_since_release = (now - game_release).days + 1
+    if days_on_sale == 0 or first_sale_start_date is None:  # never on sale
+        return 0
 
-    return days_on_fullprice * days_on_sale / days_since_release
+    days_on_sale /= total_countries
+    days_since_first_sale = (now - first_sale_start_date).days
+
+    return days_since_first_sale * days_on_sale
