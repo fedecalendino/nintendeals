@@ -20,7 +20,12 @@ def track():
     countries = {}
 
     for key, details in COUNTRIES.items():
-        countries[key] = {key_: key, name_: details[name_], flag_: details[flag_], region_: details[region_]}
+        countries[key] = {
+            key_: key,
+            name_: details[name_],
+            flag_: details[flag_],
+            region_: details[region_]
+        }
 
     response = {
         username_: REDDIT_USERNAME,

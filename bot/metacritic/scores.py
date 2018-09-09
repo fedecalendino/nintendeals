@@ -9,7 +9,7 @@ from bot.metacritic import metacritic
 
 # Commons
 from bot.commons.keys import *
-from bot.commons.util import *
+from bot.commons.util import get_title
 
 
 LOG = logging.getLogger('💯')
@@ -20,26 +20,25 @@ GAMES_DB = GamesDatabase.instance()
 
 def fetch_scores():
 
+    now = datetime.now()
+
     for game in GAMES_DB.load_all():
         if scores_ not in game:
             game[scores_] = {}
 
         if last_update_ not in game[scores_]:
-            game[scores_][last_update_] = datetime.now() + relativedelta(days=-30)
+            game[scores_][last_update_] = now + relativedelta(days=-30)
 
         if metascore_ not in game[scores_] or game[scores_][metascore_] == '-' or \
                 userscore_ not in game[scores_] or game[scores_][userscore_] == '-':
             
-            if game[scores_][last_update_] + relativedelta(days=+7) > datetime.now():
+            if game[scores_][last_update_] + relativedelta(days=+7) > now:
                 continue
         else:
-            if game[scores_][last_update_] + relativedelta(days=+14) > datetime.now():
+            if game[scores_][last_update_] + relativedelta(days=+14) > now:
                 continue
 
-        if title_metacritic_ in game:
-            title = game[title_metacritic_]
-        else:
-            title = get_title(game)
+        title = game[title_metacritic_] if title_metacritic_ in game else get_title(game)
             
         metascore, userscore, system = metacritic.get_score(game[system_], title)
 
@@ -52,6 +51,6 @@ def fetch_scores():
         else:
             LOG.info('Scores for {} not found'.format(title))
 
-        game[scores_][last_update_] = datetime.now()
+        game[scores_][last_update_] = now
 
         GAMES_DB.save(game)

@@ -8,6 +8,7 @@ import logging
 from praw import Reddit as RedditApi
 
 # Modules
+from bot.db.util import load_all_games
 from bot.db.mongo import GamesDatabase
 from bot.db.mongo import RedditDatabase
 from bot.db.mongo import WishlistDatabase
@@ -110,10 +111,6 @@ class Reddit:
 
     def submit(self, subreddit, system, title, content):
         header = ['']
-
-        # header.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
-        # header.append('')
-        # header.append('---')
 
         if system == SWITCH_:
             header.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))
@@ -295,10 +292,10 @@ class Reddit:
         text.append('___')
         text.append('')
 
-        obj = WISHLIST_DB.load(username)
+        user = WISHLIST_DB.load(username)
 
         if not exclude_wishlist:
-            if obj is None or games_ not in obj or len(obj[games_]) is 0:
+            if user is None or games_ not in user or len(user[games_]) is 0:
                 text.append('###Your wishlist is empty'.format(username))
 
             else:
@@ -308,16 +305,14 @@ class Reddit:
                 text.append('Title | Countries | Actions')
                 text.append('--- | --- | :---: ')
 
-                for game_id, game_details in obj[games_].items():
-                    game = GAMES_DB.load(game_id)
-
+                for game in load_all_games(filter={id_: {'$in': list(user[games_].keys())}}, exclude_prices=True):
+                    game_id = game[id_]
                     title = get_title(game)
 
                     country_list = []
 
-                    for country in game_details[countries_]:
+                    for country in user[games_][game_id][countries_]:
                         country_details = COUNTRIES[country]
-
                         country_list.append('{} {}'.format(country_details[flag_], country_details[key_]))
 
                     text.append(
@@ -352,7 +347,7 @@ class Reddit:
         return '\n'.join(text)
 
     def wishlist_add(self, message, username, game):
-        countries = message.body.split(' ')
+        countries = [country for country in message.body.split(' ') if len(country) > 1]
 
         invalid_countries = []
 
@@ -393,7 +388,7 @@ class Reddit:
 
         self.reply(message, '*{}* was added to your wishlist :)'.format(title))
 
-        LOG.info('📥 > {} wishlisted {}'.format(username, title))
+        LOG.info('📥 > {} wishlisted {} for {}'.format(username, title, ', '.join(countries)))
 
     def wishlist_remove(self, message, username, game):
 
