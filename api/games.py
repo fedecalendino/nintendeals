@@ -6,15 +6,13 @@ from flask import Blueprint
 from flask import Response
 
 # Modules
-from bot.db.mongo import GamesDatabase
+from bot.db.util import load_all_games
 
 # Statics
 from bot.commons.config import *
 from bot.commons.keys import *
-from bot.commons.util import *
+from bot.commons.util import get_title
 
-
-GAMES_DB = GamesDatabase.instance()
 
 TAG = 'games'
 
@@ -26,12 +24,7 @@ blueprint.prefix = "/api/v1/games"
 def track():
     response = []
 
-    games = GAMES_DB.load_all({system_: SWITCH_})
-    games = sorted(games, key=lambda g: get_title(g).lower())
-
-    for game in games:
-        title = get_title(game)
-
+    for game in load_all_games(filter={system_: SWITCH_}):
         regions = [key for key in REGIONS.keys() if key in game[ids_].keys()]
 
         players = game[number_of_players_]
@@ -48,7 +41,7 @@ def track():
         
         item = {
             id_: game[id_],
-            title_: title,
+            title_: game[final_title_],
             region_: regions,
             release_date_: game[release_date_],
             number_of_players_: players,

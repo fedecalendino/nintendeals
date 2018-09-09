@@ -22,9 +22,6 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
     now = datetime.utcnow().replace(tzinfo=None)
 
     text = []
-    # text.append('⚠️ TESTING: Sorting by relevance ⚠️'.format(WISHLIST_URL))
-    # text.append('')
-    # text.append('---')
     text.append('')
 
     text.append('Title | - | Expiration | Price | % | Players | MS | US')
@@ -33,26 +30,12 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
     deal_count = 0
 
     for game in games:
-
-        region = country_details[region_]
-
-        if region not in game[ids_]:
+        if country not in game[prices_]:
             continue
 
-        prices = PRICES_DB.load(game[ids_][region])
-
-        if country not in prices[countries_] or prices[countries_][country] is None:
-            continue
-
-        if sales_ not in prices[countries_][country]:
-            continue
-
-        current_sale = prices[countries_][country][sales_][-1]
-
-        if current_sale[end_date_] < now:
-            continue
-
-        title = get_title(game)
+        title = game[final_title_]
+        price = game[prices_][country]
+        sale = price[sales_][-1]
 
         if len(title) > 25:
             title = title[:23] + '…'
@@ -65,22 +48,18 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
                     game[websites_][country].replace('https://www.', '//')
                 )
 
-        discount = current_sale[discount_]
-
-        if discount < 1:
-            continue
-
+        discount = sale[discount_]
         currency = country_details[currency_]
 
-        sale_price = format_float(current_sale[sale_price_], country_details[digits_])
-        full_price = format_float(prices[countries_][country][full_price_], 0)
+        sale_price = format_float(sale[sale_price_], country_details[digits_])
+        full_price = format_float(price[full_price_], 0)
 
         if disable_decimals:
             sale_price = sale_price[:-2]
             full_price = full_price[:-2]
 
-        time_left = current_sale[end_date_] - now
-        time_format = '{}'.format(current_sale[end_date_].strftime('%b %d'))
+        time_left = sale[end_date_] - now
+        time_format = '{}'.format(sale[end_date_].strftime('%b %d'))
 
         # Formating remaining time
         if time_left.days > 0:
@@ -97,7 +76,7 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
                 minutes = round(time_left.seconds / 60)
                 time_format = '{} ({}m)'.format(time_format, minutes)
 
-        new = EMOJI_NEW if (now - current_sale[start_date_]).days < 1 else ''
+        new = EMOJI_NEW if (now - sale[start_date_]).days < 1 else ''
 
         players = game[number_of_players_]
 
@@ -189,45 +168,23 @@ def make_post(games, countries, filtered=False):
     text.append(columns)
     text.append(separator)
 
-    count = 0
-
     for game in games:
-        has_discount = False
-
         # Game title is EN or JP
-        title = get_title(game)
+        title = game[final_title_]
 
         row = ''
         has_new_discount = False
 
         # Building discount table
         for country, country_details in countries:
-            region = country_details[region_]
 
-            if region not in game[ids_]:
-                row += ' | '
-                continue
-
-            prices = PRICES_DB.load(game[ids_][region])
-
-            if country not in prices[countries_] or prices[countries_][country] is None:
-                row += ' | '
-                continue
-
-            if sales_ not in prices[countries_][country]:
-                row += ' | '
-                continue
-
-            current_sale = prices[countries_][country][sales_][-1]
-
-            if current_sale[end_date_] < now:
-                row += ' | '
+            if country not in game[prices_]:
+                row += '| '
                 continue
 
             LOG.info('Adding {} discount for {}'.format(title, country))
 
-            has_discount = True
-
+            current_sale = game[prices_][country][sales_][-1]
             discount = current_sale[discount_]
 
             if discount < 1:
@@ -255,8 +212,6 @@ def make_post(games, countries, filtered=False):
         else:
             row = "{}{}".format(title, row)
 
-        if has_discount:
-            text.append(row)
-            count += 1
+        text.append(row)
 
     return '\n'.join(text)

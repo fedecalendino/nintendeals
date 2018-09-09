@@ -5,7 +5,7 @@ import logging
 import threading
 
 # Modules
-from bot.db.mongo import GamesDatabase
+from bot.db.util import load_all_games
 
 from bot.nintendo import eu
 from bot.nintendo import jp
@@ -28,13 +28,48 @@ from bot.commons.util import *
 
 LOG = logging.getLogger('🤖')
 
-GAMES_DB = GamesDatabase.instance()
 
 fetchers = {
     NA_: na.find_games,
     EU_: eu.find_games,
     JP_: jp.find_games
 }
+
+
+def build_submission(games, filtered, countries):
+    content = generator.make_post(games, countries)
+
+    if len(filtered) > 0:
+        content = content + '\n' + generator.make_post(filtered, countries, filtered=True)
+
+    return content
+
+
+def build_country_comments(games, countries):
+    country_comments = {}
+
+    for country, country_details in countries:
+        LOG.info('Building reddit comment for {} {}'.format(country_details[flag_], country))
+        comment_content = generator.make_comment(games, country, country_details)
+
+        if len(comment_content) > 10000:
+            comment_content = generator.make_comment(
+                games, country, country_details, disable_urls=True)
+
+            if len(comment_content) > 10000:
+                comment_content = generator.make_comment(
+                    games, country, country_details, disable_urls=True, disable_fullprice=True
+                )
+
+                if len(comment_content) > 10000:
+                    comment_content = generator.make_comment(
+                        games, country, country_details,
+                        disable_urls=True, disable_fullprice=True, disable_decimals=True
+                    )
+
+        country_comments[country] = comment_content
+
+    return country_comments
 
 
 def update_posts():
@@ -44,27 +79,21 @@ def update_posts():
         prices.fetch_prices(system)
 
         LOG.info('Loading games')
-        games = GAMES_DB.load_all({system_: system})
-
-        for game in games:
-            game[relevance_] = get_relevance_score(game)
-
-        LOG.info('Sorting games by relevance')
-        games = sorted(games, key=lambda g: g[relevance_])
+        games = load_all_games(
+            filter={system_: system},
+            on_sale_only=True,
+            add_relevance=True
+        )
 
         selected = []
         filtered = []
-        LOG.info('Filter by relevance')
 
+        LOG.info('Filter by relevance')
         for game in games:
             if game[relevance_] < 2500:
                 selected.append(game)
             else:
                 filtered.append(game)
-
-        LOG.info('Sorting games by title')
-        games = sorted(selected, key=lambda x: get_title(x).lower())
-        filtered = sorted(filtered, key=lambda x: get_title(x).lower())
 
         countries = [
             (country, country_details)
@@ -73,12 +102,10 @@ def update_posts():
         ]
 
         LOG.info('Building reddit post')
-        sub_content = generator.make_post(games, countries)
 
-        if len(filtered) > 0:
-            sub_filtered_content = generator.make_post(filtered, countries, filtered=True)
-
-            sub_content = sub_content + '\n' + sub_filtered_content
+        title = 'Current {} eShop deals'.format(system_details[name_])
+        submission = build_submission(selected, filtered, countries)
+        country_comments = build_country_comments(selected, countries)
 
         LOG.info('Posting {}\'s deals to subreddit/s: {}'.format(system, system_details[subreddit_]))
 
@@ -86,23 +113,12 @@ def update_posts():
             sub_id = Reddit.instance().submit(
                 subreddit,
                 system,
-                'Current {} eShop deals'.format(system_details[name_]),
-                sub_content
+                title,
+                submission
             )
 
             for country, country_details in countries:
-                LOG.info('Building reddit comment for {} {} on {}'.format(country_details[flag_], country, sub_id))
-                comment_content = generator.make_comment(games, country, country_details)
-
-                if len(comment_content) > 10000:
-                    comment_content = generator.make_comment(games, country, country_details, disable_urls=True)
-
-                    if len(comment_content) > 10000:
-                        comment_content = generator.make_comment(games, country, country_details, disable_urls=True, disable_fullprice=True)
-
-                        if len(comment_content) > 10000:
-                            comment_content = generator.make_comment(games, country, country_details, disable_urls=True,
-                                                                     disable_fullprice=True, disable_decimals=True)
+                comment_content = country_comments[country]
 
                 try:
                     Reddit.instance().comment(
@@ -114,7 +130,7 @@ def update_posts():
                     LOG.error(e)
                     LOG.error(comment_content)
 
-                time.sleep(15)
+                time.sleep(11)
 
             LOG.info('Updating post with comment links')
 
@@ -122,7 +138,7 @@ def update_posts():
                 subreddit,
                 system,
                 'Current {} eShop deals'.format(system_details[name_]),
-                sub_content
+                submission
             )
 
 
@@ -154,7 +170,7 @@ def game_lookup():
             LOG.error(e)
             traceback.print_exc()
 
-        time.sleep(10 * 60)
+        time.sleep(12 * 60 * 60)
 
 
 def score_lookup():
@@ -166,7 +182,7 @@ def score_lookup():
             LOG.error(e)
             traceback.print_exc()
 
-        time.sleep(20 * 60)
+        time.sleep(12 * 20 * 60)
 
 
 def wishlist_notifications():

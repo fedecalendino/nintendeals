@@ -1,9 +1,10 @@
 # Standard
-from datetime import timedelta
 from datetime import datetime
+from datetime import timedelta
 import logging
 
 # Modules
+from bot.db.util import load_all_games
 from bot.db.mongo import GamesDatabase
 from bot.db.mongo import PricesDatabase
 from bot.db.mongo import RedditDatabase
@@ -26,7 +27,7 @@ REDDIT_DB = RedditDatabase.instance()
 WISHLIST_DB = WishlistDatabase.instance()
 
 
-def generate_message(sales, disable_urls=False):
+def generate_message(notification, disable_urls=False):
     text = []
     text.append('')
     text.append('###Wishlisted games on sale')
@@ -35,89 +36,77 @@ def generate_message(sales, disable_urls=False):
     text.append('Title | Expiration | Price | % ')
     text.append('--- | --- | --- | --- ')
 
-    for sale in sales:
-        country = sale[country_]
-        country_details = COUNTRIES[country]
+    for game_id, details in notification.items():
+        title = details[title_]
 
-        game = sale[game_]
-        price = sale[prices_]
-        current_sale = sale[sale_]
+        for country, sale in details[countries_].items():
+            country_details = COUNTRIES[country]
 
-        currency = country_details[currency_code_]
-        sale_price = format_float(current_sale[sale_price_], 0)
-        full_price = format_float(price[full_price_], 0)
-        discount = current_sale[discount_]
+            currency = country_details[currency_code_]
+            sale_price = format_float(sale[sale_price_], 0)
+            full_price = format_float(sale[full_price_], 0)
+            discount = sale[discount_]
 
-        title = get_title(game)
+            if not disable_urls:
+                if websites_ in details:
+                    if country in details[websites_]:
+                        title = '[{}]({})'.format(title, details[websites_][country].replace('https://www.', '//'))
 
-        if not disable_urls:
-            if websites_ in game and country in game[websites_]:
-                title = '[{}]({})'.format(title, game[websites_][country].replace('https://www.', '//'))
-
-        # Creating row
-        text.append(
-            '{title}|*{end_date}*|{flag} **{currency} {sale_price}** ~~{full_price}~~|`%{discount}`'.format(
-                title=title, end_date=current_sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
-                currency=currency, sale_price=sale_price, full_price=full_price, discount=discount)
-        )
+            # Creating row
+            text.append(
+                '{title}|*{end_date}*|{flag} **{currency} {sale_price}** ~~{full_price}~~|`%{discount}`'.format(
+                    title=title, end_date=sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
+                    currency=currency, sale_price=sale_price, full_price=full_price, discount=discount)
+            )
 
     return '\n'.join(text)
 
 
 def notify():
-    for wishlist in WISHLIST_DB.load_all():
+    now = datetime.now()
 
-        username = wishlist[id_]
+    notifications = {}
 
-        sales_to_notify = []
+    for game in load_all_games(filter={system_: SWITCH_}, on_sale_only=True):
+        game_id = game[id_]
 
-        for game_id, wishlist_details in wishlist[games_].items():
-            game = GAMES_DB.load(game_id)
+        users = WISHLIST_DB.load_all(
+            filter={'games.{}'.format(game_id): {'$exists': True}}
+        )
 
-            if wishlist_details[last_update_] > datetime.now():
+        if len(users) == 0:
+            continue
+
+        for user in users:
+            if user[games_][game_id][last_update_] > now:
                 continue
 
-            for country in wishlist_details[countries_]:
-                try:
-                    nsuid = game[ids_][COUNTRIES[country][region_]]
-                except:
-                    continue
+            username = user[id_]
 
-                price = PRICES_DB.load(nsuid)[countries_][country]
+            if username not in notifications:
+                notifications[username] = {}
 
-                if price is None:
-                    LOG.info('Price not found: {} {} {}'.format(nsuid, country, username))
-                    continue
+            notifications[username][game_id] = {
+                title_: game[final_title_],
+                websites_: game[websites_],
+                countries_: {}
+            }
 
-                if sales_ not in price:
-                    continue
+            for country, details in game[prices_].items():
+                last_sale = details[sales_][-1]
 
-                sale = price[sales_][-1]
+                if country in user[games_][game_id][countries_]:
+                    notifications[username][game_id][countries_][country] = last_sale
+                    notifications[username][game_id][countries_][country][full_price_] = details[full_price_]
 
-                if sale[discount_] < 1:
-                    continue
+                    user[games_][game_id][last_update_] = last_sale[end_date_] + timedelta(hours=1)
+                    WISHLIST_DB.save(user)
 
-                if sale[end_date_] < datetime.now():
-                    continue
-
-                sales_to_notify.append(
-                    {
-                        game_: game,
-                        country_: country,
-                        prices_: price,
-                        sale_: sale
-                    }
-                )
-
-                wishlist[games_][game_id][last_update_] = sale[end_date_] + timedelta(hours=1)
-
-        content = generate_message(sales_to_notify)
+    for username, notification in notifications.items():
+        content = generate_message(notification)
 
         if len(content) > 10000:
-            content = generate_message(sales_to_notify, disable_urls=True)
+            content = generate_message(notification, disable_urls=True)
 
-        if len(sales_to_notify) != 0:
-            LOG.info('Sending notification to {}: {} deals found.'.format(username, len(sales_to_notify)))
-
-            WISHLIST_DB.save(wishlist)
-            Reddit.instance().send(username, 'New deals for your wishlisted games!', content)
+        LOG.info('Sending notification to {}'.format(username))
+        Reddit.instance().send(username, 'New deals for your wishlisted games!', content)
