@@ -40,6 +40,8 @@ def generate_message(notification, disable_urls=False):
         title = details[title_]
 
         for country, sale in details[countries_].items():
+            final_title = title
+
             country_details = COUNTRIES[country]
 
             currency = country_details[currency_code_]
@@ -50,12 +52,12 @@ def generate_message(notification, disable_urls=False):
             if not disable_urls:
                 if websites_ in details:
                     if country in details[websites_]:
-                        title = '[{}]({})'.format(title, details[websites_][country].replace('https://www.', '//'))
+                        final_title = '[{}]({})'.format(title, details[websites_][country].replace('https://www.', '//'))
 
             # Creating row
             text.append(
                 '{title}|*{end_date}*|{flag} **{currency} {sale_price}** ~~{full_price}~~|`%{discount}`'.format(
-                    title=title, end_date=sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
+                    title=final_title, end_date=sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
                     currency=currency, sale_price=sale_price, full_price=full_price, discount=discount)
             )
 
