@@ -139,23 +139,31 @@
 	        			row = row.replace('{release_date}', game['release_date'])
 					row = row.replace('{countries}', countries)
 	        			row = row.replace('{number_of_players}', game['number_of_players'])
-
-					if (game["scores"]["metascore"] == '-') {
-					    row = row.replace('{metascore}', '-')
-					} else if (game["scores"]["metascore"] != null) {
-					    row = row.replace('{metascore}', game["scores"]["metascore"])
-					} else {
+		                        
+				        try {
+					    if (game["scores"]["metascore"] == '-') {
+					        row = row.replace('{metascore}', '-')
+					    } else if (game["scores"]["metascore"] != null) {
+					        row = row.replace('{metascore}', game["scores"]["metascore"])
+					    } else {
+					        row = row.replace('{metascore}', '')
+					    }
+					} catch(err) {
 					    row = row.replace('{metascore}', '')
 					}
-
-					if (game["scores"]["userscore"] == '-') {
-					    row = row.replace('{userscore}', '-')
-					} else if (game["scores"]["userscore"] != null) {
-					    row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
-					} else {
+						
+					try {
+					    if (game["scores"]["userscore"] == '-') {
+					        row = row.replace('{userscore}', '-')
+					    } else if (game["scores"]["userscore"] != null) {
+					        row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
+					    } else {
+					        row = row.replace('{userscore}', '')
+				            }
+					} catch(err) {
 					    row = row.replace('{userscore}', '')
 					}
-
+						
 					row = row.replace('{link}', link)
 
 				table.append(row);

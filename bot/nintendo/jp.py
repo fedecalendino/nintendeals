@@ -80,16 +80,19 @@ def find_games(system):
         url = REGION[details_][system].format(nsuid)
 
         if game is None:
-            try:
-                details = requests.get(url).text
-                details = re.findall('NXSTORE\\.titleDetail\\.jsonData .*;', details)[0]
-                details = details.replace('NXSTORE.titleDetail.jsonData = ', '').replace(';', '')
+            number_of_players = 0
 
-                data = json.loads(details)
+            if system == SWITCH_:
+                try:
+                    details = requests.get(url).text
+                    details = re.findall('NXSTORE\\.titleDetail\\.jsonData .*;', details)[0]
+                    details = details.replace('NXSTORE.titleDetail.jsonData = ', '').replace(';', '')
 
-                number_of_players = max(data['player_number'].values())
-            except:
-                number_of_players = 0
+                    data = json.loads(details)
+
+                    number_of_players = max(data['player_number'].values())
+                except:
+                    pass
 
             game = {
                 id_: game_id,
