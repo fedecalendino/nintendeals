@@ -166,6 +166,8 @@ def game_lookup():
                     except Exception as e:
                         LOG.error('🎮 > Error fetching game for {} on {}'.format(system, region))
                         LOG.error(e)
+                        traceback.print_exc()
+
         except Exception as e:
             LOG.error(e)
             traceback.print_exc()

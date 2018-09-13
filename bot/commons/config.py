@@ -8,7 +8,7 @@ MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo'
 
 VERSION = "5"
 
-PORT = int(os.environ.get("PORT", 5000))
+PORT = int(os.environ.get("PORT", 6000))
 
 if PORT == 5000:
     IP = '127.0.0.1'
@@ -47,12 +47,14 @@ SYSTEMS = {
             JP_: 'switch'
         }
     },
+
     N3DS_: {
         name_: 'Nintendo 3DS',
         subreddit_: os.environ.get('3DS_SUBREDDIT', 'test4').split('|'),
         system_: {
             NA_: '3ds',
             EU_: '3DS',
+            JP_: '3ds'
         }
     }
 }
@@ -74,7 +76,10 @@ REGIONS = {
         key_: JP_,
         name_: 'Japan',
         api_: 'https://www.nintendo.co.jp/{system}/software/data/eshopinfo.js',
-        details_: 'https://ec.nintendo.com/JP/ja/titles/{}'
+        details_: {
+            SWITCH_: 'https://ec.nintendo.com/JP/ja/titles/{}',
+            N3DS_: 'https://www.nintendo.co.jp/titles/{}'
+        }
     }
 }
 
