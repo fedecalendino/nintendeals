@@ -140,7 +140,9 @@
 					row = row.replace('{countries}', countries)
 	        			row = row.replace('{number_of_players}', game['number_of_players'])
 		                        
-				        if (!("metascore" in game["scores"])) {
+				        if (!("scores" in game)) {
+					    row = row.replace('{metascore}', '')
+					} else if (!("metascore" in game["scores"])) {
 					    row = row.replace('{metascore}', '')
 					} else if (game["scores"]["metascore"] == '-') {
 					    row = row.replace('{metascore}', '-')
@@ -150,7 +152,9 @@
 					    row = row.replace('{metascore}', '')
 					}
 
-					if (!("userscore" in game["scores"])) {
+					if (!("scores" in game)) {
+					    row = row.replace('{userscore}', '')
+					} else if (!("userscore" in game["scores"])) {
 					    row = row.replace('{userscore}', '')
 					} if (game["scores"]["userscore"] == '-') {
 					    row = row.replace('{userscore}', '-')
