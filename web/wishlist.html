@@ -105,11 +105,15 @@
 					url: server + "/games",
 				}).done(function(msg) {
 					$.each(msg, function(index) {
-						game = msg[index]
+					    var today = new Date();
+					    var yesterday = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
+					    var next_week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+						game = msg[index];
 
 						row =  '<tr>';
 						row += '  <td scope="row"><strong>{title}</strong></td>';
-						row += '  <td align="center">{release_date}</td>';
+						row += '  <td align="center" bgcolor="{color}">{release_date}</td>';
 						row += '  <td>{countries}</td>';
 						row += '  <td>{number_of_players}</td>';
 						row += '  <td align="center">{metascore}</td>';
@@ -117,13 +121,13 @@
 						row += '  <td align="center">{link}</td>';
 	        			row += '</div>';
 
-	        			country_codes = ''
-	        			countries = ''
+	        			country_codes = '';
+	        			countries = '';
 	        			$.each(game['region'], function(index, region) {
 		        			$.each(config['countries'], function(index, country) {
 		        				if (country['region'] == region) {
-		        					countries += '<span>' + country['flag'] + '</span> ' // '&nbsp;' + country['key'] + '</span> '
-		        					country_codes += country['key'] + ' '
+		        					countries += '<span>' + country['flag'] + '</span> ' // '&nbsp;' + country['key'] + '</span> ';
+		        					country_codes += country['key'] + ' ';
 		        				}
 		        			});
 	        			});
@@ -135,9 +139,26 @@
 	        			link = link.replace('{countries}', country_codes)
 	        			link = link.replace('{title}', game['title'])
 
+                        try {
+                            release_date =  new Date(game['release_date'])
+
+                            if (yesterday < release_date && release_date < today) {
+                                color = '#FFFF99';
+                            } else if (today < release_date && next_week > release_date) {
+                                color = '#FF9966';
+                            } else if (today < release_date) {
+                                color = '#FF9999';
+                            } else {
+                                color = '#FFFFFF';
+                            }
+                        } catch(err) {
+                            color = '#000000';
+                        }
+
+                        row = row.replace('{color}', color)
 	        			row = row.replace('{title}', game['title'])
 	        			row = row.replace('{release_date}', game['release_date'])
-					row = row.replace('{countries}', countries)
+					    row = row.replace('{countries}', countries)
 	        			row = row.replace('{number_of_players}', game['number_of_players'])
 		                        
 				        try {

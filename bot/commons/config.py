@@ -8,7 +8,7 @@ MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo'
 
 VERSION = "5"
 
-PORT = int(os.environ.get("PORT", 6000))
+PORT = int(os.environ.get("PORT", 5000))
 
 if PORT == 5000:
     IP = '127.0.0.1'

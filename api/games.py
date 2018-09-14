@@ -58,4 +58,6 @@ def track():
 
         response.append(item)
 
+    response = sorted(response, key=lambda g: g[release_date_], reverse=True)
+
     return Response(json.dumps(response),  mimetype='application/json')

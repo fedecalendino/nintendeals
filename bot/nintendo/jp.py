@@ -48,10 +48,21 @@ def get_id_map(system):
         else:
             raise Exception()
 
+        rd = title_info['SalesDate']
+
+        if '.' in rd:
+            rd = rd.split('.')
+
+            rd = '{}-{}-{}'.format(
+                rd[0],
+                '0' + rd[1] if len(rd[1]) == 1 else rd[1],
+                '0' + rd[2] if len(rd[2]) == 1 else rd[2]
+            )
+
         id_map[title_info['LinkURL'].rsplit('/', 1)[-1]] = {
             id_: game_id,
             title_jp_: title_info['TitleName'],
-            release_date_: title_info['SalesDate'].replace('.', '-')
+            release_date_: rd
         }
 
     return id_map
