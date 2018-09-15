@@ -90,7 +90,7 @@ def update_posts():
 
         LOG.info('Filter by relevance')
         for game in games:
-            if game[relevance_] < 2500:
+            if game[relevance_] > 0:
                 selected.append(game)
             else:
                 filtered.append(game)

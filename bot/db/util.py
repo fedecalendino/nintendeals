@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 
 from bot.commons.keys import *
 from bot.commons.util import get_title
@@ -46,41 +47,48 @@ def fill_game(game, exclude_prices=False):
 
 
 def get_relevance_score(game):
-    total_sales = 0
     total_countries = 0
 
-    days_on_sale = 0
-    first_sale_start_date = None
+    time_span = 120
 
     now = datetime.now()
+    start = now - timedelta(days=time_span)
+
+    days_on_sale = 0
 
     for country, details in game[prices_].items():
         if sales_ not in details:
             continue
 
+        counted_country = False
+
         sales = details[sales_]
 
-        total_countries += 1
-        total_sales += len(sales)
-
         for sale in sales:
-            days_on_sale += (sale[end_date_] - sale[start_date_]).days
+            start_date = sale[start_date_]
+            end_date = sale[end_date_]
 
-            if first_sale_start_date is None:
-                first_sale_start_date = sale[start_date_]
-            elif sale[start_date_] < first_sale_start_date:
-                first_sale_start_date = sale[start_date_]
+            if end_date < start:
+                continue
+
+            if start_date < start:
+                start_date = start
+
+            if not counted_country:
+                total_countries += 1
+                counted_country = True
+
+            if end_date > now:
+                days_on_sale += (now - start_date).days
+            else:
+                days_on_sale += (end_date - start_date).days
 
     if total_countries == 0:
-        return 0
-
-    if days_on_sale == 0 or first_sale_start_date is None:  # never on sale
-        return 0
+        return 10
 
     days_on_sale /= total_countries
-    days_since_first_sale = (now - first_sale_start_date).days
 
-    return days_since_first_sale * days_on_sale
+    return days_on_sale if days_on_sale <= time_span/5 else 0
 
 
 def load_all_games(filter={}, exclude_prices=False, on_sale_only=False, add_relevance=False):

@@ -176,7 +176,7 @@ def make_post(games, countries, filtered=False):
 
     for game in games:
         # Game title is EN or JP
-        title = game[final_title_]
+        title = game[final_title_]  # + ' ' + str(game[relevance_])
 
         row = ''
         has_new_discount = False
