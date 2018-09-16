@@ -15,6 +15,7 @@ from bot.commons.keys import *
 
 TAG = 'games'
 
+
 blueprint = Blueprint('services.games', __name__)
 blueprint.prefix = "/api/v1/games"
 
@@ -30,7 +31,7 @@ def track():
 
         # Formatting number of players
         if players is None or players == 0:
-            players = 'N/A'
+            players = 'n/a'
         elif players == 1:
             players = '1 player'
         elif players == 2:

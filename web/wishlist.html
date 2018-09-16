@@ -156,7 +156,7 @@
                         }
 
                         row = row.replace('{color}', color)
-	        			row = row.replace('{title}', game['title'])
+	        			row = row.replace('{title}', game['title'].replace(' 🍄', '<font color="white">!</font>🍄'))
 	        			row = row.replace('{release_date}', game['release_date'])
 					    row = row.replace('{countries}', countries)
 	        			row = row.replace('{number_of_players}', game['number_of_players'])

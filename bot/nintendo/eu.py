@@ -12,6 +12,8 @@ from bot.db.mongo import PricesDatabase
 from bot.commons.config import *
 from bot.commons.keys import *
 
+from bot.nintendo.commons import *
+
 
 LOG = logging.getLogger('🎮.🇪🇺 ')
 
@@ -54,8 +56,8 @@ def find_games(system, start=0, limit=200):
 
         nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
 
-        if GAMES_DB.find_by_region_and_nsuid(EU_, nsuid) is not None:
-            continue
+        # if GAMES_DB.find_by_region_and_nsuid(EU_, nsuid) is not None:
+        #    continue
 
         if system == SWITCH_:
             game_id = '{}-{}'.format(system, product_ids[0][-5:-1])
@@ -63,6 +65,9 @@ def find_games(system, start=0, limit=200):
             game_id = '{}-{}'.format(system, product_ids[0][-4:-1])
         else:
             raise Exception()
+
+        if nsuid in alt_versions:
+            game_id = alt_versions[nsuid]
 
         game = GAMES_DB.load(game_id)
 
@@ -78,8 +83,6 @@ def find_games(system, start=0, limit=200):
                 ids_: {},
                 websites_: {},
                 system_: system,
-                release_date_: data['dates_released_dts'][0][:10],
-                number_of_players_: data['players_to'] if 'players_to' in data else 0
             }
 
             LOG.info('New game {} ({}) found on EU'.format(title, game[id_]))
@@ -91,6 +94,30 @@ def find_games(system, start=0, limit=200):
         game[title_] = title
         game[ids_][EU_] = nsuid
         game[genres_] = categories
+
+        # Setting release date
+        release_date = data['dates_released_dts'][0][:10]
+
+        if release_date_ not in game:
+            game[release_date_] = release_date
+        elif game[release_date_] is None and release_date:
+            game[release_date_] = release_date
+
+        # Setting published by nintendo
+        by_nintendo = 'publisher' in data and data['publisher'] == 'Nintendo'
+
+        if published_by_nintendo_ not in game:
+            game[published_by_nintendo_] = by_nintendo
+        elif not game[published_by_nintendo_] and by_nintendo:
+            game[published_by_nintendo_] = by_nintendo
+
+        # Setting number of players
+        number_of_players = data['players_to'] if 'players_to' in data else 0
+
+        if number_of_players_ not in game:
+            game[number_of_players_] = number_of_players
+        elif game[number_of_players_] == 0 and number_of_players != 0:
+            game[number_of_players_] = number_of_players
 
         games[game_id] = game
 

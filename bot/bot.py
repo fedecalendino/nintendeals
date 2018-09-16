@@ -50,24 +50,21 @@ def build_country_comments(games, countries):
 
     for country, country_details in countries:
         LOG.info('Building reddit comment for {} {}'.format(country_details[flag_], country))
-        comment_content = generator.make_comment(games, country, country_details)
 
-        if len(comment_content) > 10000:
+        for attempt in range(0, 7):
             comment_content = generator.make_comment(
-                games, country, country_details, disable_urls=True)
+                games,
+                country,
+                country_details,
+                disable_fulltitles=attempt in [1, 3, 4, 5, 6],
+                disable_urls=attempt in [2, 3, 4, 5, 6],
+                disable_fullprice=attempt in [5, 6],
+                disable_decimals=attempt in [6]
+            )
 
-            if len(comment_content) > 10000:
-                comment_content = generator.make_comment(
-                    games, country, country_details, disable_urls=True, disable_fullprice=True
-                )
-
-                if len(comment_content) > 10000:
-                    comment_content = generator.make_comment(
-                        games, country, country_details,
-                        disable_urls=True, disable_fullprice=True, disable_decimals=True
-                    )
-
-        country_comments[country] = comment_content
+            if len(comment_content) < 10000:
+                country_comments[country] = comment_content
+                break
 
     return country_comments
 

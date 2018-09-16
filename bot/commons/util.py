@@ -1,5 +1,5 @@
-from datetime import datetime
 from bot.commons.keys import *
+from bot.commons.config import EMOJI_NINTENDO
 
 
 def format_float(value, total_digits=0):
@@ -27,6 +27,9 @@ def get_title(game):
         title = game[title_]
     else:
         title = game[title_jp_]
+
+    if published_by_nintendo_ in game and game[published_by_nintendo_]:
+        title = EMOJI_NINTENDO + ' ' + title
 
     return title. \
         replace('\'', ''). \

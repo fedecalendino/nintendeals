@@ -6,8 +6,6 @@ from bot.commons.keys import *
 
 MONGODB_URI = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/nintendo')
 
-VERSION = "5"
-
 PORT = int(os.environ.get("PORT", 5000))
 
 if PORT == 5000:
@@ -30,8 +28,8 @@ EMOJI_METACRITIC = 'Ⓜ️'
 EMOJI_USER = '👤'
 EMOJI_PLUS = '➕'
 EMOJI_MINUS = '➖'
+EMOJI_NINTENDO = ' 🍄'
 
-UPDATE_FREQUENCY = int(os.environ.get('UPDATE_TIME_FRAME', 15))
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
@@ -44,7 +42,7 @@ SYSTEMS = {
         system_: {
             NA_: 'switch',
             EU_: 'Nintendo Switch',
-            JP_: 'switch'
+            JP_: 'switch',
         }
     },
 
@@ -63,7 +61,7 @@ REGIONS = {
     NA_: {
         key_: NA_,
         name_: 'North America',
-        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc'
+        api_: 'https://www.nintendo.com/json/content/get/filter/game?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc{additional}'
     },
 
     EU_: {

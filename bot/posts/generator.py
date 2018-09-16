@@ -18,7 +18,7 @@ LOG = logging.getLogger('📝')
 PRICES_DB = PricesDatabase.instance()
 
 
-def make_comment(games, country, country_details, disable_urls=False, disable_fullprice=False, disable_decimals=False):
+def make_comment(games, country, country_details, disable_fulltitles=False, disable_urls=False, disable_fullprice=False, disable_decimals=False):
     now = datetime.utcnow().replace(tzinfo=None)
 
     text = []
@@ -43,15 +43,16 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
         if not (sale[start_date_] < now < sale[end_date_]):
             continue
 
-        if len(title) > 25:
-            title = title[:23] + '…'
+#        if disable_fulltitles:
+        if len(title) > 30:
+            title = title[:27] + '…'
 
         # Making titles as url if possible
         if not disable_urls:
             if country in game[websites_]:
                 title = '[{}]({})'.format(
                     title,
-                    game[websites_][country].replace('https://www.', '//')
+                    game[websites_][country].replace('https://www.' if country != JP_ else 'https://', '//')
                 )
 
         discount = sale[discount_]
@@ -88,7 +89,7 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
 
         # Formatting number of players
         if players is None or players == 0:
-            players = 'tbd'
+            players = 'n/a'
         elif players == 1:
             players = '1'
         elif players == 2:
@@ -137,8 +138,12 @@ def make_comment(games, country, country_details, disable_urls=False, disable_fu
     text.insert(0, '')
     text.insert(0, '> MS: Metascore | US: Userscore (both from metacritic.com)')
     text.insert(0, '')
-    text.insert(0, '`{} new` `{} expires in 48hs` `{} expires in 24hs`'.format(
-        EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
+    text.insert(0, '`{} new deal` `{} expires in 48hs` `{} expires in 24hs` `{} published by nintendo`'.format(
+        EMOJI_NEW,
+        EMOJI_EXP_TOMORROW,
+        EMOJI_EXP_TODAY,
+        EMOJI_NINTENDO
+    ))
 
     return '\n'.join(text)
 
@@ -158,7 +163,12 @@ def make_post(games, countries, filtered=False):
 
     if not filtered:
         text.append('')
-        text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY))
+        text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs` `{} published by nintendo`'.format(
+            EMOJI_NEW,
+            EMOJI_EXP_TOMORROW,
+            EMOJI_EXP_TODAY,
+            EMOJI_NINTENDO
+        ))
         text.append('')
         text.append('___')
         text.append('')

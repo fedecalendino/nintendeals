@@ -15,7 +15,7 @@ from bot.db.mongo import PricesDatabase
 from bot.commons.config import *
 from bot.commons.keys import *
 
-from bot.nintendo.commons import alt_versions
+from bot.nintendo.commons import *
 
 
 LOG = logging.getLogger('🎮.🇯🇵 ')
@@ -62,7 +62,8 @@ def get_id_map(system):
         id_map[title_info['LinkURL'].rsplit('/', 1)[-1]] = {
             id_: game_id,
             title_jp_: title_info['TitleName'],
-            release_date_: rd
+            release_date_: rd,
+            publisher_: title_info['MakerName']
         }
 
     return id_map
@@ -80,8 +81,8 @@ def find_games(system):
         title_jp = info[title_jp_]
         release_date = info[release_date_]
 
-        if GAMES_DB.find_by_region_and_nsuid(JP_, nsuid) is not None:
-            continue
+        # if GAMES_DB.find_by_region_and_nsuid(JP_, nsuid) is not None:
+        #    continue
 
         if nsuid in alt_versions:
             game_id = alt_versions[nsuid]
@@ -110,7 +111,6 @@ def find_games(system):
                 ids_: {},
                 websites_: {},
                 system_: system,
-                release_date_: release_date,
                 number_of_players_: number_of_players
             }
 
@@ -123,6 +123,20 @@ def find_games(system):
         game[ids_][JP_] = nsuid
         game[title_jp_] = title_jp
         game[websites_][JP_] = url
+
+        # Setting release date
+        if release_date_ not in game:
+            game[release_date_] = release_date
+        elif game[release_date_] is None and release_date:
+            game[release_date_] = release_date
+
+        # Setting published by nintendo
+        by_nintendo = info[publisher_] == '任天堂'
+
+        if published_by_nintendo_ not in game:
+            game[published_by_nintendo_] = by_nintendo
+        elif not game[published_by_nintendo_] and by_nintendo:
+            game[published_by_nintendo_] = by_nintendo
 
         games[game_id] = game
 

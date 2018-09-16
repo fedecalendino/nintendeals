@@ -14,7 +14,7 @@ from bot.db.mongo import PricesDatabase
 from bot.commons.config import *
 from bot.commons.keys import *
 
-from bot.nintendo.commons import alt_versions
+from bot.nintendo.commons import *
 
 
 LOG = logging.getLogger('🎮.🇺🇸 ')
@@ -27,10 +27,15 @@ GAMES_DB = GamesDatabase.instance()
 PRICES_DB = PricesDatabase.instance()
 
 
-def find_games(system, limit=200, offset=0):
+def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
     LOG.info('Looking for games {} to {} in NA'.format(offset, offset + limit))
 
-    r = requests.get(LIST_API.format(system=SYSTEMS[system][system_][NA_], limit=limit, offset=offset))
+    r = requests.get(LIST_API.format(
+        system=SYSTEMS[system][system_][NA_],
+        limit=limit,
+        offset=offset,
+        additional='&publisher=nintendo' if published_by_nintendo else ''
+    ))
     json = r.json()
 
     total = json['filter']['total']
@@ -52,8 +57,8 @@ def find_games(system, limit=200, offset=0):
 
         nsuid = data['nsuid']
 
-        if GAMES_DB.find_by_region_and_nsuid(NA_, nsuid) is not None:
-            continue
+        # if GAMES_DB.find_by_region_and_nsuid(NA_, nsuid) is not None:
+        #    continue
 
         if system == SWITCH_:
             game_id = "{}-{}".format(system, data['game_code'][-5:-1])
@@ -78,16 +83,11 @@ def find_games(system, limit=200, offset=0):
         categories.sort()
 
         if game is None:
-            release_date = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
-            number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
-
             game = {
                 id_: game_id,
                 ids_: {},
                 system_: system,
                 websites_: {},
-                release_date_: release_date,
-                number_of_players_: int(number_of_players) if len(number_of_players) else 0
             }
 
             LOG.info("New game {} ({}) found on NA".format(title, game[id_]))
@@ -99,6 +99,17 @@ def find_games(system, limit=200, offset=0):
         game[title_] = title
         game[ids_][NA_] = nsuid
         game[genres_] = [cat.lower() for cat in categories]
+
+        # Setting release date
+        release_date = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
+
+        # Setting number of players
+        number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
+        number_of_players = int(number_of_players) if len(number_of_players) else 0
+
+        game[published_by_nintendo_] = published_by_nintendo
+        game[release_date_] = release_date
+        game[number_of_players_] = number_of_players
 
         games[game_id] = game
 
@@ -122,8 +133,11 @@ def find_games(system, limit=200, offset=0):
         PRICES_DB.save(price)
 
     if total > limit + offset:
-        games.update(find_games(system, limit, offset + limit))
+        games.update(_find_games(system, limit, offset + limit))
 
     return games
 
 
+def find_games(system, limit=200, offset=0):
+    _find_games(system, limit, offset, False)
+    _find_games(system, limit, offset, True)
