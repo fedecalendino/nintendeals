@@ -7,9 +7,16 @@
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
+
+    <style type="text/css">
+        .no-gutter > [class*='col-'] {
+            padding-right:0;
+            padding-left:0;
+        }
+    </style>
 </head>
 <body>
-	<div class="container">
+	<div class="no-gutter container">
         <div class="row">
             <h2>Add games to your wishlist</h2>
             <p class="lead" id="list"></p>
@@ -22,6 +29,27 @@
                     If you want to change the selected countries you just "add" the game again and the bot will track only the new list of countries that you provide.</p>
                 <p></p>
                 <p>In the private messages sent by the bot, you'll see a ➖ icon next to each of your wishlisted games. If you click it, it will generate a private message for the bot to remove the game from your wishlist.</p>
+            </div>
+            <div class="alert alert-info">
+                <h4>Legends</h4>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>🍄 : published by nintendo</td>
+                            <td width="10px"></td>
+                            <td>☁️ : cloud saves supported</td>
+                            <td width="10px"></td>
+                            <td>🌐 : nintendo switch online required</td>
+                        </tr>
+                        <tr>
+                            <td>📦 : dlc available</td>
+                            <td width="10px"></td>
+                            <td>🎛️ : demo available</td>
+                            <td width="10px"></td>
+                           <td>🎤 : voice chat</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -44,12 +72,12 @@
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Release Date</th>
+                        <th scope="col">Release</th>
                         <th scope="col">Available on</th>
-			<th scope="col" align="center">Players</th>
+                        <th scope="col" align="center">Players</th>
                         <th scope="col" align="center">Metascore</th>
                         <th scope="col" align="center">Userscore</th>
-                        <th scope="col" align="center">Actions</th>
+                        <th scope="col" align="center"> </th>
                     </tr>
                 </thead>
                 <tbody id="table">
@@ -112,7 +140,7 @@
 						game = msg[index];
 
 						row =  '<tr>';
-						row += '  <td scope="row"><strong>{title}</strong></td>';
+						row += '  <td scope="row"><strong>{title} {features}</strong></td>';
 						row += '  <td align="center" bgcolor="{color}">{release_date}</td>';
 						row += '  <td>{countries}</td>';
 						row += '  <td>{number_of_players}</td>';
@@ -155,39 +183,86 @@
                             color = '#000000';
                         }
 
-                        row = row.replace('{color}', color)
-	        			row = row.replace('{title}', game['title'].replace(' 🍄', '<font color="white">!</font>🍄'))
-	        			row = row.replace('{release_date}', game['release_date'])
-					    row = row.replace('{countries}', countries)
-	        			row = row.replace('{number_of_players}', game['number_of_players'])
-		                        
-				        try {
-					    if (game["scores"]["metascore"] == '-') {
-					        row = row.replace('{metascore}', '-')
-					    } else if (game["scores"]["metascore"] != null) {
-					        row = row.replace('{metascore}', game["scores"]["metascore"])
-					    } else {
-					        row = row.replace('{metascore}', '')
-					    }
-					} catch(err) {
-					    row = row.replace('{metascore}', '')
-					}
-						
-					try {
-					    if (game["scores"]["userscore"] == '-') {
-					        row = row.replace('{userscore}', '-')
-					    } else if (game["scores"]["userscore"] != null) {
-					        row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
-					    } else {
-					        row = row.replace('{userscore}', '')
-				            }
-					} catch(err) {
-					    row = row.replace('{userscore}', '')
-					}
-						
-					row = row.replace('{link}', link)
+	        			features = '';
 
-				table.append(row);
+                        try {
+	        			    if (game['features']['cloud_saves']) {
+	        			        features += '☁️ ';
+	        			    }
+	        			} catch(err) {
+	        			}
+
+
+                        try {
+	        			    if (game['features']['nso']) {
+	        			        features += '🌐 ';
+	        			    }
+	        			} catch(err) {
+	        			}
+
+	        			try {
+	        			    if (game['features']['dlc']) {
+	        			        features += '📦 ';
+	        			    }
+	        			} catch(err) {
+	        			}
+
+	        			try {
+	        			    if (game['features']['voice_chat']) {
+	        			        features += '🎤 ';
+	        			    }
+	        			} catch(err) {
+	        			}
+
+	        			try {
+	        			    if (game['features']['demo']) {
+	        			        features += '🎛️ ';
+	        			    }
+	        			} catch(err) {
+	        			}
+
+                        /*
+	        			try {
+	        			    if (game['features']['hd_rumble']) {
+	        			        // features += '🎮 ';
+	        			    }
+	        			} catch(err) {
+	        			}*/
+
+                        row = row.replace('{color}', color);
+	        			row = row.replace('{title}', game['title'].replace(' 🍄', '<font color="white">!</font>🍄'));
+	        			row = row.replace('{release_date}', game['release_date']);
+					    row = row.replace('{countries}', countries);
+	        			row = row.replace('{features}', features);
+	        			row = row.replace('{number_of_players}', game['number_of_players']);
+
+				        try {
+                            if (game["scores"]["metascore"] == '-') {
+                                row = row.replace('{metascore}', '-')
+                            } else if (game["scores"]["metascore"] != null) {
+                                row = row.replace('{metascore}', game["scores"]["metascore"])
+                            } else {
+                                row = row.replace('{metascore}', '')
+                            }
+                        } catch(err) {
+                            row = row.replace('{metascore}', '')
+                        }
+
+                        try {
+                            if (game["scores"]["userscore"] == '-') {
+                                row = row.replace('{userscore}', '-')
+                            } else if (game["scores"]["userscore"] != null) {
+                                row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
+                            } else {
+                                row = row.replace('{userscore}', '')
+                                }
+                        } catch(err) {
+                            row = row.replace('{userscore}', '')
+                        }
+
+                        row = row.replace('{link}', link)
+
+                    table.append(row);
 				})
 			});
 	    	}

@@ -57,6 +57,9 @@ def track():
                 userscore_: game[scores_][userscore_] if userscore_ in game[scores_] else None
             }
 
+        if features_ in game:
+            item[features_] = game[features_]
+
         response.append(item)
 
     response = sorted(response, key=lambda g: g[release_date_], reverse=True)

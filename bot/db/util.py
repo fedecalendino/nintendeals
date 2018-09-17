@@ -48,6 +48,7 @@ def fill_game(game, exclude_prices=False):
 
 def get_relevance_score(game):
     total_countries = 0
+    total_sales = 0
 
     time_span = 120
 
@@ -78,12 +79,17 @@ def get_relevance_score(game):
                 total_countries += 1
                 counted_country = True
 
+            total_sales += 1
+
             if end_date > now:
                 days_on_sale += (now - start_date).days
             else:
                 days_on_sale += (end_date - start_date).days
 
     if total_countries == 0:
+        return 10
+
+    if total_countries == total_sales:
         return 10
 
     days_on_sale /= total_countries

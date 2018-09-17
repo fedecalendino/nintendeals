@@ -95,29 +95,31 @@ def find_games(system, start=0, limit=200):
         game[ids_][EU_] = nsuid
         game[genres_] = categories
 
-        # Setting release date
-        release_date = data['dates_released_dts'][0][:10]
-
-        if release_date_ not in game:
-            game[release_date_] = release_date
-        elif game[release_date_] is None and release_date:
-            game[release_date_] = release_date
-
-        # Setting published by nintendo
-        by_nintendo = 'publisher' in data and data['publisher'] == 'Nintendo'
-
-        if published_by_nintendo_ not in game:
-            game[published_by_nintendo_] = by_nintendo
-        elif not game[published_by_nintendo_] and by_nintendo:
-            game[published_by_nintendo_] = by_nintendo
-
         # Setting number of players
         number_of_players = data['players_to'] if 'players_to' in data else 0
+        game[number_of_players_] = number_of_players
 
-        if number_of_players_ not in game:
-            game[number_of_players_] = number_of_players
-        elif game[number_of_players_] == 0 and number_of_players != 0:
-            game[number_of_players_] = number_of_players
+        game[features_] = {
+            feat_demo_: data['demo_availability'] if 'demo_availability' in data else None,
+            feat_dlc_: data['add_on_content_b'] if 'add_on_content_b' in data else None,
+            feat_free_to_play_: data['price_sorting_f'] == 0,
+            feat_internet_: data['internet'] if 'internet' in data else None,
+            feat_local_play_: data['local_play'] if 'local_play' in data else None,
+            feat_players_: number_of_players,
+        }
+
+        if system == SWITCH_:
+            game[features_][feat_cloud_saves_] = data['cloud_saves_b'] if 'cloud_saves_b' in data else None
+            game[features_][feat_hd_rumble_] = data['hd_rumble_b'] if 'hd_rumble_b' in data else None
+            game[features_][feat_nso_] = data['paid_subscription_required_b'] if 'paid_subscription_required_b' in data else None
+            game[features_][feat_voice_chat_] = data['voice_chat_b'] if 'voice_chat_b' in data else None
+
+        # Setting release date
+        game[release_date_] = data['dates_released_dts'][0][:10]
+
+        # Setting published by nintendo
+        if 'publisher' in data:
+            game[published_by_nintendo_] = data['publisher'] == 'Nintendo'
 
         games[game_id] = game
 
