@@ -54,7 +54,7 @@ SYSTEMS = {
             EU_: '3DS',
             JP_: '3ds'
         }
-    }
+    },
 }
 
 REGIONS = {

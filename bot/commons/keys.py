@@ -59,6 +59,12 @@ feat_local_play_ = 'local_play'
 feat_nso_ = 'nso'
 feat_players_ = 'players'
 feat_voice_chat_ = 'voice_chat'
+feat_ir_camera_ = 'ir_camera'
+feat_mii_ = 'mii'
+feat_spotpass_ = 'spotpass'
+feat_streetpass_ = 'streetpass'
+feat_download_play_ = 'download_play'
+feat_motion_control_ = 'motion_control'
 
 # Countries/ Regions
 AU_ = 'AU'

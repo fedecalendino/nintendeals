@@ -44,8 +44,8 @@ def make_comment(games, country, country_details, disable_fulltitles=False, disa
             continue
 
 #        if disable_fulltitles:
-        if len(title) > 30:
-            title = title[:27] + '…'
+        if len(title) > 26:
+            title = title[:24] + '…'
 
         # Making titles as url if possible
         if not disable_urls:
@@ -229,7 +229,10 @@ def make_post(games, countries, filtered=False):
             row += '|`%{discount}{new}{warning}`'.format(discount=discount, new=new, warning=warning)
 
         if has_new_discount:
-            row = "**{}**{}".format(title, row)
+            if title.startswith(' '):
+                row = " **{}**{}".format(title[1:], row)
+            else:
+                row = "**{}**{}".format(title, row)
         else:
             row = "{}{}".format(title, row)
 

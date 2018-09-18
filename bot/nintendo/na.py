@@ -16,6 +16,9 @@ from bot.commons.keys import *
 
 from bot.nintendo.commons import *
 
+# Local
+from bot.nintendo.util import *
+
 
 LOG = logging.getLogger('🎮.🇺🇸 ')
 
@@ -57,30 +60,16 @@ def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
 
         nsuid = data['nsuid']
 
-        # if GAMES_DB.find_by_region_and_nsuid(NA_, nsuid) is not None:
-        #    continue
-
-        if system == SWITCH_:
-            game_id = "{}-{}".format(system, data['game_code'][-5:-1])
-        elif system == N3DS_:
-            game_id = "{}-{}".format(system, data['game_code'][-4:-1])
-        else:
-            raise Exception()
-
+        # Checking for game_id fixes
         if nsuid in alt_versions:
             game_id = alt_versions[nsuid]
+        else:
+            game_id = parse_game_id(data['game_code'], system)
 
+        # Loading game from database
         game = GAMES_DB.load(game_id)
 
-        title = data['title']
-        title = title.replace('Â®', '®').replace('Ã©', 'é')
-
-        categories = data['categories']['category']
-
-        if type(categories) == str:
-            categories = [categories]
-
-        categories.sort()
+        title = data['title'].replace('Â®', '®').replace('Ã©', 'é')
 
         if game is None:
             game = {
@@ -98,36 +87,39 @@ def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
 
         game[title_] = title
         game[ids_][NA_] = nsuid
-        game[genres_] = [cat.lower() for cat in categories]
+        game[genres_] = parse_categories(data['categories']['category'])
 
-        # Setting release date
-        release_date = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
+        # Setting number of players if missing or not available
+        if game.get(number_of_players_) is None or game[number_of_players_] == 0:
+            number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
 
-        # Setting number of players
-        number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
-        number_of_players = int(number_of_players) if len(number_of_players) else 0
+            game[number_of_players_] = int(number_of_players) if len(number_of_players) else 0
 
-        game[published_by_nintendo_] = published_by_nintendo
-        game[release_date_] = release_date
-        game[number_of_players_] = number_of_players
+        # Setting release date if missing
+        if game.get(release_date_) is None:
+            game[release_date_] = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
 
-        games[game_id] = game
+        # Setting if nintendo is publisher if missing
+        if game.get(published_by_nintendo_) is None or (not game[published_by_nintendo_] and published_by_nintendo):
+            game[published_by_nintendo_] = published_by_nintendo
 
         price = PRICES_DB.load(nsuid)
 
         if price is None:
-            price = {
-                id_: nsuid,
-                countries_: {}
-            }
+            price = {id_: nsuid, countries_: {}}  # Creating price object if missing
 
         for country, country_details in COUNTRIES.items():
             if country_details[region_] == NA_:
+
+                # Adding placeholders for regional prices
                 if country not in price[countries_]:
                     price[countries_][country] = None
 
+                # Updating regional websites
                 if websites_ in country_details and 'slug' in data:
                     game[websites_][country] = country_details[websites_].format(data['slug'])
+
+        games[game_id] = game
 
         GAMES_DB.save(game)
         PRICES_DB.save(price)

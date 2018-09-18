@@ -14,6 +14,9 @@ from bot.commons.keys import *
 
 from bot.nintendo.commons import *
 
+# Local
+from bot.nintendo.util import *
+
 
 LOG = logging.getLogger('🎮.🇪🇺 ')
 
@@ -54,29 +57,19 @@ def find_games(system, start=0, limit=200):
         if len(product_ids) == 0:
             continue
 
+        # Getting nsuids for switch (7) or 3ds (5)
         nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
 
-        # if GAMES_DB.find_by_region_and_nsuid(EU_, nsuid) is not None:
-        #    continue
-
-        if system == SWITCH_:
-            game_id = '{}-{}'.format(system, product_ids[0][-5:-1])
-        elif system == N3DS_:
-            game_id = '{}-{}'.format(system, product_ids[0][-4:-1])
-        else:
-            raise Exception()
-
+        # Checking for game_id fixes
         if nsuid in alt_versions:
             game_id = alt_versions[nsuid]
+        else:
+            game_id = parse_game_id(product_ids[0], system)
 
         game = GAMES_DB.load(game_id)
 
-        title = data['title']
-        title = title.replace('Â®', '®').replace('Ã©', 'é')
+        title = data['title'].replace('Â®', '®').replace('Ã©', 'é')
 
-        categories = [cat.lower() for cat in data['game_categories_txt']]
-        categories.sort()
-        
         if game is None:
             game = {
                 id_: game_id,
@@ -93,52 +86,64 @@ def find_games(system, start=0, limit=200):
 
         game[title_] = title
         game[ids_][EU_] = nsuid
-        game[genres_] = categories
+        game[genres_] = parse_categories(data['game_categories_txt'])
 
         # Setting number of players
         number_of_players = data['players_to'] if 'players_to' in data else 0
-        game[number_of_players_] = number_of_players
 
+        if game.get(number_of_players_) is None or number_of_players > 0:
+            game[number_of_players_] = number_of_players
+
+        # Setting game features
         game[features_] = {
-            feat_demo_: data['demo_availability'] if 'demo_availability' in data else None,
-            feat_dlc_: data['add_on_content_b'] if 'add_on_content_b' in data else None,
-            feat_free_to_play_: data['price_sorting_f'] == 0,
-            feat_internet_: data['internet'] if 'internet' in data else None,
-            feat_local_play_: data['local_play'] if 'local_play' in data else None,
-            feat_players_: number_of_players,
+            feat_demo_: data.get('demo_availability'),
+            feat_dlc_: data.get('add_on_content_b'),
+            feat_internet_: data.get('internet'),
+            feat_local_play_: data.get('local_play'),
+            feat_players_: game[number_of_players_],
         }
 
         if system == SWITCH_:
-            game[features_][feat_cloud_saves_] = data['cloud_saves_b'] if 'cloud_saves_b' in data else None
-            game[features_][feat_hd_rumble_] = data['hd_rumble_b'] if 'hd_rumble_b' in data else None
-            game[features_][feat_nso_] = data['paid_subscription_required_b'] if 'paid_subscription_required_b' in data else None
-            game[features_][feat_voice_chat_] = data['voice_chat_b'] if 'voice_chat_b' in data else None
+            game[features_][feat_free_to_play_] = data.get('price_sorting_f', 0) == 0
+            game[features_][feat_cloud_saves_] = data.get('cloud_saves_b')
+            game[features_][feat_hd_rumble_] = data.get('hd_rumble_b')
+            game[features_][feat_nso_] = data.get('paid_subscription_required_b')
+            game[features_][feat_voice_chat_] = data.get('voice_chat_b')
+            game[features_][feat_ir_camera_] = data.get('ir_motion_camera_b')
+        elif system == N3DS_:
+            game[features_][feat_mii_] = data.get('mii_support')
+            game[features_][feat_spotpass_] = data.get('spot_pass')
+            game[features_][feat_streetpass_] = data.get('street_pass')
+            game[features_][feat_download_play_] = data.get('download_play')
+            game[features_][feat_motion_control_] = data.get('motion_control_3ds')
 
-        # Setting release date
-        game[release_date_] = data['dates_released_dts'][0][:10]
+        # Setting release date if missing
+        if game.get(release_date_) is None:
+            game[release_date_] = data['dates_released_dts'][0][:10]
 
-        # Setting published by nintendo
-        if 'publisher' in data:
-            game[published_by_nintendo_] = data['publisher'] == 'Nintendo'
+        # Setting if nintendo is publisher if missing
+        published_by_nintendo = data.get('publisher') == 'Nintendo'
 
-        games[game_id] = game
+        if game.get(published_by_nintendo_) is None or (not game[published_by_nintendo_] and published_by_nintendo):
+            game[published_by_nintendo_] = published_by_nintendo
 
         price = PRICES_DB.load(nsuid)
 
         if price is None:
-            price = {
-                id_: nsuid,
-                countries_: {}
-            }
+            price = {id_: nsuid, countries_: {}}  # Creating price object if missing
 
         for country, country_details in COUNTRIES.items():
             if country_details[region_] == EU_:
 
+                # Adding placeholders for regional prices
                 if country not in price[countries_]:
                     price[countries_][country] = None
 
+                # Updating regional websites
                 if websites_ in country_details:
                     game[websites_][country] = country_details[websites_].format(data['url'].rsplit('/', 1)[-1])
+
+        games[game_id] = game
 
         GAMES_DB.save(game)
         PRICES_DB.save(price)

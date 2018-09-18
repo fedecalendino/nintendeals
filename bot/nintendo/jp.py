@@ -17,6 +17,9 @@ from bot.commons.keys import *
 
 from bot.nintendo.commons import *
 
+# Local
+from bot.nintendo.util import *
+
 
 LOG = logging.getLogger('🎮.🇯🇵 ')
 
@@ -41,28 +44,12 @@ def get_id_map(system):
     id_map = {}
 
     for title_info in game_list['TitleInfoList']['TitleInfo']:
-        if system == SWITCH_:
-            game_id = "{}-{}".format(system, title_info['InitialCode'][-5:-1])
-        elif system == N3DS_:
-            game_id = "{}-{}".format(system, title_info['InitialCode'][-4:-1])
-        else:
-            raise Exception()
+        nsuid = title_info['LinkURL'].rsplit('/', 1)[-1]
 
-        rd = title_info['SalesDate']
-
-        if '.' in rd:
-            rd = rd.split('.')
-
-            rd = '{}-{}-{}'.format(
-                rd[0],
-                '0' + rd[1] if len(rd[1]) == 1 else rd[1],
-                '0' + rd[2] if len(rd[2]) == 1 else rd[2]
-            )
-
-        id_map[title_info['LinkURL'].rsplit('/', 1)[-1]] = {
-            id_: game_id,
+        id_map[nsuid] = {
+            id_: parse_game_id(title_info['InitialCode'], system),
             title_jp_: title_info['TitleName'],
-            release_date_: rd,
+            release_date_: parse_jp_date(title_info['SalesDate']),
             publisher_: title_info['MakerName']
         }
 
@@ -76,24 +63,22 @@ def find_games(system):
     games = {}
 
     for nsuid, info in id_map.items():
-
-        game_id = info[id_]
         title_jp = info[title_jp_]
         release_date = info[release_date_]
 
-        # if GAMES_DB.find_by_region_and_nsuid(JP_, nsuid) is not None:
-        #    continue
-
+        # Checking for game_id fixes
         if nsuid in alt_versions:
             game_id = alt_versions[nsuid]
+        else:
+            game_id = info[id_]
 
         game = GAMES_DB.load(game_id)
 
         url = REGION[details_][system].format(nsuid)
 
-        if game is None:
-            number_of_players = 0
+        number_of_players = 0
 
+        if game is None:
             if system == SWITCH_:
                 try:
                     details = requests.get(url).text
@@ -110,8 +95,7 @@ def find_games(system):
                 id_: game_id,
                 ids_: {},
                 websites_: {},
-                system_: system,
-                number_of_players_: number_of_players
+                system_: system
             }
 
             LOG.info('New game {} ({}) found on JP'.format(title_jp, game_id))
@@ -122,33 +106,33 @@ def find_games(system):
 
         game[ids_][JP_] = nsuid
         game[title_jp_] = title_jp
+
+        # Updating regional websites
         game[websites_][JP_] = url
 
-        # Setting release date
-        if release_date_ not in game:
+        # Setting number of players if missing or not available
+        if game.get(number_of_players_) is None or game[number_of_players_] == 0:
+            game[number_of_players_] = number_of_players
+
+        # Setting release date if missing
+        if game.get(release_date_) is None:
             game[release_date_] = release_date
-        elif game[release_date_] is None and release_date:
-            game[release_date_] = release_date
 
-        # Setting published by nintendo
-        by_nintendo = info[publisher_] == '任天堂'
+        # Setting if nintendo is publisher if missing
+        published_by_nintendo = info[publisher_] == '任天堂'
 
-        if published_by_nintendo_ not in game:
-            game[published_by_nintendo_] = by_nintendo
-        elif not game[published_by_nintendo_] and by_nintendo:
-            game[published_by_nintendo_] = by_nintendo
-
-        games[game_id] = game
+        if game.get(published_by_nintendo_) is None or (not game[published_by_nintendo_] and published_by_nintendo):
+            game[published_by_nintendo_] = published_by_nintendo
 
         price = PRICES_DB.load(nsuid)
 
         if price is None:
-            price = {
-                id_: nsuid,
-                countries_: {}
-            }
+            price = {id_: nsuid, countries_: {}}  # Creating price object if missing
 
+        # Adding placeholders for regional prices
         price[countries_][JP_] = None
+
+        games[game_id] = game
 
         GAMES_DB.save(game)
         PRICES_DB.save(price)
