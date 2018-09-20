@@ -29,7 +29,7 @@ def track():
 
     response = {
         username_: REDDIT_USERNAME,
-        countries_: sorted(countries, key=lambda g: g[key_])
+        countries_: countries
     }
 
     return Response(json.dumps(response),  mimetype='application/json')
