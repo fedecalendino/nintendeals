@@ -144,6 +144,7 @@ def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
                     game[websites_][country] = country_details[websites_].format(data['slug'])
 
         if features_ not in game and system == SWITCH_:
+            LOG.info('Fetching features for {}'.format(title))
             game[features_] = fetch_features(data, game[websites_][US_])
 
         games[game_id] = game
