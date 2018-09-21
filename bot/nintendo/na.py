@@ -30,6 +30,30 @@ GAMES_DB = GamesDatabase.instance()
 PRICES_DB = PricesDatabase.instance()
 
 
+def fetch_features(data, website):
+    features = {
+        feat_free_to_play_: data['free_to_start']
+    }
+
+    try:
+        response = requests.get(website)
+        content = response.text
+
+        if 'Get even more from your games with a Nintendo Switch Online membership' in content:
+            features[feat_nso_] = '<figcaption>Online Play</figcaption>' in content
+            features[feat_cloud_saves_] = '<figcaption>Save Data Cloud</figcaption>' in content
+        else:
+            features[feat_nso_] = None
+            features[feat_cloud_saves_] = None
+
+        features[feat_demo_] = 'Demo available' in content
+        features[feat_dlc_] = 'DLC packs' in content or 'Individual DLC' in content
+    except Exception as e:
+        print(e)
+
+    return features
+
+
 def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
     LOG.info('Looking for games {} to {} in NA'.format(offset, offset + limit))
 
@@ -118,6 +142,9 @@ def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
                 # Updating regional websites
                 if websites_ in country_details and 'slug' in data:
                     game[websites_][country] = country_details[websites_].format(data['slug'])
+
+        if features_ not in game and system == SWITCH_:
+            game[features_] = fetch_features(data, game[websites_][US_])
 
         games[game_id] = game
 
