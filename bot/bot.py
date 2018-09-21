@@ -169,7 +169,7 @@ def game_lookup():
             LOG.error(e)
             traceback.print_exc()
 
-        time.sleep(12 * 60 * 60)
+        time.sleep(2 * 60 * 60)
 
 
 def score_lookup():
