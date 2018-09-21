@@ -76,21 +76,7 @@ def find_games(system):
 
         url = REGION[details_][system].format(nsuid)
 
-        number_of_players = 0
-
         if game is None:
-            if system == SWITCH_:
-                try:
-                    details = requests.get(url).text
-                    details = re.findall('NXSTORE\\.titleDetail\\.jsonData .*;', details)[0]
-                    details = details.replace('NXSTORE.titleDetail.jsonData = ', '').replace(';', '')
-
-                    data = json.loads(details)
-
-                    number_of_players = max(data['player_number'].values())
-                except:
-                    pass
-
             game = {
                 id_: game_id,
                 ids_: {},
@@ -104,15 +90,37 @@ def find_games(system):
                 LOG.info('Found duplicate for {} on JP'.format(game_id))
                 continue
 
+        if features_ not in game and system == SWITCH_:
+            try:
+                content = requests.get(url).text
+                details = re.findall('NXSTORE\\.titleDetail\\.jsonData .*;', content)[0]
+                details = details.replace('NXSTORE.titleDetail.jsonData = ', '').replace(';', '')
+
+                data = json.loads(details)
+
+                game[features_] = {
+                    feat_cloud_saves_: None if 'cloud_backup_type' not in data else data['cloud_backup_type'] == 'supported',
+                    feat_nso_: None if 'features' not in data else 2001 in [feature['id'] for feature in data['features']],
+                    feat_demo_: False if 'demos' not in data else len(data.get('demos')) > 0,
+                    feat_dlc_: '<span>追加コンテンツ</span>' in content
+                }
+
+                players = [0]
+
+                for ps in data['player_number'].values():
+                    players.append(ps)
+
+                # Setting number of players if missing or not available
+                if game.get(number_of_players_) is None or game[number_of_players_] == 0:
+                    game[number_of_players_] = max(players)
+            except Exception as e:
+                print(e)
+
         game[ids_][JP_] = nsuid
         game[title_jp_] = title_jp
 
         # Updating regional websites
         game[websites_][JP_] = url
-
-        # Setting number of players if missing or not available
-        if game.get(number_of_players_) is None or game[number_of_players_] == 0:
-            game[number_of_players_] = number_of_players
 
         # Setting release date if missing
         if game.get(release_date_) is None:
