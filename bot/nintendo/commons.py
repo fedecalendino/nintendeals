@@ -14,4 +14,5 @@ alt_versions = {
     '70010000000854': 'Switch-AN2B',    # EU: Let's Sing 2018
     '70010000009417': 'Switch-AMUS',    # JP: Fallen Legion
     '70010000003655': 'Switch-AK75',    # EU: Tricky Towers
+    '70010000002022': 'Switch-AM28',    # NA: Arena of Valor
 }
