@@ -138,6 +138,13 @@ def update_posts():
                 submission
             )
 
+        try:
+            LOG.info('⭐ Sending wishlist notifications')
+            notify()
+        except Exception as e:
+            LOG.error(e)
+            traceback.print_exc()
+
 
 def inbox():
     while True:
@@ -184,18 +191,6 @@ def score_lookup():
         time.sleep(12 * 20 * 60)
 
 
-def wishlist_notifications():
-    while True:
-        try:
-            LOG.info('⭐ Sending wishlist notifications')
-            notify()
-        except Exception as e:
-            LOG.error(e)
-            traceback.print_exc()
-
-        time.sleep(10 * 60)
-
-
 def main():
     LOG.info('  Mongo: {}'.format(MONGODB_URI))
     LOG.info('  Reddit Username: {}'.format(REDDIT_USERNAME))
@@ -209,15 +204,12 @@ def main():
     LOG.info('Setting up score lookup thread')
     threading.Thread(target=score_lookup).start()
 
-    LOG.info('Setting up wishlist lookup thread')
-    threading.Thread(target=wishlist_notifications).start()
-
     while True:
         try:
+            LOG.info('🌐 Updating posts')
             update_posts()
         except Exception as e:
             LOG.error(e)
             traceback.print_exc()
 
-        time.sleep(5 * 60)  # 5 minutes
-
+        time.sleep(30 * 60)
