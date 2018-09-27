@@ -46,6 +46,11 @@ def wishlist():
     return send_from_directory('web', 'wishlist.html')
 
 
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory('web', 'favicon.ico')
+
+
 @app.route('/css/<path:path>')
 @app.route('/wishlist/css/<path:path>')
 def send_css(path):
