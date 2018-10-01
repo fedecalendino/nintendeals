@@ -36,39 +36,6 @@ fetchers = {
 }
 
 
-def build_submission(games, filtered, countries):
-    content = generator.make_post(games, countries)
-
-    if len(filtered) > 0:
-        content = content + '\n' + generator.make_post(filtered, countries, filtered=True)
-
-    return content
-
-
-def build_country_comments(games, countries):
-    country_comments = {}
-
-    for country, country_details in countries:
-        LOG.info('Building reddit comment for {} {}'.format(country_details[flag_], country))
-
-        for attempt in range(0, 7):
-            comment_content = generator.make_comment(
-                games,
-                country,
-                country_details,
-                disable_fulltitles=attempt in [1, 3, 4, 5, 6],
-                disable_urls=attempt in [2, 3, 4, 5, 6],
-                disable_fullprice=attempt in [5, 6],
-                disable_decimals=attempt in [6]
-            )
-
-            if len(comment_content) < 10000:
-                country_comments[country] = comment_content
-                break
-
-    return country_comments
-
-
 def update_posts():
 
     for system, system_details in SYSTEMS.items():
@@ -82,27 +49,16 @@ def update_posts():
             add_relevance=True
         )
 
-        selected = []
-        filtered = []
-
-        LOG.info('Filter by relevance')
-        for game in games:
-            if game[relevance_] > 0:
-                selected.append(game)
-            else:
-                filtered.append(game)
-
         countries = [
-            (country, country_details)
-            for country, country_details in COUNTRIES.items()
-            if country_details[region_] in system_details[system_].keys()
+            country for country, country_details in COUNTRIES.items()
+                if country_details[region_] in system_details[system_].keys()
         ]
 
         LOG.info('Building reddit post')
 
         title = 'Current {} eShop deals'.format(system_details[name_])
-        submission = build_submission(selected, filtered, countries)
-        country_comments = build_country_comments(selected, countries)
+        submission = generator.make_post(games, countries)
+        country_comments = generator.build_country_comments(games, countries)
 
         LOG.info('Posting {}\'s deals to subreddit/s: {}'.format(system, system_details[subreddit_]))
 
@@ -114,7 +70,7 @@ def update_posts():
                 submission
             )
 
-            for country, country_details in countries:
+            for country in countries:
                 comment_content = country_comments[country]
 
                 try:

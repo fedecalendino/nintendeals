@@ -82,6 +82,17 @@ REGIONS = {
 }
 
 COUNTRIES = {
+    US_: {
+        key_: US_,
+        name_: 'United States of America',
+        websites_: 'https://www.nintendo.com/games/detail/{}',
+        flag_: '🇺🇸',
+        region_: NA_,
+        digits_: 5,
+        currency_: '$',
+        currency_code_: 'USD'
+    },
+
     CA_: {
         key_: CA_,
         name_: 'Canada',
@@ -101,27 +112,6 @@ COUNTRIES = {
         digits_: 7,
         currency_: '$',
         currency_code_: 'MXN'
-    },
-
-    US_: {
-        key_: US_,
-        name_: 'United States of America',
-        websites_: 'https://www.nintendo.com/games/detail/{}',
-        flag_: '🇺🇸',
-        region_: NA_,
-        digits_: 5,
-        currency_: '$',
-        currency_code_: 'USD'
-    },
-
-    AU_: {
-        key_: AU_,
-        name_: 'Australia',
-        flag_: '🇦🇺',
-        region_: EU_,
-        digits_: 5,
-        currency_: '$',
-        currency_code_: 'AUD'
     },
 
     EU_: {
@@ -155,6 +145,16 @@ COUNTRIES = {
         digits_: 7,
         currency_: '₽',
         currency_code_: 'RUB'
+    },
+
+    AU_: {
+        key_: AU_,
+        name_: 'Australia',
+        flag_: '🇦🇺',
+        region_: EU_,
+        digits_: 5,
+        currency_: '$',
+        currency_code_: 'AUD'
     },
 
     JP_: {

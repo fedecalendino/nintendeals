@@ -110,32 +110,32 @@ class Reddit:
             submission.delete()
 
     def submit(self, subreddit, system, title, content):
-        header = ['']
+        text = []
+        text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
+        text.append('___')
 
         if system == SWITCH_:
-            header.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))
-            header.append('> You\'ll get a PM when a wishlisted game is discounted.')
-            header.append('')
-            header.append('---')
-            header.append('')
+            text.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))
+            text.append('> You\'ll get a PM when a wishlisted game is discounted.')
+            text.append('')
+            text.append('___')
+            text.append('')
 
-        footer = []
+        text.append(content)
 
-        footer.append('')
-        footer.append('---')
-        footer.append('')
+        text.append('')
+        text.append('___')
+        text.append('')
 
-        if system == SWITCH_:
-            footer.append('* Developed by /u/uglyasablasphemy | [Friend Code](https://nin.codes/uglyasablasphemy)')
-        else:
-            footer.append('* Developed by /u/uglyasablasphemy')
+        text.append('* Developed by /u/uglyasablasphemy | [Switch Friend Code](https://nin.codes/uglyasablasphemy)')
 
-        footer.append('* Use [RES](https://redditenhancementsuite.com) for table sorting and more')
-        footer.append('* If you have perfomance issues, you might want to check out:')
-        footer.append('   * [Reddit is Fun/Android](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)')
-        footer.append('   * [Apollo for Reddit/iOS](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)')
-
-        content = '\n'.join(header) + content + '\n' + '\n'.join(footer)
+        text.append('* Use [RES](https://redditenhancementsuite.com) for table sorting and more')
+        text.append('* If you have perfomance issues, you might want to check out:')
+        text.append('   * [Reddit is Fun](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)')
+        text.append('   * [Apollo for Reddit](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)')
+        text.append('')
+        text.append('___')
+        text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
 
         current = REDDIT_DB.load_last(subreddit, system)
 
@@ -151,7 +151,7 @@ class Reddit:
                 created_at_: datetime.now()
             }
 
-            sub_id = self.create(subreddit, title, content)
+            sub_id = self.create(subreddit, title, '\n'.join(text))
             current[id_] = sub_id
 
             LOG.info(' Submitted to /r/{}: https://redd.it/{}'.format(subreddit, sub_id))
@@ -181,12 +181,12 @@ class Reddit:
                             )
                         )
 
-                content = '#Click on your country/region to get more info like prices and scores: \n' \
-                          '#{}\n' \
-                          '___\n' \
-                          '{}'.format(' | '.join(links), content)
+                text.insert(0, '#For more information, click on your country/region')
+                text.insert(1, '|'.join(links))
+                text.insert(2, ('---|' * len(links))[:-1])
+                text.insert(3, '___')
 
-            self.edit(current[id_], content)
+                self.edit(current[id_], '\n'.join(text))
 
             current[updated_at_] = datetime.now()
             REDDIT_DB.save(current)

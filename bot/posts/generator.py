@@ -18,16 +18,113 @@ LOG = logging.getLogger('📝')
 PRICES_DB = PricesDatabase.instance()
 
 
-def make_comment(games, country, country_details, disable_fulltitles=False, disable_urls=False, disable_fullprice=False, disable_decimals=False):
+def filter_games(games, countries):
     now = datetime.utcnow().replace(tzinfo=None)
 
-    text = []
-    text.append('')
+    new_deals = []
+    old_deals = []
+    regular_deals = []
 
-    text.append('Title | - | Expiration | Price | % | Players | MS | US')
-    text.append('--- | :---: | --- | --- | :---: | :---: | :---: | :---: ')
+    for game in games:
+        if game[relevance_] <= 0:
+            regular_deals.append(game)
+            continue
 
-    deal_count = 0
+        has_discount = False
+        has_new_discount = False
+
+        # Building discount table
+        for country in countries:
+            if country not in game[prices_]:
+                continue
+
+            sale = game[prices_][country][sales_][-1]
+            discount = sale[discount_]
+
+            if discount < 1:
+                continue
+
+            if not (sale[start_date_] < now < sale[end_date_]):
+                continue
+
+            has_discount = True
+
+            if (now - sale[start_date_]).days < 1:
+                has_new_discount = True
+
+        if has_discount:
+            if has_new_discount:
+                new_deals.append(game)
+            else:
+                old_deals.append(game)
+
+    return new_deals, old_deals, regular_deals
+
+
+def build_reduced_table(games, countries):
+    now = datetime.utcnow().replace(tzinfo=None)
+
+    columns = 'Title'
+    separator = '---'
+
+    for country in countries:
+        country_details = COUNTRIES[country]
+
+        columns += '|{} {}'.format(country_details[flag_], country)
+        separator += '|---'
+
+    table = [columns, separator]
+
+    for game in games:
+        title = game[final_title_]
+
+        row = title
+
+        # Building discount table
+        for country in countries:
+            country_details = COUNTRIES[country]
+
+            if country not in game[prices_]:
+                row += '| '
+                continue
+
+            price = game[prices_][country]
+            sale = game[prices_][country][sales_][-1]
+
+            if sale[discount_] < 1:
+                row += '| '
+                continue
+
+            if not (sale[start_date_] < now < sale[end_date_]):
+                row += '| '
+                continue
+
+            LOG.info('Adding {} discount for {}'.format(title, country))
+
+            currency = country_details[currency_]
+            sale_price = format_float(sale[sale_price_], 0)
+            full_price = format_float(price[full_price_], 0)
+
+            row += '|`{currency}{sale_price}` ~~`{currency}{full_price}`~~'.format(
+                currency=currency,
+                sale_price=sale_price,
+                full_price=full_price
+            )
+
+        table.append(row)
+
+    return table
+
+
+def build_complete_table(games, country, urls=True, fullprice=True, decimals=True):
+    now = datetime.utcnow().replace(tzinfo=None)
+
+    country_details = COUNTRIES[country]
+
+    table = [
+        'Title | - | Expiration | Price | % | Players | MS | US',
+        '--- | :---: | --- | --- | :---: | :---: | :---: | :---: '
+    ]
 
     for game in games:
         if country not in game[prices_]:
@@ -43,12 +140,11 @@ def make_comment(games, country, country_details, disable_fulltitles=False, disa
         if not (sale[start_date_] < now < sale[end_date_]):
             continue
 
-#        if disable_fulltitles:
         if len(title) > 26:
             title = title[:24] + '…'
 
         # Making titles as url if possible
-        if not disable_urls:
+        if urls:
             if country in game[websites_]:
                 title = '[{}]({})'.format(
                     title,
@@ -61,7 +157,7 @@ def make_comment(games, country, country_details, disable_fulltitles=False, disa
         sale_price = format_float(sale[sale_price_], country_details[digits_])
         full_price = format_float(price[full_price_], 0)
 
-        if disable_decimals:
+        if not decimals:
             sale_price = sale_price[:-2]
             full_price = full_price[:-2]
 
@@ -106,136 +202,115 @@ def make_comment(games, country, country_details, disable_fulltitles=False, disa
                 ms = int(game[scores_][metascore_]) if game[scores_][metascore_] != '-' else game[scores_][metascore_]
 
             if userscore_ in game[scores_] and game[scores_][userscore_] is not None:
-                us = '%.1f' % game[scores_][userscore_] if game[scores_][userscore_] != '-' else game[scores_][userscore_]
+                us = '%.1f' % game[scores_][userscore_] if game[scores_][userscore_] != '-' else game[scores_][
+                    userscore_]
 
         if new:
-            title = '**{}**'.format(title)
+            if title.startswith(' '):
+                title = ' **{}**'.format(title[1:])
+            else:
+                title = '**{}**'.format(title)
 
-        if disable_fullprice:
-            price_format = '{currency}{sale_price}'.format(currency=currency, sale_price=sale_price)
+        if fullprice:
+            price_format = '{currency}{sale_price} ~~{full_price}~~'.format(
+                currency=currency, sale_price=sale_price, full_price=full_price)
         else:
-            price_format = '{currency}{sale_price} ~~{full_price}~~'.format(currency=currency, sale_price=sale_price, full_price=full_price)
+            price_format = '{currency}{sale_price}'.format(
+                currency=currency, sale_price=sale_price)
 
         # Creating row
-        text.append(
+        table.append(
             '{title}|{new}{warning}|*{time_left}*|{price}|`%{discount}`|{players}|{metascore}|{userscore}'.format(
                 title=title, new=new, warning=warning, time_left=time_format,
                 currency=currency, price=price_format, discount=discount, players=players,
                 metascore=ms, userscore=us)
         )
 
-        deal_count += 1
+    return table
+
+
+def make_comment(games, country):
+    country_details = COUNTRIES[country]
+
+    new_deals, old_deals, regular_deals = filter_games(games, [country])
+
+    games = []
+    games.extend(new_deals)
+    games.extend(old_deals)
+
+    table = build_complete_table(games, country)
+
+    if len('\n'.join(table)) > 9500:
+        table = build_complete_table(games, country, fullprice=False)
+
+        if len('\n'.join(table)) > 9500:
+            table = build_complete_table(games, country, urls=False, fullprice=False)
+
+    content = [
+        '`{} new deal` `{} expires in 48hs` `{} expires in 24hs`'.format(EMOJI_NEW, EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY),
+        '',
+        '> MS: Metascore | US: Userscore (both from metacritic.com)',
+        '___',
+        '',
+        '##{} {} ({} deals)'.format(country_details[flag_], country_details[name_], len(table) - 2),
+        ''
+    ]
+
+    content.extend(table)
 
     if country_details[currency_] == COUNTRIES[US_][currency_]:
-        text.append('___')
-        text.append('> prices in **{}**'.format(country_details[currency_code_]))
+        content.append('___')
+        content.append('> prices in **{}**'.format(country_details[currency_code_]))
 
-    # Inserting comment headers
-    text.insert(0, '')
-    text.insert(0, '##{} {} ({} deals)'.format(country_details[flag_], country_details[name_], deal_count))
-    text.insert(0, '')
-    text.insert(0, '___')
-    text.insert(0, '')
-    text.insert(0, '> MS: Metascore | US: Userscore (both from metacritic.com)')
-    text.insert(0, '')
-    text.insert(0, '`{} new deal` `{} expires in 48hs` `{} expires in 24hs` `{} published by nintendo`'.format(
-        EMOJI_NEW,
-        EMOJI_EXP_TOMORROW,
-        EMOJI_EXP_TODAY,
-        EMOJI_NINTENDO
-    ))
-
-    return '\n'.join(text)
+    return '\n'.join(content)
 
 
-def make_post(games, countries, filtered=False):
-    now = datetime.utcnow().replace(tzinfo=None)
+def build_country_comments(games, countries):
+    country_comments = {}
 
-    text = []
+    for country in countries:
+        country_details = COUNTRIES[country]
 
-    # Building table header
-    columns = 'Title'
-    separator = '---'
+        LOG.info('Building reddit comment for {} {}'.format(country_details[flag_], country))
 
-    for country, country_details in countries:
-        columns += ' | {}{}'.format(country_details[flag_], country)
-        separator += ' | ---'
+        country_comments[country] = make_comment(games, country)
 
-    if not filtered:
-        text.append('')
-        text.append('`{} new deal` `{} expires in 48hs` `{} expires in 24hs` `{} published by nintendo`'.format(
-            EMOJI_NEW,
-            EMOJI_EXP_TOMORROW,
-            EMOJI_EXP_TODAY,
-            EMOJI_NINTENDO
-        ))
-        text.append('')
-        text.append('___')
-        text.append('')
-        text.append('# Relevant deals')
+    return country_comments
+
+
+def make_post(games, countries):
+    new_deals, old_deals, regular_deals = filter_games(games, countries)
+
+    content = []
+
+    if len(new_deals):
+        table = build_reduced_table(new_deals, countries)
+
+        content.append('#New Sales {} ({} deals)'.format(EMOJI_NEW, len(table) - 2))
+        content.extend(table)
+        content.append('> Prices in each country\'s currency')
+        content.append('')
     else:
-        text.append('')
-        text.append('___')
-        text.append('')
-        text.append('# Games often on sale')
-        text.append('')
+        content.append('#No new sales today :(')
 
-    text.append('')
-    text.append(columns)
-    text.append(separator)
+    content.append('___')
 
-    for game in games:
-        # Game title is EN or JP
-        title = game[final_title_]  # + ' ' + str(game[relevance_])
+    if len(old_deals):
+        table = build_reduced_table(old_deals, countries)
 
-        row = ''
-        has_new_discount = False
+        content.append('#Games on sale ({} deals)'.format(len(table) - 2))
+        content.extend(table)
+        content.append('> Prices in each country\'s currency')
+        content.append('')
 
-        # Building discount table
-        for country, country_details in countries:
+        content.append('___')
 
-            if country not in game[prices_]:
-                row += '| '
-                continue
+    if len(regular_deals):
+        table = build_reduced_table(regular_deals, countries)
 
-            LOG.info('Adding {} discount for {}'.format(title, country))
+        content.append('#Games often on sale ({} deals)'.format(len(table) - 2))
+        content.extend(table)
+        content.append('> Prices in each country\'s currency')
+        content.append('')
 
-            current_sale = game[prices_][country][sales_][-1]
-            discount = current_sale[discount_]
-
-            if discount < 1:
-                row += '| '
-                continue
-
-            if not (current_sale[start_date_] < now < current_sale[end_date_]):
-                row += '| '
-                continue
-
-            time_left = current_sale[end_date_] - now
-
-            if time_left.days > 0:
-                days = time_left.days
-                warning = EMOJI_EXP_TOMORROW if days < 2 else ''
-            else:
-                hours = round(time_left.seconds / 60 / 60)
-                warning = EMOJI_EXP_TODAY if hours <= 24 else ''
-
-            if (now - current_sale[start_date_]).days < 1:
-                new = EMOJI_NEW
-                has_new_discount = True
-            else:
-                new = ''
-
-            row += '|`%{discount}{new}{warning}`'.format(discount=discount, new=new, warning=warning)
-
-        if has_new_discount:
-            if title.startswith(' '):
-                row = " **{}**{}".format(title[1:], row)
-            else:
-                row = "**{}**{}".format(title, row)
-        else:
-            row = "{}{}".format(title, row)
-
-        text.append(row)
-
-    return '\n'.join(text)
+    return '\n'.join(content)
