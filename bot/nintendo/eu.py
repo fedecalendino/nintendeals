@@ -88,6 +88,8 @@ def find_games(system, start=0, limit=200):
         game[ids_][EU_] = nsuid
         game[genres_] = parse_categories(data['game_categories_txt'])
 
+        game[publisher_] = data.get('publisher')
+
         # Setting number of players
         number_of_players = data['players_to'] if 'players_to' in data else 0
 
