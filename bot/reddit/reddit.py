@@ -181,7 +181,7 @@ class Reddit:
                             )
                         )
 
-                content = '#Click on your country/region to get more info likes prices and scores: \n' \
+                content = '#Click on your country/region to get more info like prices and scores: \n' \
                           '#{}\n' \
                           '___\n' \
                           '{}'.format(' | '.join(links), content)

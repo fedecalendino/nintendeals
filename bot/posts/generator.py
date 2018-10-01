@@ -52,7 +52,7 @@ def make_comment(games, country, country_details, disable_fulltitles=False, disa
             if country in game[websites_]:
                 title = '[{}]({})'.format(
                     title,
-                    game[websites_][country].replace('https://www.' if country != JP_ else 'https://', '//')
+                    game[websites_][country].replace('www.', '')
                 )
 
         discount = sale[discount_]
