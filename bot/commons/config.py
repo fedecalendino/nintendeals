@@ -38,7 +38,7 @@ WISHLIST_URL = 'https://nintendo-deals.herokuapp.com/wishlist'
 SYSTEMS = {
     SWITCH_: {
         name_: 'Nintendo Switch',
-        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'test3|supermarioposters').split('|'),
+        subreddit_: os.environ.get('SWITCH_SUBREDDIT', 'supermarioposters|test3').split('|'),
         system_: {
             NA_: 'switch',
             EU_: 'Nintendo Switch',

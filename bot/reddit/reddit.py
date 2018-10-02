@@ -182,7 +182,7 @@ class Reddit:
                         )
 
                 text.insert(0, '#For more information, click on your country/region')
-                text.insert(1, '|'.join(links))
+                text.insert(1, ' | '.join(links))
                 text.insert(2, ('---|' * len(links))[:-1])
                 text.insert(3, '___')
 

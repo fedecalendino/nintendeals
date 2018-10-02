@@ -61,7 +61,7 @@ def filter_games(games, countries):
     return new_deals, old_deals, regular_deals
 
 
-def build_reduced_table(games, countries):
+def build_reduced_table(games, countries, bold_titles=False, with_new_emoji=False):
     now = datetime.utcnow().replace(tzinfo=None)
 
     columns = 'Title'
@@ -71,14 +71,20 @@ def build_reduced_table(games, countries):
         country_details = COUNTRIES[country]
 
         columns += '|{} {}'.format(country_details[flag_], country)
-        separator += '|---'
+        separator += '|---:'
 
     table = [columns, separator]
 
     for game in games:
         title = game[final_title_]
 
-        row = title
+        if bold_titles:
+            if title.startswith(' '):
+                row = ' **{}**'.format(title[1:])
+            else:
+                row = '**{}**'.format(title)
+        else:
+            row = title
 
         # Building discount table
         for country in countries:
@@ -99,13 +105,24 @@ def build_reduced_table(games, countries):
                 row += '| '
                 continue
 
-            LOG.info('Adding {} discount for {}'.format(title, country))
+            time_left = sale[end_date_] - now
+
+            # Formating remaining time
+            if time_left.days > 0:
+                warning = EMOJI_EXP_TOMORROW if time_left.days < 2 else ''
+            else:
+                hours = round(time_left.seconds / 60 / 60)
+                warning = EMOJI_EXP_TODAY if hours <= 24 else ''
 
             currency = country_details[currency_]
             sale_price = format_float(sale[sale_price_], 0)
             full_price = format_float(price[full_price_], 0)
 
-            row += '|`{currency}{sale_price}` ~~`{currency}{full_price}`~~'.format(
+            LOG.info('Adding {} discount for {}'.format(title, country))
+
+            row += '|{format}{currency}{sale_price}{format} ~~{currency}{full_price}~~'.format(
+                format='**' if (now - sale[start_date_]).days < 1 else '',
+                warning=warning,
                 currency=currency,
                 sale_price=sale_price,
                 full_price=full_price
@@ -179,7 +196,7 @@ def build_complete_table(games, country, urls=True, fullprice=True, decimals=Tru
                 minutes = round(time_left.seconds / 60)
                 time_format = '{} ({}m)'.format(time_format, minutes)
 
-        new = EMOJI_NEW if (now - sale[start_date_]).days < 1 else ''
+        new = (now - sale[start_date_]).days < 1
 
         players = game[number_of_players_]
 
@@ -221,7 +238,7 @@ def build_complete_table(games, country, urls=True, fullprice=True, decimals=Tru
         # Creating row
         table.append(
             '{title}|{new}{warning}|*{time_left}*|{price}|`%{discount}`|{players}|{metascore}|{userscore}'.format(
-                title=title, new=new, warning=warning, time_left=time_format,
+                title=title, new=EMOJI_NEW if new else '', warning=warning, time_left=time_format,
                 currency=currency, price=price_format, discount=discount, players=players,
                 metascore=ms, userscore=us)
         )
@@ -278,18 +295,40 @@ def build_country_comments(games, countries):
     return country_comments
 
 
+def build_reduced_footer(with_new=False, with_warnings=False):
+    legend = ''
+
+    if False:  # with_new:
+        legend += '{} new deal - '.format(EMOJI_NEW)
+
+    if False:  # with_warnings:
+        legend += '{} expires in 48hs - {} expires in 24hs'.format(EMOJI_EXP_TOMORROW, EMOJI_EXP_TODAY)
+
+    footer = []
+
+    if len(legend) > 0:
+        footer.append('> legend: {}'.format(legend))
+        footer.append('')
+
+    footer.append('> Prices in each country\'s currency')
+    footer.append('')
+
+    return footer
+
+
 def make_post(games, countries):
     new_deals, old_deals, regular_deals = filter_games(games, countries)
 
     content = []
 
     if len(new_deals):
-        table = build_reduced_table(new_deals, countries)
+        table = build_reduced_table(new_deals, countries, bold_titles=True)
 
-        content.append('#New Sales {} ({} deals)'.format(EMOJI_NEW, len(table) - 2))
+        total = len(table) - 2
+
+        content.append('#New Sales {} ({} deal{})'.format(EMOJI_NEW, total, 's' if total > 1 else ''))
         content.extend(table)
-        content.append('> Prices in each country\'s currency')
-        content.append('')
+        content.extend(build_reduced_footer())
     else:
         content.append('#No new sales today :(')
 
@@ -298,19 +337,21 @@ def make_post(games, countries):
     if len(old_deals):
         table = build_reduced_table(old_deals, countries)
 
-        content.append('#Games on sale ({} deals)'.format(len(table) - 2))
+        total = len(table) - 2
+
+        content.append('#Games on sale ({} deal{})'.format(total, 's' if total > 1 else ''))
         content.extend(table)
-        content.append('> Prices in each country\'s currency')
-        content.append('')
+        content.extend(build_reduced_footer(with_warnings=True))
 
         content.append('___')
 
     if len(regular_deals):
-        table = build_reduced_table(regular_deals, countries)
+        table = build_reduced_table(regular_deals, countries, with_new_emoji=True)
 
-        content.append('#Games often on sale ({} deals)'.format(len(table) - 2))
+        total = len(table) - 2
+
+        content.append('#Games often on sale ({} deal{})'.format(total, 's' if total > 1 else ''))
         content.extend(table)
-        content.append('> Prices in each country\'s currency')
-        content.append('')
+        content.extend(build_reduced_footer(with_new=True, with_warnings=True))
 
     return '\n'.join(content)
