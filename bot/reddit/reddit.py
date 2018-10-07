@@ -111,8 +111,8 @@ class Reddit:
 
     def submit(self, subreddit, system, title, content):
         text = []
-        text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
-        text.append('___')
+        #  text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
+        #  text.append('___')
 
         if system == SWITCH_:
             text.append('⭐Add games to your WISHLIST ⭐: {}'.format(WISHLIST_URL))
@@ -134,8 +134,8 @@ class Reddit:
         text.append('   * [Reddit is Fun](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)')
         text.append('   * [Apollo for Reddit](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)')
         text.append('')
-        text.append('___')
-        text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
+        #  text.append('___')
+        #  text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
 
         current = REDDIT_DB.load_last(subreddit, system)
 
