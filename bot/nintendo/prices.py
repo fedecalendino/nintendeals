@@ -53,7 +53,7 @@ def get_prices(country, ids):
         except:
             continue
 
-    time.sleep(1)
+    time.sleep(0.5)
 
     return prices
 

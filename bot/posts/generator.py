@@ -326,11 +326,12 @@ def make_post(games, countries):
 
         total = len(table) - 2
 
-        content.append('#New Sales {} ({} deal{})'.format(EMOJI_NEW, total, 's' if total > 1 else ''))
+        content.append('##{count} new deal{s} today {emoji}'.format(
+            count=total, s=('s' if total > 1 else ''), emoji=EMOJI_NEW))
         content.extend(table)
         content.extend(build_reduced_footer())
     else:
-        content.append('#No new sales today :(')
+        content.append('##No new deals :(')
 
     content.append('___')
 
@@ -339,7 +340,8 @@ def make_post(games, countries):
 
         total = len(table) - 2
 
-        content.append('#Games on sale ({} deal{})'.format(total, 's' if total > 1 else ''))
+        content.append('##Currently on sale: {count} game{s}'.format(
+            count=total, s=('s' if total > 1 else '')))
         content.extend(table)
         content.extend(build_reduced_footer(with_warnings=True))
 
@@ -350,7 +352,8 @@ def make_post(games, countries):
 
         total = len(table) - 2
 
-        content.append('#Games often on sale ({} deal{})'.format(total, 's' if total > 1 else ''))
+        content.append('##Often on sale: {count} game{s}'.format(
+            count=total, s=('s' if total > 1 else '')))
         content.extend(table)
         content.extend(build_reduced_footer(with_new=True, with_warnings=True))
 
