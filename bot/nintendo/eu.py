@@ -103,6 +103,7 @@ def find_games(system, start=0, limit=200):
             feat_internet_: data.get('internet'),
             feat_local_play_: data.get('local_play'),
             feat_players_: game[number_of_players_],
+            feat_nfc_: data.get('near_field_comm_b')
         }
 
         if system == SWITCH_:
