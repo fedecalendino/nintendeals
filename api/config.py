@@ -5,6 +5,10 @@ import json
 from flask import Blueprint
 from flask import Response
 
+# Modules
+from bot.db.mongo import GamesDatabase
+
+
 # Statics
 from bot.commons.config import *
 from bot.commons.keys import *
@@ -13,6 +17,9 @@ TAG = 'config'
 
 blueprint = Blueprint('services.config', __name__)
 blueprint.prefix = "/api/v1/config"
+
+
+GAMES_DB = GamesDatabase.instance()
 
 
 @blueprint.route('', methods=['GET'])
@@ -29,7 +36,8 @@ def track():
 
     response = {
         username_: REDDIT_USERNAME,
-        countries_: countries
+        countries_: countries,
+        SWITCH_: GAMES_DB.count(filter={system_: SWITCH_})
     }
 
     return Response(json.dumps(response),  mimetype='application/json')

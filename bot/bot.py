@@ -5,7 +5,7 @@ import logging
 import threading
 
 # Modules
-from bot.db.util import load_all_games
+from bot.db.util import load_games
 
 from bot.nintendo import eu
 from bot.nintendo import jp
@@ -43,7 +43,7 @@ def update_posts():
         prices.fetch_prices(system)
 
         LOG.info('Loading games')
-        games = load_all_games(
+        games = load_games(
             filter={system_: system},
             on_sale_only=True,
             add_relevance=True
@@ -95,8 +95,9 @@ def update_posts():
             )
 
         try:
-            LOG.info('⭐ Sending wishlist notifications')
-            notify()
+            if REDDIT_USERNAME == 'nintendeals':
+                LOG.info('⭐ Sending wishlist notifications')
+                notify()
         except Exception as e:
             LOG.error(e)
             traceback.print_exc()

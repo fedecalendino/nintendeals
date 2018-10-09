@@ -97,12 +97,12 @@ def get_relevance_score(game):
     return days_on_sale if days_on_sale <= time_span/5 else 0
 
 
-def load_all_games(filter={}, exclude_prices=False, on_sale_only=False, add_relevance=False):
+def load_games(filter={}, sort=[], skip=-1, limit=-1, exclude_prices=False, on_sale_only=False, add_relevance=False):
     now = datetime.now()
 
     games = []
 
-    for game in GAMES_DB.load_all(filter):
+    for game in GAMES_DB.load_all(filter, sort=sort, skip=skip, limit=limit):
         game = fill_game(game, exclude_prices)
 
         if on_sale_only:

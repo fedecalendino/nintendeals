@@ -4,7 +4,7 @@ from datetime import timedelta
 import logging
 
 # Modules
-from bot.db.util import load_all_games
+from bot.db.util import load_games
 from bot.db.mongo import GamesDatabase
 from bot.db.mongo import PricesDatabase
 from bot.db.mongo import RedditDatabase
@@ -69,7 +69,7 @@ def notify():
 
     notifications = {}
 
-    for game in load_all_games(filter={system_: SWITCH_}, on_sale_only=True):
+    for game in load_games(filter={system_: SWITCH_}, on_sale_only=True):
         game_id = game[id_]
 
         users = WISHLIST_DB.load_all(

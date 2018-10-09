@@ -8,7 +8,7 @@ import logging
 from praw import Reddit as RedditApi
 
 # Modules
-from bot.db.util import load_all_games
+from bot.db.util import load_games
 from bot.db.mongo import GamesDatabase
 from bot.db.mongo import RedditDatabase
 from bot.db.mongo import WishlistDatabase
@@ -305,7 +305,7 @@ class Reddit:
                 text.append('Title | Countries | Actions')
                 text.append('--- | --- | :---: ')
 
-                for game in load_all_games(filter={id_: {'$in': list(user[games_].keys())}}, exclude_prices=True):
+                for game in load_games(filter={id_: {'$in': list(user[games_].keys())}}, exclude_prices=True):
                     game_id = game[id_]
                     title = get_title(game)
 

@@ -2,11 +2,12 @@
 import json
 
 # Dependencies
+from flask import request
 from flask import Blueprint
 from flask import Response
 
 # Modules
-from bot.db.util import load_all_games
+from bot.db.util import load_games
 
 # Statics
 from bot.commons.config import *
@@ -21,10 +22,13 @@ blueprint.prefix = "/api/v1/games"
 
 
 @blueprint.route('', methods=['GET'])
-def track():
+def games():
     response = []
 
-    for game in load_all_games(filter={system_: SWITCH_}, exclude_prices=True):
+    skip = int(request.args.get('skip', '-1'))
+    limit = int(request.args.get('limit', '-1'))
+
+    for game in load_games(filter={system_: SWITCH_}, sort=[(release_date_, -1)], exclude_prices=True, skip=skip, limit=limit):
         regions = [key for key in REGIONS.keys() if key in game[ids_].keys()]
 
         players = game[number_of_players_]

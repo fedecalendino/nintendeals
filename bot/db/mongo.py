@@ -26,13 +26,22 @@ class Database:
     def load(self, _id):
         return self.db[self.collection].find_one({id_: _id})
 
-    def load_all(self, filter={}):
-        result = []
+    def load_all(self, filter={}, sort=[], skip=-1, limit=-1):
+        result = self.db[self.collection].find(filter)
 
-        for item in self.db[self.collection].find(filter):
-            result.append(item)
+        if len(sort):
+            result = result.sort(sort)
 
-        return result
+        if skip >= 0:
+            result = result.skip(skip)
+
+        if limit >= 0:
+            result = result.limit(limit)
+
+        return [item for item in result]
+
+    def count(self, filter={}):
+        return self.db[self.collection].find(filter).count()
 
     def remove(self, _id):
         self.db[self.collection].remove({id_: _id})

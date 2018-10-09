@@ -1,59 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="UTF-8">
-	
-	<title>⭐ Wishlist :: Nintendo Switch</title>
 
+<head>
+    <meta charset="UTF-8">
+    <title>⭐ Wishlist :: Nintendo Switch</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" />
-
     <style type="text/css">
-        .no-gutter > [class*='col-'] {
-            padding-right:0;
-            padding-left:0;
-        }
+    .no-gutter>[class*='col-'] {
+        padding-right: 0;
+        padding-left: 0;
+    }
     </style>
 </head>
+
 <body>
-	<div class="no-gutter container">
+    <div class="no-gutter container">
         <div class="row">
             <h2>Add games to your wishlist</h2>
             <p class="lead" id="list"></p>
-
             <div class="alert alert-info">
                 <h4>Instructions</h4>
-                <p>You can add games to your wishlist by clicking the ➕ icon, this will create a private message for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>. 
+                <p>You can add games to your wishlist by clicking the ➕ icon, this will create a private message for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>.
                     If you send that message the bot will reply with your current wishlist and notify you the next time that game goes on sale (via private message).</p>
-                <p>The body of the PM has a list of countries, you may deleted the countries you're not interested to be notified. 
+                <p>The body of the PM has a list of countries, you may deleted the countries you're not interested to be notified.
                     If you want to change the selected countries you just "add" the game again and the bot will track only the new list of countries that you provide.</p>
                 <p></p>
                 <p>In the private messages sent by the bot, you'll see a ➖ icon next to each of your wishlisted games. If you click it, it will generate a private message for the bot to remove the game from your wishlist.</p>
             </div>
-            <div class="alert alert-info">
+            <div align="center">
                 <table>
                     <tbody>
                         <tr>
-                            <td>🍄 : published by nintendo</td>
+                            <td class="well well-sm">🍄 : published by nintendo</td>
                             <td width="10px"></td>
-                            <td>📦 : dlc available</td>
+                            <td class="well well-sm">🌐 : nintendo switch online required</td>
                             <td width="10px"></td>
-                            <td>🎛️ : demo available</td>
-                        </tr>
-                        <tr>
-                            <td>🌐 : nintendo switch online required</td>
+                            <td class="well well-sm">☁️ : cloud saves supported</td>
                             <td width="10px"></td>
-                            <td>☁️ : cloud saves supported</td>
+                            <td class="well well-sm">📦 : dlc available</td>
                             <td width="10px"></td>
-                           <td>🎤 : voice chat</td>
+                            <td class="well well-sm">🎛️ : demo available</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
-	    <hr />
-
+        <hr />
         <div class="row">
             <div class="row">
                 <div class="col-md-4">
@@ -65,9 +58,8 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
-		    <table class="table table-bordered sortable">
+            <table class="table table-bordered sortable">
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">Name</th>
@@ -83,7 +75,6 @@
                 </tbody>
             </table>
         </div>
-
         <div class="row">
             <div class="alert alert-info">
                 <h4>FAQ</h4>
@@ -97,77 +88,86 @@
                 <p>This way i don't need to access your reddit account, since everything is done with PMs between you and the bot. This website will only provide the format for the PMs but everything else is done securely inside the reddit.com site.</p>
             </div>
         </div>
-
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.js"></script>
+        <script type="text/javascript">
+        function fill_table() {
+            server = 'https://nintendo-deals.herokuapp.com/api/v1';
 
-	    <script type="text/javascript">
-	    	function fill_table() {
-	    		server = 'https://nintendo-deals.herokuapp.com/api/v1';
+            if (window.location.href.includes('localhost')) {
+                server = 'http://localhost:5000/api/v1';
+            }
 
-	    		if (window.location.href.includes('localhost')) {
-	    			server = 'http://localhost:5000/api/v1';
-	    		}
+            list = $('#list');
 
-				list = $('#list')
+            $.ajax({
+                method: "GET",
+                url: server + "/config",
+                async: false
+            }).done(function(msg) {
+                config = msg
+            });
 
-				$.ajax({
-					method: "GET",
-					url: server + "/config",
-					async: false
-				}).done(function(msg) {
-    				config = msg
-  				});
+            link = 'You can check your current wishlist <a href="http://www.reddit.com/message/compose?to={0}&subject=list&message=." target="_blank">HERE</a>';
+            link = link.replace('{0}', config['username']);
 
-  				link = 'You can check your current wishlist <a href="http://www.reddit.com/message/compose?to={0}&subject=list&message=." target="_blank">HERE</a>'
-  				link = link.replace('{0}', config['username'])
+            list.append(link);
 
-  				list.append(link)
+            table = $('#table');
 
-  				table = $('#table')
+            var today = new Date();
+            var yesterday = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
+            var next_week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-				$.ajax({
-					method: "GET",
-					url: server + "/games",
-				}).done(function(msg) {
-					$.each(msg, function(index) {
-					    var today = new Date();
-					    var yesterday = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
-					    var next_week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+            total = config['Switch'];
 
-						game = msg[index];
+            console.log(config);
 
-						row =  '<tr>';
-						row += '  <td scope="row"><strong>{title} {features}</strong></td>';
-						row += '  <td align="center" bgcolor="{color}">{release_date}</td>';
-						row += '  <td>{countries}</td>';
-						row += '  <td>{number_of_players}</td>';
-						row += '  <td align="center">{metascore}</td>';
-						row += '  <td align="center">{userscore}</td>';
-						row += '  <td align="center">{link}</td>';
-	        			row += '</div>';
+            increment = 50;
+            current = 0;
 
-	        			country_codes = '';
-	        			countries = '';
-	        			$.each(game['region'], function(index, region) {
-		        			$.each(config['countries'], function(index, country) {
-		        				if (country['region'] == region) {
-		        					countries += '<span>' + country['flag'] + '</span> ' // '&nbsp;' + country['key'] + '</span> ';
-		        					country_codes += country['key'] + ' ';
-		        				}
-		        			});
-	        			});
+            while (total >= current) {
+                $.ajax({
+                    method: "GET",
+                    url: server + "/games",
+                    data: {
+                        limit: increment,
+                        skip: current
+                    }
+                }).done(function(msg) {
+                    $.each(msg, function(index) {
+                        game = msg[index];
 
+                        row = '<tr>';
+                        row += '  <td scope="row"><strong>{title} {features}</strong></td>';
+                        row += '  <td align="center" bgcolor="{color}">{release_date}</td>';
+                        row += '  <td>{countries}</td>';
+                        row += '  <td>{number_of_players}</td>';
+                        row += '  <td align="center">{metascore}</td>';
+                        row += '  <td align="center">{userscore}</td>';
+                        row += '  <td align="center">{link}</td>';
+                        row += '</div>';
 
-	        			link = '<a href="http://www.reddit.com/message/compose?to={username}&subject=add : {id} : {title}&message={countries}" target="_blank">➕</a>'
-	        			link = link.replace('{username}', config['username'])
-	        			link = link.replace('{id}', game['_id'])
-	        			link = link.replace('{countries}', country_codes)
-	        			link = link.replace('{title}', game['title'])
+                        country_codes = '';
+                        countries = '';
+                        $.each(game['region'], function(index, region) {
+                            $.each(config['countries'], function(index, country) {
+                                if (country['region'] == region) {
+                                    countries += '<span>' + country['flag'] + '</span> ' // '&nbsp;' + country['key'] + '</span> ';
+                                    country_codes += country['key'] + ' ';
+                                }
+                            });
+                        });
+
+                        link = '<a href="http://www.reddit.com/message/compose?to={username}&subject=add : {id} : {title}&message={countries}" target="_blank">➕</a>';
+                        link = link.replace('{username}', config['username']);
+                        link = link.replace('{id}', game['_id']);
+                        link = link.replace('{countries}', country_codes);
+                        link = link.replace('{title}', game['title']);
 
                         try {
-                            release_date =  new Date(game['release_date'])
+                            release_date = new Date(game['release_date']);
 
                             if (yesterday < release_date && release_date < today) {
                                 color = '#FFFF99';
@@ -178,123 +178,102 @@
                             } else {
                                 color = '#FFFFFF';
                             }
-                        } catch(err) {
+                        } catch (err) {
                             color = '#000000';
                         }
 
-	        			features = '';
+                        features = '';
 
-                        try {
-	        			    if (game['features']['cloud_saves']) {
-	        			        features += '☁️ ';
-	        			    }
-	        			} catch(err) {
-	        			}
+                        game_features = game['features'];
 
+                        if (game_features) {
+                            if ('cloud_saves' in game_features && game_features['cloud_saves']) {
+                                features += '☁️ ';
+                            }
 
-                        try {
-	        			    if (game['features']['nso']) {
-	        			        features += '🌐 ';
-	        			    }
-	        			} catch(err) {
-	        			}
+                            if ('nso' in game_features && game_features['nso']) {
+                                features += '🌐 ';
+                            }
 
-	        			try {
-	        			    if (game['features']['dlc']) {
-	        			        features += '📦 ';
-	        			    }
-	        			} catch(err) {
-	        			}
+                            if ('dlc' in game_features && game_features['dlc']) {
+                                features += '📦 ';
+                            }
 
-	        			try {
-	        			    if (game['features']['voice_chat']) {
-	        			        features += '🎤 ';
-	        			    }
-	        			} catch(err) {
-	        			}
-
-	        			try {
-	        			    if (game['features']['demo']) {
-	        			        features += '🎛️ ';
-	        			    }
-	        			} catch(err) {
-	        			}
-
-                        /*
-	        			try {
-	        			    if (game['features']['hd_rumble']) {
-	        			        // features += '🎮 ';
-	        			    }
-	        			} catch(err) {
-	        			}*/
+                            if ('demo' in game_features && game_features['demo']) {
+                                features += '🎛️ ';
+                            }
+                        }
 
                         row = row.replace('{color}', color);
-	        			row = row.replace('{title}', game['title'].replace(' 🍄', '<font color="white">!</font>🍄'));
-	        			row = row.replace('{release_date}', game['release_date']);
-					    row = row.replace('{countries}', countries);
-	        			row = row.replace('{features}', features);
-	        			row = row.replace('{number_of_players}', game['number_of_players']);
+                        row = row.replace('{title}', game['title'].replace(' 🍄', '<font color="white">!</font>🍄'));
+                        row = row.replace('{release_date}', game['release_date']);
+                        row = row.replace('{countries}', countries);
+                        row = row.replace('{features}', features);
+                        row = row.replace('{number_of_players}', game['number_of_players']);
 
-				        try {
+                        try {
                             if (game["scores"]["metascore"] == '-') {
-                                row = row.replace('{metascore}', '-')
+                                row = row.replace('{metascore}', '-');
                             } else if (game["scores"]["metascore"] != null) {
-                                row = row.replace('{metascore}', game["scores"]["metascore"])
+                                row = row.replace('{metascore}', game["scores"]["metascore"]);
                             } else {
-                                row = row.replace('{metascore}', '')
+                                row = row.replace('{metascore}', '');
                             }
-                        } catch(err) {
-                            row = row.replace('{metascore}', '')
+                        } catch (err) {
+                            row = row.replace('{metascore}', '');
                         }
 
                         try {
                             if (game["scores"]["userscore"] == '-') {
-                                row = row.replace('{userscore}', '-')
+                                row = row.replace('{userscore}', '-');
                             } else if (game["scores"]["userscore"] != null) {
-                                row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1))
+                                row = row.replace('{userscore}', game["scores"]["userscore"].toFixed(1));
                             } else {
-                                row = row.replace('{userscore}', '')
-                                }
-                        } catch(err) {
-                            row = row.replace('{userscore}', '')
+                                row = row.replace('{userscore}', '');
+                            }
+                        } catch (err) {
+                            row = row.replace('{userscore}', '');
                         }
 
-                        row = row.replace('{link}', link)
+                        row = row.replace('{link}', link);
 
-                    table.append(row);
-				})
-			});
-	    	}
+                        table.append(row);
+                    });
+                });
 
-	    	fill_table();
-	    </script>
+                current += increment;
+                increment *= 2;
+            }
+        }
 
+        fill_table();
+        </script>
         <script>
-            function search() {
-                // Declare variables
-                var input, filter, table, tr, td, i;
+        function search() {
+            // Declare variables
+            var input, filter, table, tr, td, i;
 
-                input = document.getElementById("search_input");
-                filter = input.value.toUpperCase();
-                table = document.getElementById("table");
-                tr = table.getElementsByTagName("tr");
+            input = document.getElementById("search_input");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("table");
+            tr = table.getElementsByTagName("tr");
 
-                // Loop through all table rows, and hide those who don't match the search query
-                for (i = 0; i < tr.length; i++) {
-                    td = tr[i].getElementsByTagName("td")[0];
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
 
-                    if (td) {
-                        if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-                                tr[i].style.display = "";
-                            } else {
-                                tr[i].style.display = "none";
-                            }
+                if (td) {
+                    if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
                     }
                 }
             }
+        }
         </script>
-
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
     </div>
 </body>
+
 </html>
