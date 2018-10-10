@@ -31,6 +31,12 @@ def get_prices(country, ids):
 
     for data in json['prices']:
         try:
+            if 'regular_price' not in data:
+                continue
+
+            if 'raw_value' not in data['regular_price']:
+                continue
+
             price = {
                 currency_: data['regular_price']['currency'],
                 full_price_: float(data['regular_price']['raw_value'])
@@ -50,7 +56,8 @@ def get_prices(country, ids):
                 price[sale_] = None
 
             prices[data['title_id']] = price
-        except:
+        except Exception as e:
+            LOG.info('Error: {}/{} > {}'.format(country, data['title_id'], str(e)))
             continue
 
     time.sleep(1)
@@ -58,17 +65,7 @@ def get_prices(country, ids):
     return prices
 
 
-def fetch_prices(system=None):
-
-    if system is None:
-        prefix = ''
-    elif system == SWITCH_:
-        prefix = '7001'
-    elif system == N3DS_:
-        prefix = '5001'
-    else:
-        prefix = ''
-
+def fetch_prices():
     ids_by_country = {}
 
     for price in PRICES_DB.load_all():
@@ -76,11 +73,10 @@ def fetch_prices(system=None):
             if country not in ids_by_country:
                 ids_by_country[country] = []
 
-            if price[id_].startswith(prefix):
+            if price[id_].startswith('5001') or price[id_].startswith('7001'):
                 ids_by_country[country].append(price[id_])
 
     for country, ids in ids_by_country.items():
-
         for index in range(0, int(len(ids)/50) + 1):
             LOG.info('Looking for prices from {} to {} for {}'.format(50 * index, 50 * (index + 1), country))
 
