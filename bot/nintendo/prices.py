@@ -60,7 +60,7 @@ def get_prices(country, ids):
             LOG.info('Error: {}/{} > {}'.format(country, data['title_id'], str(e)))
             continue
 
-    time.sleep(1)
+    time.sleep(0.5)
 
     return prices
 

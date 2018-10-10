@@ -255,6 +255,15 @@ def make_comment(games, country):
     games.extend(new_deals)
     games.extend(old_deals)
 
+    if len(games) == 0:
+        content = [
+            '##{} {}'.format(country_details[flag_], country_details[name_]),
+            ''
+            '##No deals :('
+        ]
+
+        return '\n'.join(content)
+
     table = build_complete_table(games, country)
 
     if len('\n'.join(table)) > 9500:
