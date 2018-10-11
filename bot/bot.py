@@ -93,13 +93,13 @@ def update_posts():
                 submission
             )
 
-        try:
-            if REDDIT_USERNAME == 'nintendeals':
-                LOG.info('⭐ Sending wishlist notifications')
-                notify()
-        except Exception as e:
-            LOG.error(e)
-            traceback.print_exc()
+    try:
+        if REDDIT_USERNAME == 'nintendeals':
+            LOG.info('⭐ Sending wishlist notifications')
+            notify()
+    except Exception as e:
+        LOG.error(e)
+        traceback.print_exc()
 
 
 def inbox():
