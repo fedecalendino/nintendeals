@@ -10,9 +10,9 @@ from flask import send_from_directory
 from flask_cors import CORS
 
 # Modules
+import api
 from bot import bot
 from bot.commons.config import IP, PORT
-from api import games, config
 
 
 LOG = logging.getLogger('main')
@@ -33,8 +33,10 @@ def hello():
     return "🌿 Yahaha! You found me! 🌿"
 
 
-register_blueprint(app, games.blueprint)
-register_blueprint(app, config.blueprint)
+register_blueprint(app, api.config.blueprint)
+register_blueprint(app, api.games.blueprint)
+register_blueprint(app, api.prices.blueprint)
+
 
 # Web =========================================================================
 

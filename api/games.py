@@ -1,5 +1,6 @@
 # Standard
 import json
+from bson import json_util
 
 # Dependencies
 from flask import request
@@ -69,3 +70,17 @@ def games():
     response = sorted(response, key=lambda g: g[release_date_], reverse=True)
 
     return Response(json.dumps(response),  mimetype='application/json')
+
+
+@blueprint.route('/<game_id>', methods=['GET'])
+def price(game_id):
+    games = load_games(filter={id_: game_id})
+
+    if len(games) == 0:
+        return Response('Invalid game id', 404)
+
+    game = games[0]
+
+    return Response(
+        json.dumps(game, default=json_util.default),
+        mimetype="application/json")
