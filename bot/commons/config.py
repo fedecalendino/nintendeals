@@ -52,7 +52,7 @@ SYSTEMS = {
         system_: {
             NA_: '3ds',
             EU_: '3DS',
-            JP_: '3ds'
+            # JP_: '3ds'
         }
     },
 }
