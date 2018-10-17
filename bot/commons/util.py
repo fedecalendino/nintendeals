@@ -31,7 +31,6 @@ def get_title(game):
     title = title. \
         replace('\'', ''). \
         replace('’', ''). \
-        title(). \
         replace('Iii', 'III'). \
         replace('Ii', 'II'). \
         replace('Dx', 'DX'). \
