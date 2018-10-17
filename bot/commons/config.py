@@ -33,7 +33,7 @@ EMOJI_NINTENDO = ' 🍄'
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
-WISHLIST_URL = 'https://nintendo-deals.herokuapp.com/wishlist'
+WISHLIST_URL = 'https://nintendeals.herokuapp.com/wishlist'
 
 SYSTEMS = {
     SWITCH_: {
