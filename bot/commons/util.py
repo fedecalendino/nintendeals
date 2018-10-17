@@ -28,18 +28,6 @@ def get_title(game):
     else:
         title = game[title_jp_]
 
-    title = title. \
-        replace('\'', ''). \
-        replace('’', ''). \
-        replace('Iii', 'III'). \
-        replace('Ii', 'II'). \
-        replace('Dx', 'DX'). \
-        replace('Hd', 'HD'). \
-        replace(' Of ', ' of '). \
-        replace(' And ', ' and '). \
-        replace(' The ', ' the '). \
-        replace(' To ', ' to ')
-
     if published_by_nintendo_ in game and game[published_by_nintendo_]:
         title = EMOJI_NINTENDO + ' ' + title
 
