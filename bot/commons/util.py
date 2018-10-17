@@ -26,7 +26,7 @@ def get_title(game):
     if title_ in game:
         title = game[title_]
     else:
-        title = game[title_jp_]
+        title = game[title_jp_].title()
 
     if published_by_nintendo_ in game and game[published_by_nintendo_]:
         title = EMOJI_NINTENDO + ' ' + title
