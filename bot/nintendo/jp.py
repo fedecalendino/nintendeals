@@ -138,7 +138,8 @@ def find_games(system):
             price = {id_: nsuid, countries_: {}}  # Creating price object if missing
 
         # Adding placeholders for regional prices
-        price[countries_][JP_] = None
+        if JP_ not in price[countries_]:
+            price[countries_][JP_] = None
 
         games[game_id] = game
 
