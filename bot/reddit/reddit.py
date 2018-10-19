@@ -121,6 +121,12 @@ class Reddit:
             text.append('___')
             text.append('')
 
+            if POLL is not None and len(POLL) > 1:
+                text.append('New poll! Feel free to participate: {}'.format(POLL))
+                text.append('')
+                text.append('---')
+                text.append('')
+
         text.append(content)
 
         text.append('')
@@ -134,8 +140,13 @@ class Reddit:
         text.append('   * [Reddit is Fun](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)')
         text.append('   * [Apollo for Reddit](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)')
         text.append('')
-        #  text.append('___')
-        #  text.append('Testing new format, do you like it? > https://strawpoll.com/fd1bze72')
+
+        if system == SWITCH_:
+            if POLL is not None and len(POLL) > 1:
+                text.append('')
+                text.append('---')
+                text.append('New poll! Feel free to participate: {}'.format(POLL))
+
 
         current = REDDIT_DB.load_last(subreddit, system)
 
@@ -285,6 +296,13 @@ class Reddit:
 
     def make_response(self, username, content, exclude_wishlist=False):
         text = []
+
+        if POLL is not None and len(POLL) > 1:
+            text.append('New poll! Feel free to participate: {}'.format(POLL))
+            text.append('')
+            text.append('---')
+            text.append('')
+
         text.append('##Hi {}'.format(username))
         text.append('')
         text.append(content)

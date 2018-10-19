@@ -30,6 +30,7 @@ EMOJI_PLUS = '➕'
 EMOJI_MINUS = '➖'
 EMOJI_NINTENDO = ' 🍄'
 
+POLL = os.environ.get("POLL", None)
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
