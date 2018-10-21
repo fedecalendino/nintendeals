@@ -1,0 +1,47 @@
+body { 
+	font-size: 90%; 
+}
+
+.logo {
+	width: 36px;
+	height: 36px;
+	margin-right: 10px;
+}
+
+.no-gutter>[class*='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+table
+{
+    width: 125%;
+    border-collapse: collapse;
+}
+
+table thead td
+{
+    border: 1px solid #eeeeee;
+}
+
+tr { 
+	line-height: 12px; 
+}
+
+.dates
+{
+    width: 125px;
+    white-space: nowrap;
+}
+
+.countries
+{
+    width: 200px;
+    white-space: nowrap;
+}
+
+.players
+{
+    width: 150px;
+    white-space: nowrap;
+}

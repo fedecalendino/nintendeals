@@ -42,10 +42,13 @@ register_blueprint(app, api.prices.blueprint)
 
 
 @app.route("/")
-@app.route("/wishlist")
-@app.route("/wishlist/")
-def wishlist():
-    return send_from_directory('web', 'wishlist.html')
+def main():
+    return send_from_directory('web', 'main.html')
+
+
+@app.route("/<path:page>.html")
+def html(page):
+    return send_from_directory('web', '{}.html'.format(page))
 
 
 @app.route("/favicon.ico")
@@ -53,16 +56,9 @@ def favicon():
     return send_from_directory('web', 'favicon.ico')
 
 
-@app.route('/css/<path:path>')
-@app.route('/wishlist/css/<path:path>')
-def send_css(path):
-    return send_from_directory('web/css', path)
-
-
-@app.route('/js/<path:path>')
-@app.route('/wishlist/js/<path:path>')
-def send_js(path):
-    return send_from_directory('web/js', path)
+@app.route('/<path:resource>/<path:path>')
+def send_css(resource, path):
+    return send_from_directory('web/{}'.format(resource), path)
 
 
 # Bot =========================================================================

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>nintendeals - faq</title>
+
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <a href="./main.html" class="navbar-left">
+            <img src="./img/eshop.png" class='logo'>
+        </a>
+
+        <a href="./main.html" class="navbar-brand">nintendeals</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" id="list_link" target="_blank"><i class="fa fa-star"></i> My Wishlist</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./faq.html">FAQ</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="no-gutter container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="alert alert-info">
+                        <h4>Instructions</h4>
+                        <p>You can add games to your wishlist by clicking the ➕ icon, this will create a private message for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>.
+                            If you send that message the bot will reply with your current wishlist and notify you the next time that game goes on sale (via private message).</p>
+                        <p>The body of the PM has a list of countries, you may deleted the countries you're not interested to be notified.
+                            If you want to change the selected countries you just "add" the game again and the bot will track only the new list of countries that you provide.</p>
+                        <p></p>
+                        <p>In the private messages sent by the bot, you'll see a ➖ icon next to each of your wishlisted games. If you click it, it will generate a private message for the bot to remove the game from your wishlist.</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="alert alert-info">
+                        <h4>FAQ</h4>
+                        <p><strong>Why another website for the game list?</strong></p>
+                        <p>Reddit limits the ammount of characters per post to 40k and the comment to 10k, so to fit all games with their ➕ link i would need something close to 3 posts or 13 comments which is a lot.</p>
+                        <p></p>
+                        <p><strong>Would there be a limit for the ammount of games in the wishlist?</strong></p>
+                        <p>Yes, reddit also limits the characters on PMs to 10k so the bot can only send the wishlist as a response with the ➖ links, if you have less than 50 games.</p>
+                        <p></p>
+                        <p><strong>Why this have to be done with PMs?</strong></p>
+                        <p>This way i don't need to access your reddit account, since everything is done with PMs between you and the bot. This website will only provide the format for the PMs but everything else is done securely inside the reddit.com site.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
