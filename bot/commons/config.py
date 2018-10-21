@@ -34,7 +34,7 @@ POLL = os.environ.get("POLL", None)
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
-WISHLIST_URL = 'https://nintendeals.herokuapp.com/wishlist'
+WISHLIST_URL = 'https://nintendeals.herokuapp.com/'
 
 SYSTEMS = {
     SWITCH_: {
