@@ -102,7 +102,7 @@ function table_filler(table_id, game, config) {
     row += '  <td>{number_of_players}</td>';
     row += '  <td align="center">{metascore}</td>';
     row += '  <td align="center">{userscore}</td>';
-    row += '  <td align="center">{modal}{link}</td>';
+    row += '  <td align="center">{modal} {link}</td>';
     row += '</tr>';
 
     countries = '';
