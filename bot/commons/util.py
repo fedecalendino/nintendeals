@@ -31,4 +31,5 @@ def get_title(game):
     if published_by_nintendo_ in game and game[published_by_nintendo_]:
         title = EMOJI_NINTENDO + ' ' + title
 
+    title = title.replace('#', '')
     return title
