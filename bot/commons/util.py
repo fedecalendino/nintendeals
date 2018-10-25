@@ -32,6 +32,8 @@ def get_title(game):
         title = EMOJI_NINTENDO + ' ' + title
 
     title = title.replace('#', '')
-    title = title.strip()
+    
+    if title.endswith(' '):
+        title = title[:-1]
     
     return title
