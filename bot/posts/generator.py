@@ -22,16 +22,20 @@ def filter_games(games, countries):
     now = datetime.utcnow().replace(tzinfo=None)
 
     new_deals = []
+    week_deals = []
     old_deals = []
     regular_deals = []
 
     for game in games:
+        game[is_new_] = False
+
         if game[relevance_] <= 0:
             regular_deals.append(game)
             continue
 
         has_discount = False
         has_new_discount = False
+        has_week_discount = False
 
         # Building discount table
         for country in countries:
@@ -51,17 +55,22 @@ def filter_games(games, countries):
 
             if (now - sale[start_date_]).days < 1:
                 has_new_discount = True
+            elif now.strftime("%V") == sale[start_date_].strftime("%V"):
+                has_week_discount = True
 
         if has_discount:
             if has_new_discount:
+                game[is_new_] = True
                 new_deals.append(game)
+            elif has_week_discount:
+                week_deals.append(game)
             else:
                 old_deals.append(game)
 
-    return new_deals, old_deals, regular_deals
+    return new_deals + week_deals, old_deals, regular_deals
 
 
-def build_reduced_table(games, countries, bold_titles=False, with_new_emoji=False):
+def build_reduced_table(games, countries):
     now = datetime.utcnow().replace(tzinfo=None)
 
     columns = 'Title'
@@ -78,7 +87,7 @@ def build_reduced_table(games, countries, bold_titles=False, with_new_emoji=Fals
     for game in games:
         title = game[final_title_]
 
-        if bold_titles:
+        if game[is_new_]:
             if title.startswith(' '):
                 row = ' **{}**'.format(title[1:])
             else:
@@ -331,12 +340,14 @@ def make_post(games, countries):
     content = []
 
     if len(new_deals):
-        table = build_reduced_table(new_deals, countries, bold_titles=True)
+        table = build_reduced_table(new_deals, countries)
 
         total = len(table) - 2
 
-        content.append('##{count} new deal{s} today {emoji}'.format(
-            count=total, s=('s' if total > 1 else ''), emoji=EMOJI_NEW))
+        content.append('##Deals of this week: {count} games'.format(count=total))
+        content.append('> today\'s deals are bolded.')
+        content.append('')
+
         content.extend(table)
         content.extend(build_reduced_footer())
     else:
@@ -357,12 +368,13 @@ def make_post(games, countries):
         content.append('___')
 
     if len(regular_deals):
-        table = build_reduced_table(regular_deals, countries, with_new_emoji=True)
+        table = build_reduced_table(regular_deals, countries)
 
         total = len(table) - 2
 
         content.append('##Often on sale: {count} game{s}'.format(
             count=total, s=('s' if total > 1 else '')))
+        content.append('')
         content.extend(table)
         content.extend(build_reduced_footer(with_new=True, with_warnings=True))
 
