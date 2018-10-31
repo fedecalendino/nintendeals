@@ -38,7 +38,7 @@ fetchers = {
 
 def update_posts():
     LOG.info('🏷️  > Looking up prices')
-    prices.fetch_prices()
+    # prices.fetch_prices()
 
     for system, system_details in SYSTEMS.items():
         LOG.info('Loading games')

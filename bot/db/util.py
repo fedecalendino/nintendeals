@@ -50,7 +50,14 @@ def get_relevance_score(game):
     total_countries = 0
     total_sales = 0
 
-    time_span = 120
+    if game[system_] == SWITCH_:
+        time_span = 120
+        threshold = 20
+    elif game[system_] == N3DS_:
+        time_span = 120
+        threshold = 30
+    else:
+        raise Exception('Invalid system')
 
     now = datetime.now()
     start = now - timedelta(days=time_span)
@@ -94,7 +101,7 @@ def get_relevance_score(game):
 
     days_on_sale /= total_countries
 
-    return days_on_sale if days_on_sale <= time_span/6 else 0
+    return days_on_sale if days_on_sale <= threshold else 0
 
 
 def load_games(filter={}, sort=[], skip=-1, limit=-1, exclude_prices=False, on_sale_only=False, add_relevance=False):
