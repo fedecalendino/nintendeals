@@ -345,7 +345,7 @@ def make_post(games, countries):
         total = len(table) - 2
 
         content.append('##Deals of this week: {count} games'.format(count=total))
-        content.append('> today\'s deals are bolded.')
+        content.append('> today\'s deals are on top with bolded prices.')
         content.append('')
 
         content.extend(table)
