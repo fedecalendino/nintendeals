@@ -17,4 +17,5 @@ alt_versions = {
     '70010000002022': 'Switch-AM28',    # NA: Arena of Valor
     '70010000001641': 'Switch-AHAB',    # NA: Party Planet
     '70010000007283': 'Switch-AHAB-2',  # EU: 30-in-1 Game Collection: Volume 1
+    '70010000001906': 'Switch-AHKT',    # EU: Timber Tennis: Versus
 }
