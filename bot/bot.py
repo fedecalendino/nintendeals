@@ -163,7 +163,7 @@ def main():
     while True:
         try:
             LOG.info('🌐 Updating posts')
-            # update_posts()
+            update_posts()
         except Exception as e:
             LOG.error(e)
             traceback.print_exc()
