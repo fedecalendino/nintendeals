@@ -96,7 +96,7 @@ function table_filler(table_id, game, config) {
     table = $('#' + table_id);
 
     row = '<tr>';
-    row += '  <td scope="row">{title}</td>';
+    row += '  <td scope="row">{title} ({id})</td>';
     row += '  <td align="center" bgcolor="{color}">{release_date}</td>';
     row += '  <td>{countries}</td>';
     row += '  <td>{number_of_players}</td>';
