@@ -162,7 +162,7 @@ function show_modal(id) {
     game = get_game(id);
     console.log(game);
 
-    $('#modal_title').text(game['final_title'] + ' (' + game['_id'].replace('Switch-', '') + '));
+    $('#modal_title').text(game['final_title'] + ' (' + game['_id'].replace('Switch-', '') + ')');
     $('#modal_release').text(game['release_date']);
     $('#modal_genres').text(game['genres']);
     $('#modal_players').text(game['number_of_players']);
