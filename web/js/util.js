@@ -96,7 +96,7 @@ function table_filler(table_id, game, config) {
     table = $('#' + table_id);
 
     row = '<tr>';
-    row += '  <td scope="row">{title} ({id})</td>';
+    row += '  <td scope="row">{title}</td>';
     row += '  <td align="center" bgcolor="{color}">{release_date}</td>';
     row += '  <td>{countries}</td>';
     row += '  <td>{number_of_players}</td>';
@@ -162,7 +162,7 @@ function show_modal(id) {
     game = get_game(id);
     console.log(game);
 
-    $('#modal_title').text(game['final_title']);
+    $('#modal_title').text(game['final_title'] + ' (' + game['_id'].replace('Switch-', '') + '));
     $('#modal_release').text(game['release_date']);
     $('#modal_genres').text(game['genres']);
     $('#modal_players').text(game['number_of_players']);
