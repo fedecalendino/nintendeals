@@ -33,7 +33,7 @@ def extract_number(soup, tag, properties):
 
 
 def get_score(base_system, title):
-    systems = [base_system.lower(), 'pc', 'playstation-4', 'xbox-one', 'ios']
+    systems = [base_system.lower()]  # , 'pc', 'playstation-4', 'xbox-one', 'ios']
 
     slug = normalize(title)
 
