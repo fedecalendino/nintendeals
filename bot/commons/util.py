@@ -28,10 +28,10 @@ def get_title(game):
     else:
         title = game[title_jp_].title()
 
+    title = title.strip().replace('#', '')
+
     if published_by_nintendo_ in game and game[published_by_nintendo_]:
         title = EMOJI_NINTENDO + ' ' + title
-
-    title = title.replace('#', '')
     
     if title.endswith(' '):
         title = title[:-1]
