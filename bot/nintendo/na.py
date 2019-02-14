@@ -1,163 +1,113 @@
-# Standard
-from datetime import datetime
-import re
 import logging
+import re
+from datetime import datetime
 
-# Dependencies
 import requests
 
-# Modules
-from bot.db.mongo import GamesDatabase
-from bot.db.mongo import PricesDatabase
+from bot.nintendo.util import get_categories
+from bot.nintendo.util import get_game_id
 
-# Constants
-from bot.commons.config import *
-from bot.commons.keys import *
-
-from bot.nintendo.commons import *
-
-# Local
-from bot.nintendo.util import *
-
-
-LOG = logging.getLogger('🎮.🇺🇸 ')
-
-
-REGION = REGIONS[NA_]
-LIST_API = REGION[api_]
-
-GAMES_DB = GamesDatabase.instance()
-PRICES_DB = PricesDatabase.instance()
+from commons.classes import Game
+from commons.config import COUNTRIES
+from commons.config import REGIONS
+from commons.config import SYSTEMS
+from commons.keys import ALIAS
+from commons.keys import API
+from commons.keys import CATEGORIES
+from commons.keys import ID
+from commons.keys import NA
+from commons.keys import NSUIDS
+from commons.keys import NUMBER_OF_PLAYERS
+from commons.keys import PUBLISHED_BY_NINTENDO
+from commons.keys import REGION
+from commons.keys import RELEASE_DATE
+from commons.keys import TITLE_EN
+from commons.keys import WEBSITES
 
 
-def fetch_features(data, website):
-    features = {
-        feat_free_to_play_: data['free_to_start']
-    }
+LOG = logging.getLogger('nintendo.na')
 
-    try:
-        response = requests.get(website)
-        content = response.text
+AMERICA = REGIONS[NA]
 
-        if 'Get even more from your games with a Nintendo Switch Online membership' in content:
-            features[feat_nso_] = '<figcaption>Online Play</figcaption>' in content
-            features[feat_cloud_saves_] = '<figcaption>Save Data Cloud</figcaption>' in content
+
+def fetch_games(system, published_by_nintendo=False):
+    additional = '&publisher=nintendo' if published_by_nintendo else ''
+
+    start = 0
+    limit = 200
+
+    while True:
+        if published_by_nintendo:
+            LOG.info('Loading {} games published by nintendo (from {} to {})'.format(system, start, start + limit))
         else:
-            features[feat_nso_] = None
-            features[feat_cloud_saves_] = None
+            LOG.info('Loading {} games (from {} to {})'.format(system, start, start + limit))
 
-        features[feat_demo_] = 'Demo available' in content
-        features[feat_dlc_] = 'DLC packs' in content or 'Individual DLC' in content
-    except Exception as e:
-        print(e)
+        url = AMERICA[API].format(system=SYSTEMS[system][ALIAS][NA], offset=start, limit=limit, additional=additional)
+        response = requests.get(url)
 
-    return features
+        json = response.json()
+
+        if not json.get('games', {}).get('game'):
+            break
+
+        for game in json['games']['game']:
+            yield game
+
+        start += limit
 
 
-def _find_games(system, limit=200, offset=0, published_by_nintendo=False):
-    LOG.info('Looking for games {} to {} in NA'.format(offset, offset + limit))
+def _list_games(system, only_published_by_nintendo=False):
+    for data in fetch_games(system, published_by_nintendo=only_published_by_nintendo):
+        title = data.get('title', '').replace('Â®', '®').replace('Ã©', 'é').replace('Ã', 'Û')
+        nsuid = data.get('nsuid')
 
-    r = requests.get(LIST_API.format(
-        system=SYSTEMS[system][system_][NA_],
-        limit=limit,
-        offset=offset,
-        additional='&publisher=nintendo' if published_by_nintendo else ''
-    ))
-    json = r.json()
-
-    total = json['filter']['total']
-
-    if total == 0:
-        return {}
-
-    games = {}
-
-    for data in json['games']['game']:
-        if 'nsuid' not in data and 'game_code' not in data:
+        if nsuid in [None, 'HAC']:
             continue
 
-        if 'nsuid' not in data and 'game_code' in data:
-            data['nsuid'] = data['game_code']
-
-        if data['nsuid'] == 'HAC':
+        if not data.get('game_code'):
+            LOG.info('{} has no game id'.format(title))
             continue
 
-        nsuid = data['nsuid']
+        game_id = get_game_id(nsuid=nsuid, game_id=data.get('game_code'), system=system)
 
-        # Checking for game_id fixes
-        if nsuid in alt_versions:
-            game_id = alt_versions[nsuid]
-        else:
-            game_id = parse_game_id(data['game_code'], system)
+        if len(game_id) < 6:
+            continue
 
-        # Loading game from database
-        game = GAMES_DB.load(game_id)
+        game = Game.create(game_id, system)
 
-        title = data['title'].replace('Â®', '®').replace('Ã©', 'é')
+        game[TITLE_EN] = title
+        game[NSUIDS][NA] = nsuid
+        game[CATEGORIES] = get_categories(data.get('categories', {}).get('category', []))
 
-        if game is None:
-            game = {
-                id_: game_id,
-                ids_: {},
-                system_: system,
-                websites_: {},
-            }
+        if only_published_by_nintendo:
+            game[PUBLISHED_BY_NINTENDO] = True
 
-            LOG.info("New game {} ({}) found on NA".format(title, game[id_]))
-        else:
-            if NA_ in game[ids_] and game[ids_][NA_] != nsuid:
-                LOG.info('Found duplicate for {} on NA: {}'.format(game_id, title))
-                continue
+        try:
+            game[NUMBER_OF_PLAYERS] = int(re.sub('[^0-9]*', '', data.get('number_of_players', '0')))
+        except:
+            game[NUMBER_OF_PLAYERS] = 0
 
-        game[title_] = title
-        game[ids_][NA_] = nsuid
-        game[genres_] = parse_categories(data['categories']['category'])
+        game[RELEASE_DATE] = datetime.strptime(data.get('release_date'), '%b %d, %Y').strftime('%Y-%m-%d')
 
-        # Setting number of players if missing or not available
-        if game.get(number_of_players_) is None or game[number_of_players_] == 0:
-            number_of_players = re.sub('[^0-9]*', '', data['number_of_players'])
+        slug = data.get('slug')
 
-            game[number_of_players_] = int(number_of_players) if len(number_of_players) else 0
+        for country, details in COUNTRIES.items():
+            if details[REGION] == NA and WEBSITES in details:
+                game[WEBSITES][country] = details[WEBSITES].format(slug)
 
-        # Setting release date if missing
-        if game.get(release_date_) is None:
-            game[release_date_] = datetime.strptime(data['release_date'], '%b %d, %Y').strftime('%Y-%m-%d')
-
-        # Setting if nintendo is publisher if missing
-        if game.get(published_by_nintendo_) is None or (not game[published_by_nintendo_] and published_by_nintendo):
-            game[published_by_nintendo_] = published_by_nintendo
-
-        price = PRICES_DB.load(nsuid)
-
-        if price is None:
-            price = {id_: nsuid, countries_: {}}  # Creating price object if missing
-
-        for country, country_details in COUNTRIES.items():
-            if country_details[region_] == NA_:
-
-                # Adding placeholders for regional prices
-                if country not in price[countries_]:
-                    price[countries_][country] = None
-
-                # Updating regional websites
-                if websites_ in country_details and 'slug' in data:
-                    game[websites_][country] = country_details[websites_].format(data['slug'])
-
-        if features_ not in game and system == SWITCH_:
-            LOG.info('Fetching features for {}'.format(title))
-            game[features_] = fetch_features(data, game[websites_][US_])
-
-        games[game_id] = game
-
-        GAMES_DB.save(game)
-        PRICES_DB.save(price)
-
-    if total > limit + offset:
-        games.update(_find_games(system, limit, offset + limit))
-
-    return games
+        yield game
 
 
-def find_games(system, limit=200, offset=0):
-    _find_games(system, limit, offset, False)
-    _find_games(system, limit, offset, True)
+def list_games(system):
+    by_nintendo = []
+
+    for game in _list_games(system, only_published_by_nintendo=True):
+        by_nintendo.append(game[ID])
+
+        yield game
+
+    for game in _list_games(system):
+        if game[ID] in by_nintendo:
+            continue
+
+        yield game

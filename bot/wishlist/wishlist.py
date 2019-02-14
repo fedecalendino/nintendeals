@@ -1,123 +1,219 @@
-# Standard
 from datetime import datetime
 from datetime import timedelta
+
+from bot.reddit import Reddit
+from bot.wishlist import generator
+
+from db.mongo import GamesDatabase
+from db.mongo import WishlistDatabase
+from db.util import get_games_on_sale
+from db.util import get_latest_sale
+
+from bot.wishlist.constants import GAME_ADDED
+from bot.wishlist.constants import GAMES_ON_SALE
+from bot.wishlist.constants import GAME_REMOVED
+from bot.wishlist.constants import INVALID_COUNTRIES
+from bot.wishlist.constants import INVALID_COUNTRY
+from bot.wishlist.constants import INVALID_GAME_ID
+from bot.wishlist.constants import INVALID_WISHLISTED_GAME
+from bot.wishlist.constants import NO_WISHLIST
+from bot.wishlist.constants import SEPARATOR
+from bot.wishlist.constants import WISHLIST_DELETED
+from bot.wishlist.constants import WISHLIST_EMPTY
+from bot.wishlist.constants import WISHLIST_SHOWED
+from bot.wishlist.constants import WL_ADD
+from bot.wishlist.constants import WL_DELETE
+from bot.wishlist.constants import WL_REMOVE
+from bot.wishlist.constants import WL_SHOW
+
+from commons.config import COUNTRIES
+from commons.keys import END_DATE
+from commons.keys import GAMES
+from commons.keys import ID
+from commons.keys import NAME
+from commons.keys import NSUIDS
+from commons.keys import REGION
+from commons.keys import TITLE
+
 import logging
 
-# Modules
-from bot.db.util import load_games
-from bot.db.mongo import GamesDatabase
-from bot.db.mongo import PricesDatabase
-from bot.db.mongo import RedditDatabase
-from bot.db.mongo import WishlistDatabase
 
-from bot.reddit.reddit import Reddit
-
-# Statics
-from bot.commons.config import *
-from bot.commons.keys import *
-from bot.commons.util import *
+LOG = logging.getLogger('wishlist')
 
 
-LOG = logging.getLogger('⭐')
+def add(message, game_id):
+    now = datetime.utcnow()
+
+    games_db = GamesDatabase()
+    wishlist_db = WishlistDatabase()
+
+    game = games_db.load(game_id)
+
+    if not game:
+        return INVALID_GAME_ID.format(game_id)
+
+    countries = sorted(message.body.split(' '))
+
+    invalid_countries = [country for country in countries if country not in COUNTRIES]
+
+    if len(invalid_countries) == 1:
+        return INVALID_COUNTRY.format(invalid_countries)
+    elif len(invalid_countries) > 1:
+        return INVALID_COUNTRIES.format(invalid_countries)
+
+    wishlist = wishlist_db.load(message.author.name)
+
+    if not wishlist:
+        wishlist = {
+            ID: message.author.name,
+            GAMES: {}
+        }
+
+    wishlist[GAMES][game_id] = {country: now for country in countries}
+    wishlist_db.save(wishlist)
+
+    LOG.info(f'{message.author.name} added {game[NAME]} to the wishlist')
+
+    return GAME_ADDED.format(game[TITLE])
 
 
-GAMES_DB = GamesDatabase.instance()
-PRICES_DB = PricesDatabase.instance()
-REDDIT_DB = RedditDatabase.instance()
-WISHLIST_DB = WishlistDatabase.instance()
+def remove(message, game_id):
+    games_db = GamesDatabase()
+    wishlist_db = WishlistDatabase()
+
+    game = games_db.load(game_id)
+
+    if not game:
+        return INVALID_GAME_ID.format(game_id)
+
+    wishlist = wishlist_db.load(message.author.name)
+
+    if not wishlist:
+        return NO_WISHLIST
+
+    if game_id in wishlist.get(GAMES, {}):
+        del wishlist[GAMES][game_id]
+        wishlist_db.save(wishlist)
+
+        LOG.info(f'{message.author.name} removed {game[NAME]} to the wishlist')
+
+        return GAME_REMOVED.format(game[TITLE])
+    else:
+        return INVALID_WISHLISTED_GAME.format(game[NAME])
 
 
-def generate_message(notification, disable_urls=False):
-    text = []
-    text.append('')
-    text.append('###Wishlisted games on sale')
-    text.append('')
+def show(message, _):
+    wishlist_db = WishlistDatabase()
+    wishlist = wishlist_db.load(message.author.name)
 
-    text.append('Title | Expiration | Price | % ')
-    text.append('--- | --- | --- | --- ')
+    if not wishlist:
+        return NO_WISHLIST
 
-    for game_id, details in notification.items():
-        title = details[title_]
+    if not len(wishlist.get(GAMES, {})):
+        return WISHLIST_EMPTY
+    else:
+        LOG.info(f'{message.author.name} asked for to the wishlist')
 
-        for country, sale in details[countries_].items():
-            final_title = title
-
-            country_details = COUNTRIES[country]
-
-            currency = country_details[currency_code_]
-            sale_price = format_float(sale[sale_price_], 0)
-            full_price = format_float(sale[full_price_], 0)
-            discount = sale[discount_]
-
-            if not disable_urls:
-                if websites_ in details:
-                    if country in details[websites_]:
-                        final_title = '[{}]({})'.format(title, details[websites_][country].replace('https://www.', '//'))
-
-            # Creating row
-            text.append(
-                '{title}|*{end_date}*|{flag} **{currency} {sale_price}** ~~{full_price}~~|`%{discount}`'.format(
-                    title=final_title, end_date=sale[end_date_].strftime("%b %d"), flag=country_details[flag_],
-                    currency=currency, sale_price=sale_price, full_price=full_price, discount=discount)
-            )
-
-    return '\n'.join(text)
+        return WISHLIST_SHOWED
 
 
-def notify():
-    now = datetime.now()
+def delete(message, _):
+    wishlist_db = WishlistDatabase()
+    wishlist = wishlist_db.load(message.author.name)
 
-    notifications = {}
+    if not wishlist:
+        return NO_WISHLIST
 
-    for game in load_games(filter={system_: SWITCH_}, on_sale_only=True):
-        game_id = game[id_]
+    wishlist_db.remove(message.author.name)
 
-        users = WISHLIST_DB.load_all(
-            filter={'games.{}'.format(game_id): {'$exists': True}}
-        )
+    LOG.info(f'{message.author.name} deleted the wishlist')
 
-        if len(users) == 0:
+    return WISHLIST_DELETED
+
+
+def unknown(message, _):
+    return None
+
+
+COMMANDS = {
+    WL_ADD: add,
+    WL_REMOVE: remove,
+    WL_SHOW: show,
+    WL_DELETE: delete,
+}
+
+
+def check_inbox():
+    reddit = Reddit()
+
+    for message in reddit.inbox():
+        subject = message.subject.upper()
+
+        split = subject.split(SEPARATOR)
+
+        command = COMMANDS.get(split[0], unknown)
+        content = command(message, split[1] if len(split) > 1 else None)
+
+        if not content:
             continue
 
-        for user in users:
-            if user[games_][game_id][last_update_] > now:
+        body = [
+            generator.generate_header(message.author.name),
+            '',
+            '',
+            content,
+            '___',
+            generator.build_wishlist(message.author.name),
+            '___',
+            generator.generate_footer()
+        ]
+
+        reddit.reply(message, '\n'.join(body))
+
+
+def notify_users():
+    reddit = Reddit()
+    now = datetime.utcnow()
+    wishlist_db = WishlistDatabase()
+
+    games, sales = get_games_on_sale()
+
+    wishlists = {wishlist[ID]: wishlist for wishlist in wishlist_db.load_all()
+                    if any([game_id for game_id in wishlist[GAMES] if game_id in games])}
+
+    for username, wishlist in wishlists.items():
+        sales_to_notify = []
+
+        for game_id in wishlist[GAMES]:
+            if game_id not in games:
                 continue
 
-            username = user[id_]
+            game = games[game_id]
+            print('')
 
-            if username not in notifications:
-                notifications[username] = {}
-                notifications[username]['notify'] = False
+            for country, last_update in {k: v for k, v in wishlist[GAMES][game_id].items()}.items():
+                if last_update > now:
+                    continue
 
-            notifications[username][game_id] = {
-                title_: game[final_title_],
-                websites_: game[websites_],
-                countries_: {}
-            }
+                region = COUNTRIES[country][REGION]
+                nsuid = game[NSUIDS][region]
 
-            for country, details in game[prices_].items():
-                last_sale = details[sales_][-1]
+                if nsuid not in sales:
+                    continue
 
-                if last_sale[start_date_] < now < last_sale[end_date_]:
-                    if country in user[games_][game_id][countries_]:
-                        notifications[username][game_id][countries_][country] = last_sale
-                        notifications[username][game_id][countries_][country][full_price_] = details[full_price_]
+                price = sales[nsuid][country]
+                sale = get_latest_sale(price)
 
-                        user[games_][game_id][last_update_] = last_sale[end_date_] + timedelta(hours=1)
-                        WISHLIST_DB.save(user)
+                if not sale:
+                    continue
 
-                        notifications[username]['notify'] = True
+                sales_to_notify.append((game, price, country, sale))
+                wishlist[GAMES][game_id][country] = sale[END_DATE] + timedelta(days=1)
 
-    for username, notification in notifications.items():
-        if not notifications[username]['notify']:
-            continue
+        if len(sales_to_notify):
+            content = generator.generate_notification(sales_to_notify)
+            reddit.send(username, GAMES_ON_SALE, content)
+            wishlist_db.save(wishlist)
 
-        del notifications[username]['notify']
+            LOG.info(f'Notified {username} about {len(sales_to_notify)} sales')
 
-        content = generate_message(notification)
-
-        if len(content) > 10000:
-            content = generate_message(notification, disable_urls=True)
-
-        LOG.info('Sending notification to {}'.format(username))
-        Reddit.instance().send(username, 'New deals for your wishlisted games!', content)
