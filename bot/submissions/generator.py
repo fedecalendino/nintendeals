@@ -115,7 +115,7 @@ def make_row(game, country, price, sale, disable_urls=False):
         userscore = '-'
 
     return f'{bold}{title}{bold}|{emoji}|{formatted_time}|' \
-           f'{country[CURRENCY]}{sale_price} ~~{full_price}~~|{sale[DISCOUNT]}%|' \
+           f'{sale_price} {country[CURRENCY]} ~~{full_price}~~|{sale[DISCOUNT]}%|' \
            f'{players}|{metascore}|{userscore}'
 
 

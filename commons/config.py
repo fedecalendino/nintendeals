@@ -16,13 +16,16 @@ from commons.keys import JP
 from commons.keys import MX
 from commons.keys import N3DS
 from commons.keys import NA
+from commons.keys import NZ
 from commons.keys import NAME
 from commons.keys import REGION
 from commons.keys import RU
+from commons.keys import SE
 from commons.keys import SUBREDDITS
 from commons.keys import SWITCH
 from commons.keys import US
 from commons.keys import WEBSITES
+from commons.keys import ZA
 from commons.settings import USER_SUBREDDIT
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
@@ -150,6 +153,37 @@ COUNTRIES = {
         DIGITS: 5,
         CURRENCY: '$',
         CURRENCY_CODE: 'AUD'
+    },
+
+    NZ: {
+        ID: NZ,
+        NAME: 'New Zealand',
+        FLAG: '🇳🇿',
+        REGION: EU,
+        DIGITS: 5,
+        CURRENCY: '$',
+        CURRENCY_CODE: 'NZD'
+    },
+
+    SE: {
+        ID: SE,
+        NAME: 'Sweden',
+        FLAG: '🇸🇪',
+        REGION: EU,
+        DIGITS: 7,
+        CURRENCY: 'kr',
+        CURRENCY_CODE: 'SEK'
+    },
+
+    ZA: {
+        ID: ZA,
+        NAME: 'South Africa',
+        WEBSITES: 'https://www.nintendo.co.za/Games/{}',
+        FLAG: '🇿🇦',
+        REGION: EU,
+        DIGITS: 7,
+        CURRENCY: 'R',
+        CURRENCY_CODE: 'ZAR'
     },
 
     JP: {

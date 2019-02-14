@@ -39,7 +39,6 @@ from commons.keys import WISHLISTED
 
 ENABLE_METACRITIC = False
 
-logging.basicConfig(level=logging.INFO)
 LOG = logging.getLogger('jobs.games')
 
 
@@ -174,3 +173,4 @@ def find_and_save_all_games():
 
     for system in SYSTEMS.keys():
         find_and_save_games(system, wishlisted_count)
+

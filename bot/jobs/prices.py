@@ -62,3 +62,7 @@ def find_and_save_prices():
 
             price_db[country][LATEST_SALE] = sale
             prices_db.save(price_db)
+
+
+logging.basicConfig(level=logging.INFO)
+find_and_save_prices()
