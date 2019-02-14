@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <!-- Main -->
+    <h3>
+        Set up you wishlist here!
+    </h3>
+    <div class="no-gutter container">
+        <div class="row">
+            <div class="col-md-12">
+               <div class="table table-responsive">
+                    <table class="table table-bordered sortable">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for system in systems %}
+                                    <th scope="col" class="text-center">{{ system['name'] }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for country in countries %}
+                                <tr>
+                                    {% for system in systems %}
+                                        <td><a href="/wishlist/{{ system['_id'].lower() }}/{{ country['_id'].lower() }}">
+                                            {{ country['flag'] }} {{ country['name'] }}
+                                        </a></td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+               </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

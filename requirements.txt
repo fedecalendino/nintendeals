@@ -1,0 +1,9 @@
+beautifulsoup4==4.6.0
+Flask==0.12.3
+flask-cors
+praw==5.4.0
+pymongo==3.6.1
+python-dateutil==2.7.2
+requests==2.20.0
+xmltodict==0.11.0
+awesome-slugify
