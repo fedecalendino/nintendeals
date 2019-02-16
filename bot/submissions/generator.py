@@ -1,4 +1,3 @@
-import operator
 from datetime import datetime
 
 from commons.config import COUNTRIES
@@ -45,7 +44,9 @@ def generate_header(system=None, country=None):
 
 
 def generate_footer(system=None, country=None):
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.utcnow()
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S UTC")
+    time = now.strftime("%H:%M:%S UTC")
 
     footer = [
         SEPARATOR,
@@ -55,7 +56,7 @@ def generate_footer(system=None, country=None):
         '   * [Reddit is Fun](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)',
         '   * [Apollo for Reddit](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)',
         SEPARATOR,
-        f'Last update: {timestamp}'
+        f'Last update: [{timestamp}](https://google.com/search?q={time})'
     ]
 
     if system:
@@ -278,7 +279,7 @@ def generate_main_post(games, prices, submissions, system):
         if not submission:
             continue
 
-        content.append(f'* ##[**{details[FLAG]} {details[NAME]}**]({submission.url})')
+        content.append(f'* [**{details[FLAG]} {details[NAME]}**]({submission.url})')
 
     content.extend(generate_footer())
 

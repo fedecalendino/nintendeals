@@ -19,12 +19,14 @@ from commons.keys import AU
 from commons.keys import CA
 from commons.keys import CH
 from commons.keys import CZ
+from commons.keys import DK
 from commons.keys import EU
 from commons.keys import GB
 from commons.keys import ID
 from commons.keys import JP
 from commons.keys import MX
 from commons.keys import NA
+from commons.keys import NO
 from commons.keys import NZ
 from commons.keys import PL
 from commons.keys import RU
@@ -152,6 +154,15 @@ COUNTRIES = {
         CURRENCY: 'Kč',
         CURRENCY_CODE: 'CZK'
     },
+    DK: {
+        ID: DK,
+        NAME: 'Denmark',
+        FLAG: '🇩🇰',
+        REGION: EU,
+        DIGITS: 6,
+        CURRENCY: 'kr',
+        CURRENCY_CODE: 'DKK'
+    },
     EU: {
         ID: EU,
         NAME: 'European Union',
@@ -171,6 +182,15 @@ COUNTRIES = {
         DIGITS: 5,
         CURRENCY: '£',
         CURRENCY_CODE: 'GBP'
+    },
+    NO: {
+        ID: NO,
+        NAME: 'Norway',
+        FLAG: '🇳🇴',
+        REGION: EU,
+        DIGITS: 6,
+        CURRENCY: 'kr',
+        CURRENCY_CODE: 'NOK'
     },
     NZ: {
         ID: NZ,
@@ -205,7 +225,7 @@ COUNTRIES = {
         NAME: 'Sweden',
         FLAG: '🇸🇪',
         REGION: EU,
-        DIGITS: 7,
+        DIGITS: 6,
         CURRENCY: 'kr',
         CURRENCY_CODE: 'SEK'
     },
