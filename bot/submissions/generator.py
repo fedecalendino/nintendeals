@@ -72,8 +72,8 @@ def make_countries_row(game, country, price, sale, disable_urls=False):
     title = game.titles.get(country[REGION], game.title)
     title = title[1:] if title.startswith(' ') else title
 
-    if len(title) > 40:
-        title = f'{title[:35]}…'.replace(' …', '…')
+    if len(title) > 30:
+        title = f'{title[:29]}…'.replace(' …', '…')
 
     if not disable_urls:
         if game.websites.get(country[ID]):
@@ -109,7 +109,7 @@ def make_countries_row(game, country, price, sale, disable_urls=False):
     full_price = format_float(country_price.full_price, country[DIGITS])
 
     return f'{bold}{title}{bold}|{emoji}|{formatted_time}|' \
-           f'{sale_price} ~~{full_price}~~|`{sale.discount}%`|' \
+           f'{country[CURRENCY]}{sale_price} ~~{full_price}~~|`{sale.discount}`|' \
            f'{game.players}|{game.scores.score}|' \
            f'{game.wishlisted if game.wishlisted else "-"}'
 
