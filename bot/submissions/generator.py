@@ -26,14 +26,17 @@ SEPARATOR = '\n___\n'
 
 
 def generate_header(system=None, country=None):
-    header = [
-        f'>`{NEW} new` '
-        f'`{EXP_TOMORROW} expires tomorrow` '
-        f'`{EXP_TODAY} expires today` '
-        f'`{STAR} wishlist count` '
-        f'`{NINTENDO} published by nintendo`',
-        SEPARATOR
-    ]
+
+    header = []
+
+    if system:
+        header.append(f'>`{NEW} new` ')
+        header.append(f'`{EXP_TOMORROW} expires tomorrow` ')
+        header.append(f'`{EXP_TODAY} expires today` ')
+
+    header.append(f'`{STAR} wishlist count` ')
+    header.append(f'`{NINTENDO} published by nintendo`')
+    header.append(SEPARATOR)
 
     if system:
         header.append(f'You can add games to your wishlist [HERE]({WEBSITE_URL}/wishlist/{system.lower()}/{country.lower()})')
@@ -257,6 +260,8 @@ def generate_main_post(games, prices, submissions, system):
 
     content = []
 
+    content.extend(generate_header())
+
     if table:
         content.append('###Most wanted games on sale')
         content.append('')
@@ -273,7 +278,7 @@ def generate_main_post(games, prices, submissions, system):
         if not submission:
             continue
 
-        content.append(f'* [**{details[FLAG]} {details[NAME]}**]({submission.url})')
+        content.append(f'* ##[**{details[FLAG]} {details[NAME]}**]({submission.url})')
 
     content.extend(generate_footer())
 
