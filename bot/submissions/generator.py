@@ -269,7 +269,7 @@ def generate_main_post(games, prices, submissions, system):
         content.append(table)
         content.append(SEPARATOR)
 
-    content.append('###Full deals by country/region')
+    content.append('##Full deals by country/region')
 
     for country, details in COUNTRIES.items():
         key = f'{system}/{country}'
@@ -279,7 +279,7 @@ def generate_main_post(games, prices, submissions, system):
         if not submission:
             continue
 
-        content.append(f'* [**{details[FLAG]} {details[NAME]}**]({submission.url})')
+        content.append(f'###[**{details[FLAG]} {details[NAME]}**]({submission.url})\n')
 
     content.extend(generate_footer())
 
