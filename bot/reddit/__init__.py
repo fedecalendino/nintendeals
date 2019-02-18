@@ -67,26 +67,39 @@ class Reddit(metaclass=Singleton):
             if not submission.author or submission.author.name != REDDIT_USERNAME:
                 LOG.info(f'Submission was deleted: {sub}')
                 return False
+            else:
+                LOG.info(f'Submission wasnt deleted: {sub}')
 
             if country and sub.expires_at > now:
                 LOG.info(f'Submission expired: {sub}')
                 return False
+            else:
+                LOG.info(f'Submission is active: {sub}')
 
             if submission.stickied:
                 LOG.info(f'Submission is stickied: {sub}')
                 return True
+            else:
+                LOG.info(f'Submission isnt stickied: {sub}')
 
             if now.today().weekday() not in [0, 3]:  # now is not monday/thursday
                 LOG.info(f'Submission will be reused (not monday/thursday yet): {sub}')
                 return True
+            else:
+                LOG.info(f'Submission might be replaced (monday/thursday): {sub}')
 
-            if now.hour < 17:
-                LOG.info(f'Submission will be reused (not 17:00 UTC yet): {sub}')
+            if now.hour < 18:
+                LOG.info(f'Submission will be reused (not 18:00 UTC yet): {sub}')
                 return True
+            else:
+                LOG.info(f'Submission might be replaced (18:00 UTC): {sub}')
 
             if sub.created_at.day != now.day:
                 LOG.info(f'Submission will be replaced (it\'s monday/thursday, my dudes): {sub}')
                 return False
+            else:
+                LOG.info(f'Submission wont be replaced (already created one today): {sub}')
+
         except Exception as e:
             LOG.error(f'Submission shows error {str(e)}, will be replaced: {sub}')
             return False
