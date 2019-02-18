@@ -73,6 +73,8 @@ def _list_games(system, only_published_by_nintendo=False):
 
         game.categories = get_categories(data.get('categories', {}).get('category', []))
 
+        game.free_to_play = data.get('free_to_start', 'false') == 'true'
+
         if only_published_by_nintendo:
             game.published_by_nintendo = True
 

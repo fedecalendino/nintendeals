@@ -44,7 +44,8 @@ def wishlist(system, country):
     games = GamesDatabase().load_all(
         filter={
             SYSTEM: system[ID],
-            f'nsuids.{region}': {'$ne': None}
+            f'nsuids.{region}': {'$ne': None},
+            'free_to_play': False
         },
         sort=[(f'release_dates.{region}', -1)]
     )

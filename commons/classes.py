@@ -49,8 +49,9 @@ class Game:
         self.categories = sorted(list(set(data.get('categories', []))))
 
         self.websites = data.get('websites', {country: None for country, dets in COUNTRIES.items() if WEBSITE in dets})
-
         self.scores = Score(**data.get('scores', {}))
+
+        self.free_to_play = data.get('free_to_play', False)
 
     @property
     def id(self):

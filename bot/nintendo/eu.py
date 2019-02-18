@@ -71,6 +71,8 @@ def list_games(system):
 
         game.categories = get_categories(data.get('game_categories_txt', []))
 
+        game.free_to_play = data.get('price_sorting_f', 1) == 0
+
         game.published_by_nintendo = data.get('publisher', '') == 'Nintendo'
         game.number_of_players = data.get('players_to', 0)
 

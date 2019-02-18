@@ -46,7 +46,7 @@ def generate_header(system=None, country=None):
 def generate_footer(system=None, country=None):
     now = datetime.utcnow()
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S UTC")
-    time = now.strftime("%H:%M:%S UTC")
+    time = now.strftime("%H:%M UTC")
 
     footer = [
         SEPARATOR,

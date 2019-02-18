@@ -62,6 +62,8 @@ def merge_game(game_id, game, system):
         final.number_of_players = max([final.number_of_players, regional.number_of_players])
         final.published_by_nintendo = any([final.published_by_nintendo, regional.published_by_nintendo])
 
+        final.free_to_play = any([final.free_to_play, regional.free_to_play])
+
         for country, website in regional.websites.items():
             if website:
                 final.websites[country] = website
