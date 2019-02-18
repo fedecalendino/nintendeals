@@ -45,15 +45,4 @@ def check():
         if not content:
             continue
 
-        body = [
-            generator.generate_header(message.author.name),
-            '',
-            '',
-            content,
-            '___',
-            generator.build_wishlist(message.author.name),
-            '___',
-            generator.generate_footer()
-        ]
-
-        reddit.reply(message, '\n'.join(body))
+        reddit.reply(message, content)

@@ -61,7 +61,12 @@ def notify_users():
                 wishlist.games[game_id].countries[country] = sale.end_date + timedelta(days=1)
 
         if len(sales_to_notify):
-            content = generator.generate_notification(sales_to_notify)
+            body = generator.generate_notification(sales_to_notify)
+            content = generator.build_response(body, username)
+
+            if len(content) > 9500:
+                content = generator.build_response(body, username, include_wishlist=False)
+
             reddit.send(username, GAMES_ON_SALE, content)
             wishlist_db.save(wishlist)
 

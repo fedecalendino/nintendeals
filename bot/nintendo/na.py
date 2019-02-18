@@ -60,7 +60,7 @@ def _list_games(system, only_published_by_nintendo=False):
             continue
 
         if not data.get('game_code'):
-            LOG.info('{} has no game id'.format(title))
+            # LOG.info('{} has no game id'.format(title))
             continue
 
         game_id = get_game_id(nsuid=nsuid, game_id=data.get('game_code'))

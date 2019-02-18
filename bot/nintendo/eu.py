@@ -49,7 +49,7 @@ def list_games(system):
         title = data.get('title').replace('Â®', '®').replace('Ã©', 'é').replace('Ã', 'Û')
 
         if not data.get('nsuid_txt'):
-            LOG.info('{} has no nsuid'.format(title))
+            # LOG.info('{} has no nsuid'.format(title))
             continue
 
         for product_id in data.get('product_code_txt', []):

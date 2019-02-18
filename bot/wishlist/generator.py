@@ -126,3 +126,18 @@ def generate_footer():
             footer.append(f'* [{system}]({submission.url.replace("https:", "") })')
 
     return '\n'.join(footer)
+
+
+def build_response(content, username, include_wishlist=True):
+    return '\n'.join(
+        [
+            generate_header(username),
+            '',
+            '',
+            content,
+            '___',
+            build_wishlist(username) if include_wishlist else '',
+            '___',
+            generate_footer()
+        ]
+    )
