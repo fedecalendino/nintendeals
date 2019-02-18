@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 
 from commons.classes import Game
+from commons.classes import Job
 from commons.classes import Price
 from commons.classes import Singleton
 from commons.classes import Submission
@@ -64,6 +65,12 @@ class GamesDatabase(Database):
         return super(GamesDatabase, self).load_all(filter, sort, skip, limit)
 
 
+class JobDatabase(Database):
+
+    def __init__(self):
+        super(JobDatabase, self).__init__('jobs', Job)
+
+
 class PricesDatabase(Database):
 
     def __init__(self):
@@ -79,4 +86,4 @@ class RedditDatabase(Database):
 class WishlistDatabase(Database):
 
     def __init__(self):
-        super(WishlistDatabase, self).__init__('wishlist', Wishlist)
+        super(WishlistDatabase, self).__init__('wishlists', Wishlist)

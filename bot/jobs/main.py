@@ -1,35 +1,33 @@
-import logging
+from db.mongo import JobDatabase
 
 from bot.jobs import games as games_job
 from bot.jobs import prices as prices_job
 from bot.jobs import submissions as submissions_job
 from bot.jobs import wishlist as wishlist_job
 
+from commons.classes import Job
 
-LOG = logging.getLogger('jobs.main')
+
+def run(name, target):
+    job = Job(_id=name)
+    JobDatabase().save(job)
+
+    target()
+
+    job.finish()
+    JobDatabase().save(job)
 
 
 def games():
-    LOG.info('Updating: games')
-
-    games_job.update_all_games()
-
-    LOG.info('Finished')
+    run('games', games_job.update_all_games)
 
 
 def submissions():
-    LOG.info('Updating: submissions')
-
-    submissions_job.update_submissions()
-
-    LOG.info('Finished')
+    run('submissions', submissions_job.update_submissions)
 
 
 def prices_submissions_notifications():
-    LOG.info('Updating: prices, submissions, notifications')
+    run('update.prices', prices_job.update_prices)
+    run('update.submissions', submissions_job.update_submissions)
+    run('update.wishlists', wishlist_job.notify_users)
 
-    prices_job.update_prices()
-    submissions_job.update_submissions()
-    wishlist_job.notify_users()
-
-    LOG.info('Finished')

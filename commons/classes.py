@@ -1,3 +1,6 @@
+import logging
+import uuid
+
 from random import randint
 from datetime import datetime
 from datetime import timedelta
@@ -247,5 +250,31 @@ class Wishlist:
     def dump(self):
         tmp = self.__dict__.copy()
         tmp['games'] = {game_id: wg.dump() for game_id, wg in self.games.items()}
+
+        return tmp
+
+
+class Job:
+
+    LOG = logging.getLogger('jobs')
+
+    def __init__(self, **data):
+        self._id = data['_id']
+        self.start = data.get('start', datetime.utcnow())
+        self.end = data.get('end', None)
+
+        Job.LOG.info(f'Running: {self.id}')
+
+    def finish(self):
+        self.end = datetime.utcnow()
+
+        Job.LOG.info(f'Finish: {self.id}')
+
+    @property
+    def id(self):
+        return self._id
+
+    def dump(self):
+        tmp = self.__dict__.copy()
 
         return tmp
