@@ -41,12 +41,7 @@ def get_wishlisted_count():
 
 
 def merge_game(game_id, game, system):
-    final = Game(_id=game_id, system=system)
-
-    db_game = game.get(DB, None)
-
-    if db_game:
-        final.scores = db_game.scores
+    final = game.get(DB, Game(_id=game_id, system=system))
 
     for region in REGIONS:
         regional = game.get(region, None)
@@ -67,6 +62,8 @@ def merge_game(game_id, game, system):
         for country, website in regional.websites.items():
             if website:
                 final.websites[country] = website
+
+    final.categories = list(set(final.categories))
 
     return final
 
