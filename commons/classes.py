@@ -261,6 +261,7 @@ class Job:
 
     def __init__(self, **data):
         self._id = data['_id']
+        self.source = data.get('source') if data.get('source') else 'manual'
         self.start = data.get('start', datetime.utcnow())
         self.end = data.get('end', None)
 

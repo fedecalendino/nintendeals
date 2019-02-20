@@ -1,5 +1,6 @@
 from threading import Thread
 
+from flask import request
 from flask import Blueprint
 from flask import Response
 
@@ -13,13 +14,13 @@ blueprint = Blueprint(TAG, __name__)
 blueprint.prefix = f"/api/{TAG}"
 
 
-def run_job(target, message):
+def run_job(target, message, source=None):
     error = validate()
 
     if error:
         return error
 
-    Thread(target=target, args=[]).start()
+    Thread(target=target, args=[source]).start()
 
     return Response(message, mimetype="application/json")
 
@@ -28,7 +29,8 @@ def run_job(target, message):
 def games():
     return run_job(
         jobs.main.games,
-        'Updating: games'
+        'Updating: games',
+        source=request.args.get('source')
     )
 
 
@@ -36,7 +38,8 @@ def games():
 def submissions():
     return run_job(
         jobs.main.submissions,
-        'Updating: submissions'
+        'Updating: submissions',
+        source=request.args.get('source')
     )
 
 
@@ -44,6 +47,7 @@ def submissions():
 def prices():
     return run_job(
         jobs.main.prices_submissions_notifications,
-        'Updating: prices, submissions, notifications'
+        'Updating: prices, submissions, notifications',
+        source=request.args.get('source')
     )
 

@@ -8,8 +8,9 @@ from bot.jobs import wishlist as wishlist_job
 from commons.classes import Job
 
 
-def run(name, target):
+def run(name, target, source=None):
     job = Job(_id=name)
+    job.source = source
     JobDatabase().save(job)
 
     target()
@@ -18,16 +19,16 @@ def run(name, target):
     JobDatabase().save(job)
 
 
-def games():
-    run('games', games_job.update_all_games)
+def games(source=None):
+    run('games', games_job.update_all_games, source)
 
 
-def submissions():
-    run('submissions', submissions_job.update_submissions)
+def submissions(source=None):
+    run('submissions', submissions_job.update_submissions, source)
 
 
-def prices_submissions_notifications():
-    run('update.prices', prices_job.update_prices)
-    run('update.submissions', submissions_job.update_submissions)
-    run('update.wishlists', wishlist_job.notify_users)
+def prices_submissions_notifications(source=None):
+    run('prices', prices_job.update_prices, source)
+    run('submissions', submissions_job.update_submissions, source)
+    run('wishlists', wishlist_job.notify_users, source)
 
