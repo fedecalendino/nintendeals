@@ -124,7 +124,7 @@ class Score:
         if self.userscore not in [None, self.NO_SCORE]:
             total.append(self.userscore * 10)
 
-        return sum(total) / len(total) if len(total) else self.NO_SCORE
+        return int(sum(total) / len(total)) if len(total) else self.NO_SCORE
 
     def __repr__(self):
         return f'{self.metascore}/{self.userscore}'
