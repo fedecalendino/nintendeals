@@ -65,9 +65,6 @@ class Reddit(metaclass=Singleton):
 
         now = datetime.utcnow()
 
-        if not sub:
-            return False
-
         try:
             submission = self.api.submission(id=sub.submission_id)
 
@@ -77,21 +74,17 @@ class Reddit(metaclass=Singleton):
             else:
                 LOG.info(f'Submission wasnt deleted: {sub}')
 
-            if country and sub.expires_at > now:
+            if submission.stickied and (now - sub.created_at).days < 170:
+                LOG.info(f'Submission is stickied and not expired: {sub}')
+                return True
+            else:
+                LOG.info(f'Submission isnt stickied or expired: {sub}')
+
+            if now > sub.expires_at:
                 LOG.info(f'Submission expired: {sub}')
                 return False
             else:
                 LOG.info(f'Submission is active: {sub}')
-
-            if country:
-                LOG.info(f'Submission is for a country: {sub}')
-                return True
-
-            if submission.stickied:
-                LOG.info(f'Submission is stickied: {sub}')
-                return True
-            else:
-                LOG.info(f'Submission isnt stickied: {sub}')
 
             if now.today().weekday() not in [0, 3]:  # now is not monday/thursday
                 LOG.info(f'Submission will be reused (not monday/thursday yet): {sub}')
@@ -192,7 +185,7 @@ class Reddit(metaclass=Singleton):
                 subreddit=subreddit,
                 system=system,
                 title=title,
-                days_to_expire=14 if country else 170
+                days_to_expire=14 if country else 165
             )
 
             LOG.info(f'Submission created: {sub}')

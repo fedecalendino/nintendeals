@@ -275,7 +275,7 @@ def generate_main_post(games, prices, submissions, system):
         content.append(table)
         content.append(SEPARATOR)
 
-    content.append('##Full deals by country/region')
+    content.append('###For prices and more check your country/region post:\n')
 
     for country, details in COUNTRIES.items():
         key = f'{system}/{country}'
