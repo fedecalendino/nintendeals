@@ -200,8 +200,7 @@ def generate_country_post(games, prices, system, country):
 
 
 def make_main_row(game, countries):
-    countries = ' '.join([country[FLAG] if country in countries else EMPTY
-                          for country in COUNTRIES])
+    countries = ' '.join([countries.get(country, EMPTY) for country in COUNTRIES])
 
     title = game.title
 
@@ -223,7 +222,7 @@ def generate_main_table(games, prices, system):
         if game.system != system:
             continue
 
-        countries = []
+        countries = {}
 
         for country, details in COUNTRIES.items():
             nsuid = game.nsuids.get(details[REGION])
@@ -246,10 +245,10 @@ def generate_main_table(games, prices, system):
             if not latest_sale:
                 continue
 
-            if game.wishlisted < 25:
+            if game.wishlisted < 20:
                 continue
 
-            countries.append(details)
+            countries[country] = details[FLAG]
 
         if len(countries):
             row = make_main_row(game, countries)
