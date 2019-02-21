@@ -2,6 +2,7 @@ from datetime import datetime
 
 from commons.config import COUNTRIES
 
+from commons.emoji import EMPTY
 from commons.emoji import EXP_TODAY
 from commons.emoji import EXP_TOMORROW
 from commons.emoji import NEW
@@ -199,8 +200,8 @@ def generate_country_post(games, prices, system, country):
 
 
 def make_main_row(game, countries):
-    # countries = '  '.join([f'`{country[FLAG]}{country[ID]}`' for country in countries])
-    countries = ' '.join([f'{country[FLAG]}' for country in countries])
+    countries = ' '.join([country[FLAG] if country in countries else EMPTY
+                          for country in COUNTRIES])
 
     title = game.title
 
