@@ -31,12 +31,12 @@
                     <table class="table table-bordered sortable">
                         <thead class="thead-dark">
                             <tr>
+                                <th scope="col" class="text-center"> </th>
                                 <th scope="col">Title</th>
                                 <th scope="col" class="text-center">Release</th>
                                 <th scope="col" class="text-center">Players</th>
                                 <th scope="col" class="text-center">Score</th>
                                 <th scope="col" class="text-center">{{ emoji_star }}</th>
-                                <th scope="col" class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="table">
@@ -55,14 +55,14 @@
                                     {% set color = '#FF9999' %}
                                 {% endif %}
                                 <tr>
+                                    <td align="center">
+                                        <a href="{{ add_url.format(game.id, game.titles[region], country) }}" target="_blank">{{ emoji_plus }}</a>
+                                    </td>
                                     <td scope="row">{{ '{}{}'.format(' ' + emoji_nintendo if game.published_by_nintendo else '', game.titles[region]) }}</td>
                                     <td align="center" bgcolor="{{color}}">{{game.release_dates[region].strftime("%Y-%m-%d") }}</td>
                                     <td align="center">{{ game.players }}</td>
                                     <td align="center">{{ game.scores.score }}</td>
                                     <td align="center">{{ game.wishlisted if game.wishlisted else '-' }}</td>
-                                    <td align="center">
-                                        <a href="{{ add_url.format(game.id, game.titles[region], country) }}" target="_blank">{{ emoji_plus }}</a>
-                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
