@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 import requests
 
@@ -67,7 +68,7 @@ def list_games(system):
 
         game.titles[EU] = title
         game.nsuids[EU] = nsuid
-        game.release_dates[EU] = data.get('dates_released_dts')[0][:10]
+        game.release_dates[EU] = datetime.strptime(data.get('dates_released_dts')[0][:10], '%Y-%m-%d')
 
         game.categories = get_categories(data.get('game_categories_txt', []))
 

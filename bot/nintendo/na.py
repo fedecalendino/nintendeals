@@ -69,7 +69,7 @@ def _list_games(system, only_published_by_nintendo=False):
 
         game.titles[NA] = title
         game.nsuids[NA] = nsuid
-        game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y').strftime('%Y-%m-%d')
+        game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y')
 
         game.categories = get_categories(data.get('categories', {}).get('category', []))
 

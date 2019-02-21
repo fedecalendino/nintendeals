@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import render_template
 
 from db.mongo import GamesDatabase
@@ -60,6 +62,7 @@ def wishlist(system, country):
         add_url=ADD_URL,
         delete_url=DELETE_URL,
         show_url=SHOW_URL,
+        now=datetime.utcnow(),
         emoji_nintendo=NINTENDO,
         emoji_plus=PLUS,
         emoji_star=STAR,

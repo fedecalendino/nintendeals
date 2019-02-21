@@ -50,11 +50,3 @@ def get_categories(categories):
 
     return sorted([category_map.get(cat, cat) for cat in categories])
 
-
-def parse_jp_date(date):
-    if '.' not in date:
-        return date
-
-    parts = date.split('.')
-
-    return '{}-{:02d}-{:02d}'.format(int(parts[0]), int(parts[1]), int(parts[2]))

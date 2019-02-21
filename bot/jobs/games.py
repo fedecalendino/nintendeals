@@ -41,7 +41,10 @@ def get_wishlisted_count():
 
 
 def merge_game(game_id, game, system):
-    final = game.get(DB, Game(_id=game_id, system=system))
+    final = Game(_id=game_id, system=system)
+
+    if game.get(DB):
+        final.scores =  game.get(DB).scores
 
     for region in REGIONS:
         regional = game.get(region, None)
@@ -103,7 +106,11 @@ def update_games(system, wishlist_counts={}):
         if final.scores.next_update < now:
             final.scores = metacritic.get_scores(system, final.title_en)
 
-        GamesDatabase().save(final)
+        try:
+            GamesDatabase().save(final)
+        except Exception as e:
+            LOG.error(f'Error saving {final.id}: {str(e)}')
+            continue
 
         for region, nsuid in final.nsuids.items():
             if not nsuid:

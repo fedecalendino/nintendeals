@@ -1,10 +1,10 @@
 import logging
+from datetime import datetime
 
 import requests
 import xmltodict
 
 from bot.nintendo.util import get_game_id
-from bot.nintendo.util import parse_jp_date
 
 from commons.classes import Game
 
@@ -47,7 +47,7 @@ def list_games(system):
         game.titles[JP] = info.get('TitleName').title()
         game.nsuids[JP] = nsuid
         game.websites[JP] = JAPAN[DETAILS][system].format(nsuid)
-        game.release_dates[JP] = parse_jp_date(info.get('SalesDate'))
+        game.release_dates[JP] = datetime.strptime(info.get('SalesDate'), '%Y.%m.%d')
 
         game.published_by_nintendo = info.get('MakerName', '') == '任天堂'
 

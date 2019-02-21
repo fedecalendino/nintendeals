@@ -40,10 +40,23 @@
                             </tr>
                         </thead>
                         <tbody id="table">
+                            {% set week = now.strftime("%U") | int %}
                             {% for game in games %}
+                                {% set days = (game.release_dates[region] - now).days %}
+                                {% set date_week = game.release_dates[region].strftime("%U") | int %}
+
+                                {% if days < -1 %}
+                                    {% set color = '#FFFFFF' %}
+                                {% elif days in [-1, 0] %}
+                                    {% set color = '#FFFF99' %}
+                                {% elif date_week in [week, week + 1] %}
+                                    {% set color = '#FF9966' %}
+                                {% else %}
+                                    {% set color = '#FF9999' %}
+                                {% endif %}
                                 <tr>
                                     <td scope="row">{{ '{}{}'.format(' ' + emoji_nintendo if game.published_by_nintendo else '', game.titles[region]) }}</td>
-                                    <td align="center">{{ game.release_dates[region] }}</td>
+                                    <td align="center" bgcolor="{{color}}">{{game.release_dates[region].strftime("%Y-%m-%d") }}</td>
                                     <td align="center">{{ game.players }}</td>
                                     <td align="center">{{ game.scores.score }}</td>
                                     <td align="center">{{ game.wishlisted if game.wishlisted else '-' }}</td>
