@@ -18,10 +18,15 @@ def normalize(string):
     string = string.replace('.', '')\
         .replace('®', '')\
         .replace('™', '')\
-        .replace('/', '')
+        .replace('/', '')\
+        .replace('+', 'replacewithplus')
 
     string = slugify_filename(string, to_lower=True)\
-        .replace('_', '-')
+        .replace('_', '-')\
+        .replace('replacewithplus', '+')
+
+    if string.endswith('+'):
+        string = string[:-1] + '-+'
 
     return string
 
