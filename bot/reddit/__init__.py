@@ -18,6 +18,13 @@ from commons.settings import REDDIT_USERNAME
 
 LOG = logging.getLogger('reddit')
 
+FLAIRS = {
+    '3ds': 'Sale',
+    '3dsdeals': 'Digital Download',
+    'nintendoswitch': 'Sale',
+    'nintendoswitchdeals': 'Digital Download',
+}
+
 
 class Reddit(metaclass=Singleton):
 
@@ -114,6 +121,8 @@ class Reddit(metaclass=Singleton):
 
         submission.disable_inbox_replies()
 
+        self.update_flair(submission, subreddit)
+
         return submission.id
 
     def edit(self, sub, content):
@@ -122,11 +131,8 @@ class Reddit(metaclass=Singleton):
         if not submission:
             return
 
-        try:
-            submission.edit(content)
-            LOG.info(f'Submission updated: {sub}')
-        except:
-            LOG.error(f'Submission can\'t be edited: {sub}')
+        submission.edit(content)
+        LOG.info(f'Submission updated: {sub}')
 
     def nsfw(self, sub):
         if not sub:
@@ -143,7 +149,29 @@ class Reddit(metaclass=Singleton):
         except:
             LOG.error(f'Submission can\'t be marked as NSFW: {sub}')
 
+    def update_flair(self, submission, subreddit):
+        try:
+            flair_text = FLAIRS.get(subreddit)
+
+            if not flair_text:
+                return
+            else:
+                flair_text = flair_text.lower()
+
+            for flair in submission.flair.choices():
+                if flair['flair_text'].lower() == flair_text:
+                    submission.flair.select(flair['flair_template_id'])
+
+                    LOG.info(f'Flair "{flair_text}" applied')
+                    break
+            else:
+                LOG.warning(f'Flair "{flair_text}" not found for {subreddit}')
+        except Exception as e:
+            LOG.error(f'Flair for "{subreddit}" can\'t applied: {str(e)}')
+
     def submit(self, system, subreddit, title, content, country=None):
+        subreddit = subreddit.lower()
+
         reddit_db = RedditDatabase()
 
         key = f'{system}/{country if country else subreddit}'

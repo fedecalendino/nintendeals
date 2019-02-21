@@ -199,16 +199,22 @@ def generate_country_post(games, prices, system, country):
 
 
 def make_main_row(game, countries):
-    countries = ' '.join([f'`{country[FLAG]}{country[ID]}`' for country in countries])
+    # countries = '  '.join([f'`{country[FLAG]}{country[ID]}`' for country in countries])
+    countries = ' '.join([f'{country[FLAG]}' for country in countries])
 
-    return f'{game.title}|{countries}|{game.scores.score}|{game.wishlisted}'
+    title = game.title
+
+    if len(title) > 40:
+        title = f'{title[:39]}…'.replace(' …', '…')
+
+    return f'{title}|{countries}|{game.scores.score}|{game.wishlisted}'
 
 
 def generate_main_table(games, prices, system):
     games = sorted(games.values(), key=lambda x: x.wishlisted, reverse=True)
 
     content = [
-        f'Title | On sale on | Score | {STAR} ',
+        f'Title | Countries/Regions | Score | {STAR} ',
         '--- | --- | :---: | :---:'
     ]
 
