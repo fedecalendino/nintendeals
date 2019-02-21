@@ -58,7 +58,7 @@ def notify_users():
                     continue
 
                 sales_to_notify.append((game, country_price, country, sale))
-                wishlist.games[game_id].countries[country] = sale.end_date + timedelta(days=1)
+                wishlist.games[game_id].countries[country] = sale.end_date + timedelta(days=+2)
 
         if len(sales_to_notify):
             body = generator.generate_notification(sales_to_notify)
