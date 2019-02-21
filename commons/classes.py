@@ -207,7 +207,7 @@ class Submission:
 
         now = datetime.utcnow()
         self.created_at = data.get('created_at', now)
-        self.created_at = data.get('updated_at', now)
+        self.updated_at = data.get('updated_at', now)
         self.expires_at = data.get('expires_at', now + timedelta(days=data.get('days_to_expire', 170)))
 
     @property

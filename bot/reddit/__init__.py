@@ -59,7 +59,7 @@ class Reddit(metaclass=Singleton):
         except:
             LOG.error('Error replying to {}: {}'.format(message.author.name, message.subject))
 
-    def usable(self, sub, country=False):
+    def usable(self, sub, country=None):
         if not sub:
             return False
 
@@ -82,6 +82,10 @@ class Reddit(metaclass=Singleton):
                 return False
             else:
                 LOG.info(f'Submission is active: {sub}')
+
+            if country:
+                LOG.info(f'Submission is for a country: {sub}')
+                return True
 
             if submission.stickied:
                 LOG.info(f'Submission is stickied: {sub}')
@@ -179,7 +183,7 @@ class Reddit(metaclass=Singleton):
 
         now = datetime.utcnow()
 
-        if not self.usable(sub):
+        if not self.usable(sub, country):
             self.nsfw(sub)
 
             sub = Submission(
