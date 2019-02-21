@@ -50,7 +50,7 @@ def build_wishlist(username):
 
         countries = wishlisted_game.countries
 
-        country_list = [f'{COUNTRIES[country][FLAG]} {country}' for country in countries if country in COUNTRIES]
+        country_list = [f'{COUNTRIES[country][FLAG]}' for country in countries if country in COUNTRIES]
 
         rows.append('{}|{}|{}'.format(
             game.title,
