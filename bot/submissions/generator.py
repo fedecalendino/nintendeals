@@ -218,8 +218,11 @@ def generate_main_table(games, prices, system):
         '--- | --- | :---: | :---:'
     ]
 
-    for game in games:
+    for game in games[:25]:
         if game.system != system:
+            continue
+
+        if not game.wishlisted:
             continue
 
         countries = {}
@@ -243,9 +246,6 @@ def generate_main_table(games, prices, system):
             latest_sale = country_price.active
 
             if not latest_sale:
-                continue
-
-            if game.wishlisted < 20:
                 continue
 
             countries[country] = details[FLAG]
