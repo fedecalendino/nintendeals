@@ -51,8 +51,10 @@ def generate_footer(system=None, country=None):
 
     footer = [
         SEPARATOR,
-        '* Developed by /u/uglyasablasphemy | [Switch Friend Code](https://nin.codes/uglyasablasphemy)',
-        '* Use [RES](https://redditenhancementsuite.com) for table sorting and more',
+        '* Developed by /u/uglyasablasphemy'
+        '   * [Switch Friend Code](https://nin.codes/uglyasablasphemy)'
+        '   * [GitHub](https://github.com/federicocalendino/nintendeals)',
+        '* [RES](https://redditenhancementsuite.com) is recommended for table sorting on desktop',
         '* If you have perfomance issues, you might want to check out:',
         '   * [Reddit is Fun](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)',
         '   * [Apollo for Reddit](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)',
@@ -218,8 +220,11 @@ def generate_main_table(games, prices, system):
         '--- | --- | :---: | :---:'
     ]
 
-    for game in games:
+    for game in games[:25]:
         if game.system != system:
+            continue
+
+        if not game.wishlisted:
             continue
 
         countries = {}
@@ -243,9 +248,6 @@ def generate_main_table(games, prices, system):
             latest_sale = country_price.active
 
             if not latest_sale:
-                continue
-
-            if game.wishlisted < 20:
                 continue
 
             countries[country] = details[FLAG]
