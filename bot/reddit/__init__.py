@@ -86,6 +86,10 @@ class Reddit(metaclass=Singleton):
             else:
                 LOG.info(f'Submission is active: {sub}')
 
+                if country:
+                    LOG.info(f'Submission is for a country, it will be reused: {sub}')
+                    return True
+
             if now.today().weekday() not in [0, 3]:  # now is not monday/thursday
                 LOG.info(f'Submission will be reused (not monday/thursday yet): {sub}')
                 return True
