@@ -40,7 +40,7 @@ def extract_score(soup, tag, properties, cast=float):
         return None
 
 
-def get_scores(system, title):
+def _get_scores(system, title):
     try:
         system = system.lower()
         slug = normalize(title)
@@ -59,5 +59,20 @@ def get_scores(system, title):
         score.userscore = extract_score(soup, 'div', {'class': lambda value: value and value.startswith('metascore_w user')})
     except:
         score = Score(days=7)
+
+    return score
+
+
+def get_scores(system, title):
+    score = _get_scores(system, title)
+
+    for separator in [':']:
+        if separator not in title:
+            continue
+
+        if score.score != Score.NO_SCORE:
+            continue
+
+        score = _get_scores(system, title.split(separator)[0])
 
     return score

@@ -1,5 +1,4 @@
 import logging
-import uuid
 
 from random import randint
 from datetime import datetime
