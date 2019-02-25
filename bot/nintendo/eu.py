@@ -47,7 +47,7 @@ def fetch_games(system):
 
 def list_games(system):
     for data in fetch_games(system):
-        title = data.get('title').replace('Â®', '®').replace('Ã©', 'é').replace('Ã', 'Û')
+        title = data.get('title')
 
         if not data.get('nsuid_txt'):
             # LOG.info('{} has no nsuid'.format(title))

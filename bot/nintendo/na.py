@@ -53,7 +53,7 @@ def fetch_games(system, published_by_nintendo=False):
 
 def _list_games(system, only_published_by_nintendo=False):
     for data in fetch_games(system, published_by_nintendo=only_published_by_nintendo):
-        title = data.get('title', '').replace('Â®', '®').replace('Ã©', 'é').replace('Ã', 'Û')
+        title = data.get('title', '')
         nsuid = data.get('nsuid')
 
         if nsuid in [None, 'HAC']:

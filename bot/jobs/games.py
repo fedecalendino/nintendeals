@@ -53,7 +53,12 @@ def merge_game(game_id, game, system):
             continue
 
         final.nsuids[region] = regional.nsuids.get(region)
-        final.titles[region] = regional.titles.get(region)
+        final.titles[region] = regional.titles.get(region)\
+            .replace('Â®', '®')\
+            .replace('Ã©', 'é')\
+            .replace('Ã', 'Û')\
+            .replace('Û¼', 'ü')
+
         final.release_dates[region] = regional.release_dates.get(region)
         final.categories += regional.categories
 

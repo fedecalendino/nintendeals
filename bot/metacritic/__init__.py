@@ -41,38 +41,73 @@ def extract_score(soup, tag, properties, cast=float):
 
 
 def _get_scores(system, title):
-    try:
-        system = system.lower()
-        slug = normalize(title)
+    slug = normalize(title)
 
-        url = METACRITIC_URL.format(system=system.lower(), title=slug)
-        LOG.info('Fetching scores for {} on {}: {}'.format(title, system, url))
+    url = METACRITIC_URL.format(system=system.lower(), title=slug)
+    LOG.info('Fetching scores for {} on {}: {}'.format(title, system, url))
 
-        request = Request(url, headers=HEADERS)
-        content = urlopen(request).read()
+    request = Request(url, headers=HEADERS)
+    content = urlopen(request).read()
 
-        soup = BeautifulSoup(content, "html.parser")
+    soup = BeautifulSoup(content, "html.parser")
 
-        score = Score(days=14)
+    score = Score(days=14)
 
-        score.metascore = extract_score(soup, 'span', {'itemprop': 'ratingValue'}, cast=int)
-        score.userscore = extract_score(soup, 'div', {'class': lambda value: value and value.startswith('metascore_w user')})
-    except:
-        score = Score(days=7)
+    score.metascore = extract_score(soup, 'span', {'itemprop': 'ratingValue'}, cast=int)
+    score.userscore = extract_score(soup, 'div', {'class': lambda value: value and value.startswith('metascore_w user')})
 
     return score
 
 
+PREFIXES = [
+    '',
+
+    ' for Nintendo Switch',
+
+    ' - Digital Version',
+    ' Digital Edition',
+
+    ' - Nintendo Switch Edition',
+    ': Nintendo Switch Edition',
+    ' Nintendo Switch Edition',
+
+    ': Complete Edition',
+    ' Complete Edition',
+
+    ' - Definitive Edition',
+
+    ': Deluxe Edition',
+    'Deluxe Edition',
+
+    ': Special Edition',
+    ' - Special Edition',
+    ' Special Edition',
+
+    ': Ultimate Edition',
+    ' Ultimate Edition',
+]
+
+
 def get_scores(system, title):
-    score = _get_scores(system, title)
+    system = system.lower()
+    score = Score(days=7)
 
-    for separator in [':']:
-        if separator not in title:
+    if not title:
+        return score
+
+    for prefix in PREFIXES:
+        if prefix not in title:
             continue
 
-        if score.score != Score.NO_SCORE:
-            continue
+        tmp = title.replace(prefix, '')
 
-        score = _get_scores(system, title.split(separator)[0])
+        try:
+            score = _get_scores(system, tmp)
 
+            if score.score != Score.NO_SCORE:
+                break
+        except Exception as e:
+            LOG.debug(f'Error fetch score for {tmp}: {str(e)}')
+
+    LOG.info(f'Score for {title}: {score.score}')
     return score
