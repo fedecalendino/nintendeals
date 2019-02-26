@@ -23,4 +23,4 @@ USER_SUBREDDIT = f'u_{REDDIT_USERNAME}'
 POLL = os.environ.get('POLL', None)
 
 
-WEBSITE_URL = 'https://nintendeals.herokuapp.com'
+WEBSITE_URL = 'http://bot.nintendeals.xyz'
