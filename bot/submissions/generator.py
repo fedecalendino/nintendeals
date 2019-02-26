@@ -59,12 +59,14 @@ def generate_footer(system=None, country=None):
         '  * [Reddit is Fun](https://play.google.com/store/apps/details?id=com.andrewshu.android.reddit)',
         '  * [Apollo for Reddit](https://itunes.apple.com/us/app/apollo-for-reddit/id979274575)',
         SEPARATOR,
-        f'Last update: [{timestamp}](https://google.com/search?q={time})'
+        f'Last update: [{timestamp}](https://google.com/search?q={time})',
+        SEPARATOR
     ]
 
     if system:
-        footer.append(SEPARATOR)
-        footer.append(f'You can add games to your wishlist [HERE]({WEBSITE_URL}/wishlist/{system.lower()}/{country.lower()})')
+        footer.append(f'{STAR} You can add games to your wishlist [HERE]({WEBSITE_URL}/wishlist/{system.lower()}/{country.lower()})')
+    else:
+        footer.append(f'{STAR} You can add games to your wishlist [HERE]({WEBSITE_URL})')
 
     return footer
 
