@@ -2,18 +2,18 @@
 
 {% block content %}
     <!-- Main -->
-    <h3>
-        Set up you wishlist here!
-    </h3>
-    <div class="no-gutter container">
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <h3>
+                    Choose your system and region to add games to your wishlist.
+                </h3>
                <div class="table table-responsive">
                     <table class="table table-bordered sortable">
                         <thead class="thead-dark">
                             <tr>
                                 {% for system in systems %}
-                                    <th scope="col" class="text-center">{{ system['name'] }}</th>
+                                    <th scope="col" class="text-center">{{ system }}</th>
                                 {% endfor %}
                             </tr>
                         </thead>
@@ -21,7 +21,7 @@
                             {% for country in countries %}
                                 <tr>
                                     {% for system in systems %}
-                                        <td><a href="/wishlist/{{ system['_id'].lower() }}/{{ country['_id'].lower() }}">
+                                        <td><a href="/wishlist/{{ system.lower() }}/{{ country['_id'].lower() }}">
                                             {{ country['flag'] }} {{ country['name'] }}
                                         </a></td>
                                     {% endfor %}
@@ -30,6 +30,46 @@
                         </tbody>
                     </table>
                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="alert alert-info">
+                        <h4>Instructions</h4>
+                        <p>
+                            To build your wishlist you need to click the '➕ ADD' link next to the games that you want to add.
+                            This will create a private message for <a href="http://www.reddit.com/user/nintendeals/posts/" target="_blank">/u/nintendeals</a>.
+                            If you send that message, the bot will add the game to your wishlist and reply to you with your current wishlist.
+                            Also, it will notify you the next time that game goes on sale (via reddit private messages).
+                        </p>
+                        <p>
+                            In the messages that the bot sends, you'll see a ➖ icon next to each of your wishlisted games.
+                            If you click it, it will generate a private message for the bot to remove the selected game off your wishlist.</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="alert alert-info">
+                        <h4>FAQ</h4>
+                        <p><strong>Why another website for the game list?</strong></p>
+                        <p>
+                            Reddit limits the ammount of characters per post to 40k and the comments to 10k, so to fit every game with their ➕ link
+                            i would need something close to 3 posts or 13 comments which is a lot.
+                        </p>
+                        <p></p>
+                        <p>
+                            <strong>Would there be a limit for the ammount of games in the wishlist?</strong>
+                        </p>
+                        <p>Yes, there is a limit of 50 games per user.</p>
+                        <p></p>
+                        <p><strong>Why this have to be done with PMs?</strong></p>
+                        <p>
+                            This way you don't need to provider any information about your reddit account, everything is achieved with PMs between you and the bot.
+                            This website will only provide the format for the PMs but everything else is done securely inside the reddit.com site.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

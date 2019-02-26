@@ -73,7 +73,7 @@ def wishlist(system, country):
 def index():
     return render_template(
         'index.html',
-        systems=SYSTEMS.values(),
+        systems=sorted([system[ID] for system in SYSTEMS.values()]),
         countries=COUNTRIES.values(),
         delete_url=DELETE_URL,
         show_url=SHOW_URL,

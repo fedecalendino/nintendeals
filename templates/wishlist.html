@@ -24,9 +24,12 @@
 
 {% block content %}
     <!-- Main -->
-    <div class="no-gutter container">
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <h3>
+                    {{system}}'s games
+                </h3>
                 <div class="table table-responsive">
                     <table class="table table-bordered sortable">
                         <thead class="thead-dark">
@@ -54,9 +57,10 @@
                                 {% else %}
                                     {% set color = '#FF9999' %}
                                 {% endif %}
+
                                 <tr>
                                     <td align="center">
-                                        <a href="{{ add_url.format(game.id, game.titles[region], country) }}" target="_blank">{{ emoji_plus }}</a>
+                                        <a href="{{ add_url.format(game.id, game.titles[region], country) }}" target="_blank">{{ emoji_plus }} ADD</a>
                                     </td>
                                     <td scope="row">{{ '{}{}'.format(' ' + emoji_nintendo if game.published_by_nintendo else '', game.titles[region]) }}</td>
                                     <td align="center" bgcolor="{{color}}">{{game.release_dates[region].strftime("%Y-%m-%d") }}</td>

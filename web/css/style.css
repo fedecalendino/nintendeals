@@ -8,19 +8,20 @@ body {
 	margin-right: 10px;
 }
 
-.no-gutter>[class*='col-'] {
-    padding-right: 0;
-    padding-left: 0;
+.container {
+    width: 100%;
+    padding-top: 5px;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
-table
-{
+table {
     width: 125%;
     border-collapse: collapse;
 }
 
-table thead td
-{
+table thead td {
     border: 1px solid #eeeeee;
 }
 
@@ -28,14 +29,12 @@ tr {
 	line-height: 12px;
 }
 
-.dates
-{
+.dates {
     width: 125px;
     white-space: nowrap;
 }
 
-.players
-{
+.players {
     width: 150px;
     white-space: nowrap;
 }
