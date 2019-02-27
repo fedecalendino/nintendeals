@@ -4,6 +4,7 @@ import time
 
 import requests
 from flask import Flask
+from flask import request
 from flask import redirect
 from flask import send_from_directory
 from flask_cors import CORS
@@ -48,6 +49,17 @@ def root():
 @app.route("/index.html")
 def index():
     return generator.index()
+
+
+@app.route("/top/wishlist/<string:system>")
+def top_wishlist(system):
+    limit = int(request.args.get('limit', '50'))
+    response = generator.top_wishlist(system, limit)
+
+    if not response:
+        return redirect("/", code=302)
+    else:
+        return response
 
 
 @app.route("/wishlist/<string:system>/<string:country>")

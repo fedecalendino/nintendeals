@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Top wishlist</title>
+    </head>
+
+    <body>
+        . | Title | Score | {{ emoji_star }} <br>
+        --- | --- | :---: | :---: <br>
+
+        {% set ns = namespace(position=0, last_value=99999999) %}
+
+        {% for game in games %}
+            {% if game.wishlisted < ns.last_value %}
+                {% set ns.position = ns.position + 1 %}
+                {% set ns.last_value = game.wishlisted %}
+            {% endif %}
+
+            {% if ns.position <= limit %}
+                {{ ns.position }} | {{ game.title }} | {{ game.scores.score }} | {{ game.wishlisted }} <br>
+            {% endif %}
+
+        {% endfor %}
+
+    </body>
+
+</html>

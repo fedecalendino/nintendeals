@@ -23,17 +23,33 @@ from commons.keys import REGION
 from commons.keys import SYSTEM
 
 
-def validate(system, country):
+def validate(system, country=None):
     system = SYSTEMS.get(system.title(), SYSTEMS.get(system.upper()))
-    country = COUNTRIES.get(country.upper())
 
     if not system:
         raise Exception(f'Invalid system {system}')
 
     if not country:
+        return system, None
+
+    country = COUNTRIES.get(country.upper())
+
+    if not country:
         raise Exception(f'Invalid country {country}')
 
     return system, country
+
+
+def index():
+    return render_template(
+        'index.html',
+        systems=sorted([system[ID] for system in SYSTEMS.values()]),
+        countries=COUNTRIES.values(),
+        delete_url=DELETE_URL,
+        show_url=SHOW_URL,
+        emoji_star=STAR,
+        emoji_warning=WARNING
+    )
 
 
 def wishlist(system, country):
@@ -70,13 +86,23 @@ def wishlist(system, country):
     )
 
 
-def index():
+def top_wishlist(system, limit=50):
+    system, _ = validate(system)
+
+    games = GamesDatabase().load_all(
+        filter={
+            'system': system[ID],
+            'free_to_play': False
+        },
+        sort=[(f'wishlisted', -1)]
+    )
+
     return render_template(
-        'index.html',
-        systems=sorted([system[ID] for system in SYSTEMS.values()]),
-        countries=COUNTRIES.values(),
-        delete_url=DELETE_URL,
+        'top/wishlist.html',
+        games=games,
+        limit=limit,
+        add_url=ADD_URL,
         show_url=SHOW_URL,
-        emoji_star=STAR,
-        emoji_warning=WARNING
+        emoji_plus=PLUS,
+        emoji_star=STAR
     )
