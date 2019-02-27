@@ -14,10 +14,27 @@ METACRITIC_URL = 'http://www.metacritic.com/game/{system}/{title}'
 LOG = logging.getLogger('metacritic')
 
 
+CUSTOM_FIXES = {
+    'Banner Saga 2': 'the-banner-saga-2',
+    'Banner Saga Trilogy': 'the-banner-saga-trilogy',
+    'Ittle Dew 2+': 'ittle-dew-2+',
+    'Minecraft': 'minecraft-switch-edition',
+    'N++ (NPLUSPLUS)': 'n++',
+    'PICROSS S2': 'picross-s-2',
+    'Velocity®2X': 'velocity-2X',
+
+}
+
+
 def normalize(string):
+
+    if string in CUSTOM_FIXES:
+        return CUSTOM_FIXES[string]
+
     string = string.replace('.', '')\
         .replace('®', '')\
-        .replace('™', '')\
+        .replace('™', '') \
+        .replace('*', '') \
         .replace('/', '')\
         .replace('+', 'replacewithplus')
 
@@ -70,6 +87,7 @@ PREFIXES = [
     ' - Nintendo Switch Edition',
     ': Nintendo Switch Edition',
     ' Nintendo Switch Edition',
+    ': Nintendo Switch Edition - Digital Version',
 
     ': Complete Edition',
     ' Complete Edition',
@@ -85,6 +103,9 @@ PREFIXES = [
 
     ': Ultimate Edition',
     ' Ultimate Edition',
+
+    ' -',
+    '!',
 ]
 
 
@@ -92,6 +113,9 @@ def get_scores(system, titles):
     system = system.lower()
 
     for title in titles:
+        if not title:
+            continue
+
         for prefix in PREFIXES:
             if prefix not in title:
                 continue
@@ -100,12 +124,11 @@ def get_scores(system, titles):
 
             try:
                 score = _get_scores(system, tmp)
-
-                if score.score != Score.NO_SCORE:
-                    LOG.info(f'Score for {title}: {score.score}')
-                    return score
+                LOG.info(f'Score for {title}: {score}')
+                return score
             except Exception as e:
-                LOG.debug(f'Error fetch score for {tmp}: {str(e)}')
+                LOG.info(f'Error fetch score for {tmp}: {str(e)}')
 
-    LOG.info(f'Score for {title}: {Score.NO_SCORE}')
+        LOG.info(f'Score for {title}: {Score.NO_SCORE}')
+
     return Score(days=7)

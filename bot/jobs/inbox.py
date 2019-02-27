@@ -1,6 +1,5 @@
 import logging
 from bot.reddit import Reddit
-from bot.wishlist import generator
 
 from bot.wishlist.wishlist import add as wl_add
 from bot.wishlist.wishlist import remove as wl_remove

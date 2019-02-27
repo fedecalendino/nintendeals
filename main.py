@@ -96,7 +96,7 @@ def activate_job():
         while True:
             inbox.check()
 
-            time.sleep(15)
+            time.sleep(10)
 
     thread = threading.Thread(target=run_job)
     thread.start()
