@@ -88,26 +88,24 @@ PREFIXES = [
 ]
 
 
-def get_scores(system, title):
+def get_scores(system, titles):
     system = system.lower()
-    score = Score(days=7)
 
-    if not title:
-        return score
+    for title in titles:
+        for prefix in PREFIXES:
+            if prefix not in title:
+                continue
 
-    for prefix in PREFIXES:
-        if prefix not in title:
-            continue
+            tmp = title.replace(prefix, '')
 
-        tmp = title.replace(prefix, '')
+            try:
+                score = _get_scores(system, tmp)
 
-        try:
-            score = _get_scores(system, tmp)
+                if score.score != Score.NO_SCORE:
+                    LOG.info(f'Score for {title}: {score.score}')
+                    return score
+            except Exception as e:
+                LOG.debug(f'Error fetch score for {tmp}: {str(e)}')
 
-            if score.score != Score.NO_SCORE:
-                break
-        except Exception as e:
-            LOG.debug(f'Error fetch score for {tmp}: {str(e)}')
-
-    LOG.info(f'Score for {title}: {score.score}')
-    return score
+    LOG.info(f'Score for {title}: {Score.NO_SCORE}')
+    return Score(days=7)
