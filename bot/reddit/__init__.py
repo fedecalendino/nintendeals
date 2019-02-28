@@ -38,14 +38,14 @@ class Reddit(metaclass=Singleton):
         )
 
     def inbox(self):
-        return [message for message in self.api.inbox.unread() if not message.was_comment]
+        return [message for message in self.api.inbox.unread() if not message.was_comment][:5]
 
     def send(self, username, title, content):
         try:
             LOG.info('Sending to {}: {}'.format(username, title))
 
             self.api.redditor(username).message(title, content)
-            sleep(10)
+            sleep(5)
         except:
             LOG.error('Error sending to {}: {}'.format(username, title))
 
@@ -55,7 +55,7 @@ class Reddit(metaclass=Singleton):
 
             message.reply(content)
             message.mark_read()
-            sleep(10)
+            sleep(5)
         except:
             LOG.error('Error replying to {}: {}'.format(message.author.name, message.subject))
 
