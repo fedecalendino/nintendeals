@@ -75,7 +75,9 @@ def make_countries_row(game, country, price, sale, disable_urls=False):
     now = datetime.utcnow()
 
     title = game.titles.get(country[REGION], game.title)
-    title = title[1:] if title.startswith(' ') else title
+
+    if game.published_by_nintendo:
+        title = f'{NINTENDO} {title}'
 
     if len(title) > 30:
         title = f'{title[:29]}…'.replace(' …', '…')

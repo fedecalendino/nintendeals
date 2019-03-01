@@ -96,16 +96,6 @@ REGIONS = {
 }
 
 COUNTRIES = {
-    AU: {
-        ID: AU,
-        NAME: 'Australia',
-        FLAG: '🇦🇺',
-        REGION: EU,
-        DIGITS: 5,
-        CURRENCY: '$',
-        CURRENCY_CODE: 'AUD'
-    },
-
     CA: {
         ID: CA,
         NAME: 'Canada',
@@ -115,6 +105,27 @@ COUNTRIES = {
         DIGITS: 5,
         CURRENCY: '$',
         CURRENCY_CODE: 'CAD'
+    },
+
+    MX: {
+        ID: 'MX',
+        NAME: 'Mexico',
+        FLAG: '🇲🇽',
+        REGION: NA,
+        DIGITS: 7,
+        CURRENCY: '$',
+        CURRENCY_CODE: 'MXN'
+    },
+
+    US: {
+        ID: US,
+        NAME: 'United States of America',
+        WEBSITE: 'https://www.nintendo.com/games/detail/{}',
+        FLAG: '🇺🇸',
+        REGION: NA,
+        DIGITS: 5,
+        CURRENCY: '$',
+        CURRENCY_CODE: 'USD'
     },
 
     CH: {
@@ -170,27 +181,6 @@ COUNTRIES = {
         CURRENCY_CODE: 'GBP'
     },
 
-    JP: {
-        ID: JP,
-        NAME: 'Japan',
-        WEBSITE: 'https://ec.nintendo.com/JP/ja/titles/{}',
-        FLAG: '🇯🇵',
-        REGION: JP,
-        DIGITS: 7,
-        CURRENCY: '¥',
-        CURRENCY_CODE: 'JPY'
-    },
-
-    MX: {
-        ID: 'MX',
-        NAME: 'Mexico',
-        FLAG: '🇲🇽',
-        REGION: NA,
-        DIGITS: 7,
-        CURRENCY: '$',
-        CURRENCY_CODE: 'MXN'
-    },
-
     NO: {
         ID: NO,
         NAME: 'Norway',
@@ -199,16 +189,6 @@ COUNTRIES = {
         DIGITS: 6,
         CURRENCY: 'kr',
         CURRENCY_CODE: 'NOK'
-    },
-
-    NZ: {
-        ID: NZ,
-        NAME: 'New Zealand',
-        FLAG: '🇳🇿',
-        REGION: EU,
-        DIGITS: 5,
-        CURRENCY: '$',
-        CURRENCY_CODE: 'NZD'
     },
 
     PL: {
@@ -242,17 +222,6 @@ COUNTRIES = {
         CURRENCY_CODE: 'SEK'
     },
 
-    US: {
-        ID: US,
-        NAME: 'United States of America',
-        WEBSITE: 'https://www.nintendo.com/games/detail/{}',
-        FLAG: '🇺🇸',
-        REGION: NA,
-        DIGITS: 5,
-        CURRENCY: '$',
-        CURRENCY_CODE: 'USD'
-    },
-
     ZA: {
         ID: ZA,
         NAME: 'South Africa',
@@ -262,6 +231,37 @@ COUNTRIES = {
         DIGITS: 7,
         CURRENCY: 'R',
         CURRENCY_CODE: 'ZAR'
+    },
+
+    AU: {
+        ID: AU,
+        NAME: 'Australia',
+        FLAG: '🇦🇺',
+        REGION: EU,
+        DIGITS: 5,
+        CURRENCY: '$',
+        CURRENCY_CODE: 'AUD'
+    },
+
+    NZ: {
+        ID: NZ,
+        NAME: 'New Zealand',
+        FLAG: '🇳🇿',
+        REGION: EU,
+        DIGITS: 5,
+        CURRENCY: '$',
+        CURRENCY_CODE: 'NZD'
+    },
+
+    JP: {
+        ID: JP,
+        NAME: 'Japan',
+        WEBSITE: 'https://ec.nintendo.com/JP/ja/titles/{}',
+        FLAG: '🇯🇵',
+        REGION: JP,
+        DIGITS: 7,
+        CURRENCY: '¥',
+        CURRENCY_CODE: 'JPY'
     },
 
 }
