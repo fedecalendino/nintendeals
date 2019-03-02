@@ -1,4 +1,3 @@
-import operator
 from datetime import datetime
 from datetime import timedelta
 
@@ -12,6 +11,7 @@ from bot.wishlist.constants import GAMES_ON_SALE
 
 from commons.config import COUNTRIES
 
+from commons.keys import ID
 from commons.keys import REGION
 
 import logging
@@ -28,7 +28,7 @@ def notify_users():
 
     games, sales = get_games_on_sale()
 
-    wishlists = {wishlist.id: wishlist for wishlist in wishlist_db.load_all()
+    wishlists = {wishlist.id: wishlist for wishlist in wishlist_db.load_all(sort=[(ID, 1)])
                     if any([game_id for game_id in wishlist.games if game_id in games])}
 
     for username, wishlist in wishlists.items():

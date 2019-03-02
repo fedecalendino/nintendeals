@@ -43,6 +43,8 @@ class Game:
         self.release_dates = data.get('release_dates', {region: None for region in REGIONS})
 
         self.wishlisted = data.get('wishlisted', 0)
+        self.wishlisted_history = data.get('wishlisted_history', {})
+
         self.number_of_players = data.get('number_of_players', 0)
         self.published_by_nintendo = data.get('published_by_nintendo', False)
         self.categories = sorted(list(set(data.get('categories', []))))

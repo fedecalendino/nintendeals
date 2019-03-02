@@ -16,6 +16,7 @@ from commons.keys import FLAG
 from commons.keys import ID
 from commons.keys import NAME
 from commons.keys import REGION
+from commons.keys import US, ZA, NZ
 
 from commons.settings import WEBSITE_URL
 
@@ -205,8 +206,16 @@ def generate_country_post(games, prices, system, country):
     return title, '\n'.join(content)
 
 
-def make_main_row(game, countries):
-    countries = ' '.join([countries.get(country, EMPTY) for country in COUNTRIES])
+def make_main_row(game, countries_with_sale):
+    countries = []
+
+    for country in COUNTRIES:
+        countries.append(countries_with_sale.get(country, EMPTY))
+
+        if country in [US, ZA, NZ]:
+            countries.append(' ')
+
+    countries = ''.join(countries)
 
     title = game.title
 
@@ -291,7 +300,7 @@ def generate_main_post(games, prices, submissions, system):
         if not submission:
             continue
 
-        content.append(f'###[**{details[FLAG]} {details[NAME]}**]({submission.url})\n')
+        content.append(f'#####[**{details[FLAG]} {details[NAME]}**]({submission.url})\n\n\n')
 
     content.extend(generate_footer())
 

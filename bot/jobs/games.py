@@ -41,10 +41,7 @@ def get_wishlisted_count():
 
 
 def merge_game(game_id, game, system):
-    final = Game(_id=game_id, system=system)
-
-    if game.get(DB):
-        final.scores =  game.get(DB).scores
+    final = game.get(DB, Game(_id=game_id, system=system))
 
     for region in REGIONS:
         regional = game.get(region, None)
@@ -107,7 +104,11 @@ def update_games(system, wishlist_counts={}):
 
     for game_id, game in games.items():
         final = merge_game(game_id, game, system)
-        final.wishlisted = wishlist_counts.get(game_id, 0)
+        week = str(int(now.strftime("%V")) % 4)
+        final.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
+
+        if len(final.wishlisted_history.values()):
+            final.wishlisted = int(sum(final.wishlisted_history.values()) / len(final.wishlisted_history.values()))
 
         if final.scores.next_update < now:
             final.scores = metacritic.get_scores(system, final.titles.values())
