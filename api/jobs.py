@@ -44,10 +44,18 @@ def submissions():
 
 
 @blueprint.route('/update', methods=['GET'])
-def prices():
+def update():
     return run_job(
         jobs.main.prices_submissions_notifications,
         'Updating: prices, submissions, notifications',
         source=request.args.get('source')
     )
 
+
+@blueprint.route('/wishlists', methods=['GET'])
+def wishlists():
+    return run_job(
+        jobs.main.wishlists,
+        'Updating: wishlists',
+        source=request.args.get('source')
+    )

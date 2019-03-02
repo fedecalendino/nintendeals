@@ -27,6 +27,10 @@ def submissions(source=None):
     run('submissions', submissions_job.update_submissions, source)
 
 
+def wishlists(source=None):
+    run('wishlists', wishlist_job.notify_users, source)
+
+
 def prices_submissions_notifications(source=None):
     run('prices', prices_job.update_prices, source)
     run('submissions', submissions_job.update_submissions, source)

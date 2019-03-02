@@ -52,6 +52,11 @@ def notify_users():
 
                 price = sales[nsuid]
                 country_price = price.prices[country]
+
+                if not country_price:
+                    LOG.error(f'{game_id} has no country price for {country}')
+                    continue
+
                 sale = country_price.active
 
                 if not sale:

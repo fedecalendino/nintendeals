@@ -24,6 +24,11 @@ LOG = logging.getLogger('nintendo.eu')
 EUROPE = REGIONS[EU]
 
 
+FSID_FIXER = {
+    '1388917': (['HACPAD8HA'], ['70070000003542'])  # Starlink: Battle for Atlas
+}
+
+
 def fetch_games(system):
     start = 0
     limit = 200
@@ -49,9 +54,10 @@ def list_games(system):
     for data in fetch_games(system):
         title = data.get('title')
 
-        if not data.get('nsuid_txt'):
-            # LOG.info('{} has no nsuid'.format(title))
-            continue
+        fs_id = data.get('fs_id')
+
+        if fs_id in FSID_FIXER:
+            data['product_code_txt'], data['nsuid_txt'] = FSID_FIXER.get(fs_id)
 
         for product_id in data.get('product_code_txt', []):
             if '-' not in product_id:
@@ -60,8 +66,13 @@ def list_games(system):
             LOG.info('{} is not a valid game'.format(title))
             continue
 
+        if not data.get('nsuid_txt'):
+            # LOG.info('{} has no nsuid'.format(title))
+            continue
+
         # Getting nsuids for switch (7) or 3ds (5)
         nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
+
         game_id = get_game_id(nsuid=nsuid, game_id=product_id)
 
         game = Game(_id=game_id, system=system)
@@ -84,3 +95,7 @@ def list_games(system):
                 game.websites[country] = details[WEBSITE].format(slug)
 
         yield game
+
+
+for game in list_games('Switch'):
+    pass
