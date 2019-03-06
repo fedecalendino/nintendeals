@@ -8,6 +8,7 @@ from commons.emoji import EXP_TOMORROW
 from commons.emoji import NEW
 from commons.emoji import NINTENDO
 from commons.emoji import STAR
+from commons.emoji import WARNING
 
 from commons.keys import CURRENCY
 from commons.keys import CURRENCY_CODE
@@ -290,7 +291,9 @@ def generate_main_post(games, prices, submissions, system):
         content.append(table)
         content.append(SEPARATOR)
 
-    content.append('###For prices and more check your country/region post:\n')
+    content.append('For prices and more check your country/region post|')
+    content.append('---|')
+    content.append(f'*{WARNING} There\'s a known bug on reddit mobile where links won\'t open correctly*|')
 
     for country, details in COUNTRIES.items():
         key = f'{system}/{country}'
@@ -300,7 +303,7 @@ def generate_main_post(games, prices, submissions, system):
         if not submission:
             continue
 
-        content.append(f'#####[**{details[FLAG]} {details[NAME]}**]({submission.url})\n\n\n')
+        content.append(f'[{details[FLAG]} {details[NAME]}]({submission.url})|')
 
     content.extend(generate_footer())
 
