@@ -234,7 +234,7 @@ def generate_main_table(games, prices, system):
         '--- | --- | :---: | :---:'
     ]
 
-    for game in games[:25]:
+    for game in games[:30]:
         if game.system != system:
             continue
 
