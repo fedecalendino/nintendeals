@@ -104,7 +104,7 @@ def update_games(system, wishlist_counts={}):
 
     for game_id, game in games.items():
         final = merge_game(game_id, game, system)
-        week = str(int(now.strftime("%V")) % 4)
+        week = str(int(now.strftime("%V")))
         final.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
 
         if len(final.wishlisted_history.values()):
