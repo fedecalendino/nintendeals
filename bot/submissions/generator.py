@@ -227,7 +227,6 @@ def make_main_row(game, countries_with_sale):
 
 
 def generate_main_table(games, prices, system):
-    games = filter(lambda x: x.wishlisted > 1, games)
     games = sorted(games.values(), key=lambda x: x.wishlisted, reverse=True)
 
     content = [
