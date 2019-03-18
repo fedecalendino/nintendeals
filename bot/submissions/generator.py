@@ -284,6 +284,9 @@ def generate_main_post(games, prices, submissions, system):
     content = []
 
     content.extend(generate_header())
+    
+    content.append('> PRICES AT THE BOTTOM LINKS')
+    content.append('')
 
     if table:
         content.append('###Most wanted games on sale')
