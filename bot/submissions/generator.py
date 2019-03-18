@@ -285,7 +285,7 @@ def generate_main_post(games, prices, submissions, system):
 
     content.extend(generate_header())
     
-    content.append('> PRICES AT THE BOTTOM LINKS')
+    content.append('> 💸 👉 PRICES AND SCORES IN THE LINKS AT THE BOTTOM 👈 💸')
     content.append('')
 
     if table:
