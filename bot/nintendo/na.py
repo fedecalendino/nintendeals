@@ -24,6 +24,9 @@ LOG = logging.getLogger('nintendo.na')
 
 AMERICA = REGIONS[NA]
 
+FIXES = {
+    "70010000019385": "70010000000529"
+}
 
 def fetch_games(system, published_by_nintendo=False):
     additional = '&publisher=nintendo' if published_by_nintendo else ''
@@ -68,7 +71,7 @@ def _list_games(system, only_published_by_nintendo=False):
         game = Game(_id=game_id, system=system)
 
         game.titles[NA] = title
-        game.nsuids[NA] = nsuid
+        game.nsuids[NA] = FIXES.get(nsuid, nsuid)
         game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y')
 
         game.categories = get_categories(data.get('categories', {}).get('category', []))
