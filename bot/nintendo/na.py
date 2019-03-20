@@ -28,6 +28,7 @@ FIXES = {
     "70010000019385": "70010000000529"
 }
 
+
 def fetch_games(system, published_by_nintendo=False):
     additional = '&publisher=nintendo' if published_by_nintendo else ''
 

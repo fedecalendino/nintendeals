@@ -31,7 +31,8 @@ def wishlists(source=None):
     run('wishlists', wishlist_job.notify_users, source)
 
 
-def prices_submissions_notifications(source=None):
+def games_prices_submissions_notifications(source=None):
+    run('games', games_job.update_all_games, source)
     run('prices', prices_job.update_prices, source)
     run('submissions', submissions_job.update_submissions, source)
     run('wishlists', wishlist_job.notify_users, source)
