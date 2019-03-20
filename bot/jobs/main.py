@@ -1,39 +1,39 @@
-from db.mongo import JobDatabase
-
 from bot.jobs import games as games_job
 from bot.jobs import prices as prices_job
 from bot.jobs import submissions as submissions_job
 from bot.jobs import wishlist as wishlist_job
 
-from commons.classes import Job
+
+from bot.jobs.util import track
 
 
-def run(name, target, source=None):
-    job = Job(_id=name)
-    job.source = source
-    JobDatabase().save(job)
-
-    target()
-
-    job.finish()
-    JobDatabase().save(job)
+@track(name='games')
+def games():
+    return games_job.update_all_games()
 
 
-def games(source=None):
-    run('games', games_job.update_all_games, source)
+@track(name='prices')
+def prices():
+    return prices_job.update_prices()
 
 
-def submissions(source=None):
-    run('submissions', submissions_job.update_submissions, source)
+@track(name='submissions')
+def submissions():
+    return submissions_job.update_submissions()
 
 
-def wishlists(source=None):
-    run('wishlists', wishlist_job.notify_users, source)
+@track(name='wishlists')
+def wishlists():
+    return wishlist_job.notify_users()
 
 
-def games_prices_submissions_notifications(source=None):
-    run('games', games_job.update_all_games, source)
-    run('prices', prices_job.update_prices, source)
-    run('submissions', submissions_job.update_submissions, source)
-    run('wishlists', wishlist_job.notify_users, source)
+@track(name='update')
+def update():
+    results = [
+        games(),
+        prices(),
+        submissions(),
+        wishlists()
+    ]
 
+    return ' - '.join(results)

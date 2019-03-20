@@ -95,7 +95,3 @@ def list_games(system):
                 game.websites[country] = details[WEBSITE].format(slug)
 
         yield game
-
-
-for game in list_games('Switch'):
-    pass

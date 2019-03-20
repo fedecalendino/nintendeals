@@ -1,61 +1,40 @@
 from threading import Thread
 
-from flask import request
 from flask import Blueprint
 from flask import Response
 
 from api.util import validate
+from api.util import INVALID_JOB
 
-from bot import jobs
+from bot.jobs import main as jobs
 
 TAG = 'jobs'
 
 blueprint = Blueprint(TAG, __name__)
 blueprint.prefix = f"/api/{TAG}"
 
-
-def run_job(target, message, source=None):
-    error = validate()
-
-    if error:
-        return error
-
-    Thread(target=target, args=[source]).start()
-
-    return Response(message, mimetype="application/json")
+JOBS = {
+    'games': jobs.games,
+    'prices': jobs.prices,
+    'submissions': jobs.submissions,
+    'wishlists': jobs.wishlists,
+    'update': jobs.update
+}
 
 
-@blueprint.route('/games', methods=['GET'])
-def games():
-    return run_job(
-        jobs.main.games,
-        'Updating: games',
-        source=request.args.get('source')
-    )
+@blueprint.route('/<string:name>', methods=['GET'])
+def run(name):
+    message = validate()
 
+    if message:
+        return message
 
-@blueprint.route('/submissions', methods=['GET'])
-def submissions():
-    return run_job(
-        jobs.main.submissions,
-        'Updating: submissions',
-        source=request.args.get('source')
-    )
+    job = JOBS.get(name)
 
+    if not job:
+        return Response(INVALID_JOB.message, mimetype=INVALID_JOB.mimetype, status=INVALID_JOB.code)
 
-@blueprint.route('/wishlists', methods=['GET'])
-def wishlists():
-    return run_job(
-        jobs.main.wishlists,
-        'Updating: wishlists',
-        source=request.args.get('source')
-    )
+    Thread(target=job).start()
 
+    return Response(f'Running: {name}')
 
-@blueprint.route('/update', methods=['GET'])
-def update():
-    return run_job(
-        jobs.main.games_prices_submissions_notifications,
-        'Updating: games, prices, submissions, notifications',
-        source=request.args.get('source')
-    )

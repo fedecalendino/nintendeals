@@ -21,7 +21,7 @@ LOG = logging.getLogger('jobs.wishlist')
 
 
 def notify_users():
-    LOG.info('Running')
+    notified_users = 0
 
     reddit = Reddit()
     wishlist_db = WishlistDatabase()
@@ -76,5 +76,6 @@ def notify_users():
             wishlist_db.save(wishlist)
 
             LOG.info(f'Notified {username} about {len(sales_to_notify)} sales')
+            notified_users += 1
 
-    LOG.info('Finished')
+    return f'Notified users: {notified_users}'

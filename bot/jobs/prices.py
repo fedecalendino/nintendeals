@@ -11,7 +11,7 @@ LOG = logging.getLogger('jobs.prices')
 
 
 def update_prices():
-    LOG.info('Running')
+    deals_found = 0
 
     prices_db = PricesDatabase()
 
@@ -54,14 +54,16 @@ def update_prices():
 
                         save = True
                         LOG.info('New sale found for {} ({}%)'.format(nsuid, sale.discount))
+                        deals_found += 1
                 else:
                     country_price.sales.append(sale)
                     price.prices[country].latest_sale = sale
 
                     save = True
                     LOG.info('New sale found for {} ({}%)'.format(nsuid, sale.discount))
+                    deals_found += 1
 
             if save:
                 prices_db.save(price)
 
-    LOG.info('Finished')
+    return f'Deals found: {deals_found}'

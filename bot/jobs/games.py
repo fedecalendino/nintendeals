@@ -83,6 +83,8 @@ def add(games, region, game):
 
 
 def update_games(system, wishlist_counts={}):
+    games_found = 0
+
     now = datetime.utcnow()
     games_db = GamesDatabase()
     prices_db = PricesDatabase()
@@ -104,6 +106,9 @@ def update_games(system, wishlist_counts={}):
     prices = {price.id: price for price in prices_db.load_all()}
 
     for game_id, game in games.items():
+        if not game.get(DB):
+            games_found += 1
+
         final = merge_game(game_id, game, system)
         week = str(int(now.strftime("%V")))
         final.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
@@ -146,13 +151,21 @@ def update_games(system, wishlist_counts={}):
                 LOG.info('Saving {} ({}) into prices'.format(final.title, nsuid))
                 prices_db.save(price)
 
+    return f'{system} games found: {games_found}'
+
 
 def update_all_games():
     LOG.info('Running')
 
     wishlist_counts = get_wishlisted_count()
 
+    results = []
+
     for system in SYSTEMS.keys():
-        update_games(system, wishlist_counts)
+        result = update_games(system, wishlist_counts)
+        results.append(result)
 
     LOG.info('Finished')
+
+    return '/'.join(results)
+

@@ -17,7 +17,7 @@ LOG = logging.getLogger('jobs.submissions')
 
 
 def update_submissions():
-    LOG.info('Running')
+    updated_submissions = 0
 
     reddit = Reddit()
 
@@ -32,9 +32,14 @@ def update_submissions():
             sub = reddit.submit(system, USER_SUBREDDIT, title, content, country=country)
             submissions[sub.id] = sub
 
+            updated_submissions += 1
+
         title, content = generator.generate_main_post(games, sales, submissions, system)
 
         for subreddit in details[SUBREDDITS]:
             reddit.submit(system, subreddit, title, content)
 
-    LOG.info('Finished')
+            updated_submissions += 1
+
+    return f'Updated submissions: {updated_submissions}'
+

@@ -262,16 +262,19 @@ class Job:
 
     def __init__(self, **data):
         self._id = data['_id']
-        self.source = data.get('source') if data.get('source') else 'manual'
+        self.status = data.get('status')
+        self.result = data.get('result')
         self.start = data.get('start', datetime.utcnow())
         self.end = data.get('end', None)
+        self.runtime = -1
 
         Job.LOG.info(f'Running: {self.id}')
 
     def finish(self):
         self.end = datetime.utcnow()
+        self.runtime = (self.end - self.start).seconds
 
-        Job.LOG.info(f'Finish: {self.id}')
+        Job.LOG.info(f'Finish: {self.id} ({self.result})')
 
     @property
     def id(self):

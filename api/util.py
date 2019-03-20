@@ -15,6 +15,13 @@ INVALID_API_KEY = Error(
 )
 
 
+INVALID_JOB = Error(
+    message='{"error": "invalid job"}',
+    mimetype="application/json",
+    code=HTTPStatus.NOT_FOUND
+)
+
+
 def validate():
     api_key = flask.request.args.get('api_key')
 
