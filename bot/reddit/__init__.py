@@ -120,7 +120,7 @@ class Reddit(metaclass=Singleton):
             .subreddit(subreddit)\
             .submit(title, selftext=content)
 
-        submission.disable_inbox_replies()
+        # submission.disable_inbox_replies()
 
         self.update_flair(submission, subreddit)
 
