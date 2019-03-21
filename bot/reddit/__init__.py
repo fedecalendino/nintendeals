@@ -197,6 +197,7 @@ class Reddit(metaclass=Singleton):
             self.edit(sub, content)
             sub.updated_at = now
 
+        sub.length = len(content)
         reddit_db.save(sub)
 
         sleep(5)

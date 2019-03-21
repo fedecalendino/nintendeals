@@ -205,6 +205,7 @@ class Submission:
         self.system = data['system']
         self.title = data['title']
         self.url = data.get('url', f'https://redd.it/{self.submission_id}')
+        self.length = data.get('length', 0)
 
         now = datetime.utcnow()
         self.created_at = data.get('created_at', now)
