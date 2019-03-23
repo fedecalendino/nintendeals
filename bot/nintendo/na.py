@@ -25,7 +25,8 @@ LOG = logging.getLogger('nintendo.na')
 AMERICA = REGIONS[NA]
 
 FIXES = {
-    "70010000019385": "70010000000529"
+    "70010000019385": "70010000000529", 
+    "Splatoon 2 + Nintendo Switch Online Individual Membership (12 Months)" : "Splatoon 2"
 }
 
 
@@ -71,7 +72,7 @@ def _list_games(system, only_published_by_nintendo=False):
 
         game = Game(_id=game_id, system=system)
 
-        game.titles[NA] = title
+        game.titles[NA] = FIXES.get(title, title)
         game.nsuids[NA] = FIXES.get(nsuid, nsuid)
         game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y')
 
