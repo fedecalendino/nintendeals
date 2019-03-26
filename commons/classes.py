@@ -79,7 +79,7 @@ class Game:
     def players(self):
         if self.number_of_players in [None, 0]:
             return 'n/a'
-        elif self.number_of_players in [1, 2]:
+        elif self.number_of_players in [1]:
             return '1'
         else:
             return f'1-{self.number_of_players}'
