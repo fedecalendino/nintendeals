@@ -4,23 +4,31 @@ from commons.classes import Job
 from db.mongo import JobDatabase
 
 
-def track(name):
+def track(name, history=False):
     def outer(func):
         def inner(*args, **wargs):
-            job = Job(_id=name)
-            job.status = 'started'
+            run = None
+            job = Job(_id='_{}'.format(name))
             JobDatabase().save(job)
+
+            if history:
+                run = Job(_id='{}_{}'.format(name, job.start.strftime('%d/%m/%Y_%H:%M:%S')))
+                JobDatabase().save(run)
 
             try:
-                job.result = func()
-                job.status = 'finished'
+                result = func()
+                status = 'finished'
             except:
-                job.result = str(traceback.format_exc())
-                job.status = 'error'
+                result = str(traceback.format_exc())
+                status = 'error'
 
-            job.finish()
+            job.finish(status=status, result=result)
             JobDatabase().save(job)
 
-            return job.result
+            if history and run:
+                run.finish(status=status, result=result)
+                JobDatabase().save(run)
+
+            return result
         return inner
     return outer

@@ -263,7 +263,7 @@ class Job:
 
     def __init__(self, **data):
         self._id = data['_id']
-        self.status = data.get('status')
+        self.status = data.get('status', 'started')
         self.result = data.get('result')
         self.start = data.get('start', datetime.utcnow())
         self.end = data.get('end', None)
@@ -271,7 +271,10 @@ class Job:
 
         Job.LOG.info(f'Running: {self.id}')
 
-    def finish(self):
+    def finish(self, status, result):
+        self.status = status
+        self.result = result
+
         self.end = datetime.utcnow()
         self.runtime = (self.end - self.start).seconds
 

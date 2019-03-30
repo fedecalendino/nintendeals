@@ -11,6 +11,7 @@ from flask_cors import CORS
 
 import api
 from bot.jobs import inbox
+from bot.jobs.main import check_last_update
 from web import generator
 
 from commons.settings import IP
@@ -93,6 +94,8 @@ def css(resource, path):
 @app.before_first_request
 def activate_job():
     def run_job():
+        check_last_update()
+
         while True:
             inbox.check()
 
