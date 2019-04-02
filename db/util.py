@@ -16,4 +16,6 @@ def get_games_on_sale(system=None):
     games = {game.id: game for game in games_db.load_all(filter=filter)
              if any([nsuid for nsuid in game.nsuids.values() if nsuid in deals])}
 
+    games = dict(sorted(games.items(), key=lambda kv: kv[1].title.lower()))
+
     return games, deals

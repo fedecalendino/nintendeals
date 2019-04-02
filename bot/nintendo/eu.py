@@ -79,7 +79,6 @@ def list_games(system):
 
         game.titles[EU] = title
         game.nsuids[EU] = nsuid
-        game.release_dates[EU] = datetime.strptime(data.get('dates_released_dts')[0][:10], '%Y-%m-%d')
 
         game.categories = get_categories(data.get('game_categories_txt', []))
 
@@ -93,5 +92,10 @@ def list_games(system):
         for country, details in COUNTRIES.items():
             if details[REGION] == EU and WEBSITE in details:
                 game.websites[country] = details[WEBSITE].format(slug)
+
+        try:
+            game.release_dates[EU] = datetime.strptime(data.get('dates_released_dts')[0][:10], '%Y-%m-%d')
+        except:
+            continue
 
         yield game

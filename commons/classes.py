@@ -54,18 +54,23 @@ class Game:
 
         self.free_to_play = data.get('free_to_play', False)
 
+        self._title = None
+
     @property
     def id(self):
         return self._id
 
     @property
     def title(self):
-        tmp_title = [title for title in self.titles.values() if title][0]
+        if self._title:
+            return self._title
+
+        self._title = [title for title in self.titles.values() if title][0]
 
         if self.published_by_nintendo:
-            return ' {} {}'.format(NINTENDO, tmp_title)
-        else:
-            return tmp_title
+            self._title = ' {} {}'.format(NINTENDO, self._title)
+
+        return self._title
 
     @property
     def wishlisted_average(self):

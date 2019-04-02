@@ -74,7 +74,6 @@ def _list_games(system, only_published_by_nintendo=False):
 
         game.titles[NA] = FIXES.get(title, title)
         game.nsuids[NA] = FIXES.get(nsuid, nsuid)
-        game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y')
 
         game.categories = get_categories(data.get('categories', {}).get('category', []))
 
@@ -83,16 +82,19 @@ def _list_games(system, only_published_by_nintendo=False):
         if only_published_by_nintendo:
             game.published_by_nintendo = True
 
+        for country, details in COUNTRIES.items():
+            if details[REGION] == NA and WEBSITE in details:
+                game.websites[country] = details[WEBSITE].format(data.get('slug'))
+
         try:
             game.number_of_players = int(re.sub('[^0-9]*', '', data.get('number_of_players', '0')))
         except:
             game.number_of_players = 0
 
-        slug = data.get('slug')
-
-        for country, details in COUNTRIES.items():
-            if details[REGION] == NA and WEBSITE in details:
-                game.websites[country] = details[WEBSITE].format(slug)
+        try:
+            game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y')
+        except:
+            continue
 
         yield game
 

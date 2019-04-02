@@ -56,7 +56,8 @@ def merge_game(game_id, game, system):
             .replace('Ã©', 'é')\
             .replace('Ã', 'Û')\
             .replace('Û¼', 'ü')\
-            .replace('&#8482;', '')
+            .replace('&#8482;', '')\
+            .replace('&333;', 'o') 
 
         final.release_dates[region] = regional.release_dates.get(region)
         final.categories += regional.categories

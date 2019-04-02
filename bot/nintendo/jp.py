@@ -47,8 +47,12 @@ def list_games(system):
         game.titles[JP] = info.get('TitleName').title()
         game.nsuids[JP] = nsuid
         game.websites[JP] = JAPAN[DETAILS][system].format(nsuid)
-        game.release_dates[JP] = datetime.strptime(info.get('SalesDate'), '%Y.%m.%d')
 
         game.published_by_nintendo = info.get('MakerName', '') == '任天堂'
+
+        try:
+            game.release_dates[JP] = datetime.strptime(info.get('SalesDate'), '%Y.%m.%d')
+        except:
+            continue
 
         yield game

@@ -128,17 +128,6 @@ COUNTRIES = {
         CURRENCY_CODE: 'USD'
     },
 
-    CH: {
-        ID: CH,
-        NAME: 'Switzerland',
-        WEBSITE: 'https://www.nintendo.ch/de/Spiele/{}',
-        FLAG: '🇨🇭',
-        REGION: EU,
-        DIGITS: 5,
-        CURRENCY: '₣',
-        CURRENCY_CODE: 'CHF'
-    },
-
     CZ: {
         ID: CZ,
         NAME: 'Czech Republic',
@@ -212,6 +201,17 @@ COUNTRIES = {
         CURRENCY_CODE: 'RUB'
     },
 
+    ZA: {
+        ID: ZA,
+        NAME: 'South Africa',
+        WEBSITE: 'https://www.nintendo.co.za/Games/{}',
+        FLAG: '🇿🇦',
+        REGION: EU,
+        DIGITS: 7,
+        CURRENCY: 'R',
+        CURRENCY_CODE: 'ZAR'
+    },
+
     SE: {
         ID: SE,
         NAME: 'Sweden',
@@ -222,15 +222,15 @@ COUNTRIES = {
         CURRENCY_CODE: 'SEK'
     },
 
-    ZA: {
-        ID: ZA,
-        NAME: 'South Africa',
-        WEBSITE: 'https://www.nintendo.co.za/Games/{}',
-        FLAG: '🇿🇦',
+    CH: {
+        ID: CH,
+        NAME: 'Switzerland',
+        WEBSITE: 'https://www.nintendo.ch/de/Spiele/{}',
+        FLAG: '🇨🇭',
         REGION: EU,
-        DIGITS: 7,
-        CURRENCY: 'R',
-        CURRENCY_CODE: 'ZAR'
+        DIGITS: 5,
+        CURRENCY: '₣',
+        CURRENCY_CODE: 'CHF'
     },
 
     AU: {
