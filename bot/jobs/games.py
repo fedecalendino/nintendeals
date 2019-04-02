@@ -112,9 +112,7 @@ def update_games(system, wishlist_counts={}):
         final = merge_game(game_id, game, system)
         week = str(int(now.strftime("%V")))
         final.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
-
-        if len(final.wishlisted_history.values()):
-            final.wishlisted = int(sum(final.wishlisted_history.values()) / len(final.wishlisted_history.values()))
+        final.wishlisted = final.wishlisted_average
 
         if final.scores.next_update < now:
             final.scores = metacritic.get_scores(system, final.titles.values())

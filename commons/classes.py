@@ -68,6 +68,11 @@ class Game:
             return tmp_title
 
     @property
+    def wishlisted_average(self):
+        values = [value for value in self.wishlisted_history.values() if value > 0]
+        return int(sum(values) / len(values)) if len(values) else 0
+
+    @property
     def release_date(self):
         return [release_date for release_date in self.release_dates.values() if release_date][0]
 
