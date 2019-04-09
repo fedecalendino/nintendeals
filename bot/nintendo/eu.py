@@ -87,11 +87,9 @@ def list_games(system):
         game.published_by_nintendo = data.get('publisher', '') == 'Nintendo'
         game.number_of_players = data.get('players_to', 0)
 
-        slug = data['url'].rsplit('/', 1)[-1]
-
         for country, details in COUNTRIES.items():
             if details[REGION] == EU and WEBSITE in details:
-                game.websites[country] = details[WEBSITE].format(slug)
+                game.websites[country] = details[WEBSITE].format(nsuid=nsuid)
 
         try:
             game.release_dates[EU] = datetime.strptime(data.get('dates_released_dts')[0][:10], '%Y-%m-%d')

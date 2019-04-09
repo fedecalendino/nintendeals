@@ -84,7 +84,7 @@ def _list_games(system, only_published_by_nintendo=False):
 
         for country, details in COUNTRIES.items():
             if details[REGION] == NA and WEBSITE in details:
-                game.websites[country] = details[WEBSITE].format(data.get('slug'))
+                game.websites[country] = details[WEBSITE].format(nsuid=nsuid)
 
         try:
             game.number_of_players = int(re.sub('[^0-9]*', '', data.get('number_of_players', '0')))

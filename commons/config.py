@@ -35,6 +35,7 @@ from commons.keys import US
 from commons.keys import ZA
 from commons.settings import USER_SUBREDDIT
 
+URL = 'https://ec.nintendo.com/{country}/{lang}/titles/{nsuid}'
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
 
@@ -99,7 +100,7 @@ COUNTRIES = {
     CA: {
         ID: CA,
         NAME: 'Canada',
-        WEBSITE: 'https://www.nintendo.com/en_CA/games/detail/{}',
+        WEBSITE: URL.format(country=CA, lang='en', nsuid='{nsuid}'),
         FLAG: '🇨🇦',
         REGION: NA,
         DIGITS: 5,
@@ -120,7 +121,7 @@ COUNTRIES = {
     US: {
         ID: US,
         NAME: 'United States of America',
-        WEBSITE: 'https://www.nintendo.com/games/detail/{}',
+        WEBSITE: URL.format(country=US, lang='en', nsuid='{nsuid}'),
         FLAG: '🇺🇸',
         REGION: NA,
         DIGITS: 5,
@@ -151,7 +152,7 @@ COUNTRIES = {
     EU: {
         ID: EU,
         NAME: 'European Union',
-        WEBSITE: 'https://www.nintendo.es/Juegos/{}',
+        WEBSITE: URL.format(country='ES', lang='en', nsuid='{nsuid}'),
         FLAG: '🇪🇺',
         REGION: EU,
         DIGITS: 5,
@@ -162,7 +163,7 @@ COUNTRIES = {
     GB: {
         ID: GB,
         NAME: 'Great Britain',
-        WEBSITE: 'https://www.nintendo.co.uk/{}',
+        WEBSITE: URL.format(country=GB, lang='en', nsuid='{nsuid}'),
         FLAG: '🇬🇧',
         REGION: EU,
         DIGITS: 5,
@@ -193,7 +194,7 @@ COUNTRIES = {
     RU: {
         ID: RU,
         NAME: 'Russia',
-        WEBSITE: 'https://www.nintendo.ru/-/{}',
+        WEBSITE: URL.format(country=RU, lang='en', nsuid='{nsuid}'),
         FLAG: '🇷🇺',
         REGION: EU,
         DIGITS: 7,
@@ -204,7 +205,7 @@ COUNTRIES = {
     ZA: {
         ID: ZA,
         NAME: 'South Africa',
-        WEBSITE: 'https://www.nintendo.co.za/Games/{}',
+        WEBSITE: URL.format(country=ZA, lang='en', nsuid='{nsuid}'),
         FLAG: '🇿🇦',
         REGION: EU,
         DIGITS: 7,
@@ -225,7 +226,7 @@ COUNTRIES = {
     CH: {
         ID: CH,
         NAME: 'Switzerland',
-        WEBSITE: 'https://www.nintendo.ch/de/Spiele/{}',
+        WEBSITE: URL.format(country=CH, lang='en', nsuid='{nsuid}'),
         FLAG: '🇨🇭',
         REGION: EU,
         DIGITS: 5,
@@ -236,6 +237,7 @@ COUNTRIES = {
     AU: {
         ID: AU,
         NAME: 'Australia',
+        WEBSITE: URL.format(country=AU, lang='en', nsuid='{nsuid}'),
         FLAG: '🇦🇺',
         REGION: EU,
         DIGITS: 5,
@@ -246,6 +248,7 @@ COUNTRIES = {
     NZ: {
         ID: NZ,
         NAME: 'New Zealand',
+        WEBSITE: URL.format(country=NZ, lang='en', nsuid='{nsuid}'),
         FLAG: '🇳🇿',
         REGION: EU,
         DIGITS: 5,
@@ -256,7 +259,7 @@ COUNTRIES = {
     JP: {
         ID: JP,
         NAME: 'Japan',
-        WEBSITE: 'https://ec.nintendo.com/JP/ja/titles/{}',
+        WEBSITE: URL.format(country=JP, lang='jp', nsuid='{nsuid}'),
         FLAG: '🇯🇵',
         REGION: JP,
         DIGITS: 7,
