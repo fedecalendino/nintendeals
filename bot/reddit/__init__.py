@@ -42,22 +42,22 @@ class Reddit(metaclass=Singleton):
 
     def send(self, username, title, content):
         try:
-            LOG.info('Sending to {}: {}'.format(username, title))
+            LOG.info(f'Sending to {username}: {title}')
 
             self.api.redditor(username).message(title, content)
             sleep(5)
         except:
-            LOG.error('Error sending to {}: {}'.format(username, title))
+            LOG.error(f'Error sending to {username}: {title}')
 
     def reply(self, message, content):
         try:
-            LOG.info('Replying to {}: {}'.format(message.author.name, message.subject))
+            LOG.info(f'Replying to {message.author.name}: {message.subject}')
 
             message.reply(content)
             message.mark_read()
             sleep(5)
         except:
-            LOG.error('Error replying to {}: {}'.format(message.author.name, message.subject))
+            LOG.error(f'Error replying to {message.author.name}: {message.subject}')
 
     def usable(self, sub, country=None):
         if not sub:

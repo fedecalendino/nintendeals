@@ -113,7 +113,7 @@ def start_runner():
             print('Checking if server is alive...')
 
             try:
-                r = requests.get('http://{}:{}/heartbeat'.format(IP, PORT))
+                r = requests.get(f'http://{IP}:{PORT}/heartbeat')
 
                 if r.status_code == 200:
                     print('Server started...')

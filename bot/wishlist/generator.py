@@ -48,15 +48,13 @@ def build_wishlist(username):
         if not game:
             continue
 
-        countries = wishlisted_game.countries
+        country_list = [
+            COUNTRIES[country][FLAG]
+                for country in wishlisted_game.countries
+                    if country in COUNTRIES
+        ]
 
-        country_list = [f'{COUNTRIES[country][FLAG]}' for country in countries if country in COUNTRIES]
-
-        rows.append('{}|{}|{}'.format(
-            game.title,
-            ' '.join(country_list),
-            f'[{MINUS}]({REMOVE_URL.format(game.id)})'
-        ))
+        rows.append(f'{game.title}|{" ".join(country_list)}|[{MINUS}]({REMOVE_URL.format(game.id)})')
 
     rows.sort()
 
@@ -82,7 +80,7 @@ def generate_notification(sales_to_notify):
         full_price = format_float(country_price.full_price, country[DIGITS])
 
         if game.websites.get(country[ID]):
-            title = '[{}]({})'.format(title, game.websites.get(country[ID]))
+            title = f'[{title}]({game.websites.get(country[ID])})'
 
         rows.append(
             f'{title}|'

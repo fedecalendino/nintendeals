@@ -68,7 +68,7 @@ class Game:
         self._title = [title for title in self.titles.values() if title][0]
 
         if self.published_by_nintendo:
-            self._title = ' {} {}'.format(NINTENDO, self._title)
+            self._title = f' {NINTENDO} {self._title}'
 
         return self._title
 

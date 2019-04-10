@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import render_template
 
 from db.mongo import GamesDatabase
+from db.mongo import PricesDatabase
 
 from bot.wishlist.constants import ADD_URL
 from bot.wishlist.constants import SHOW_URL
@@ -65,7 +66,7 @@ def wishlist(system, country):
             f'nsuids.{region}': {'$ne': None},
             'free_to_play': False
         },
-        sort=[(f'release_dates.{region}', -1)]
+        sort=[('release_dates.{region}', -1)]
     )
 
     return render_template(
@@ -94,7 +95,7 @@ def top_wishlist(system, limit=50):
             'system': system[ID],
             'free_to_play': False
         },
-        sort=[(f'wishlisted', -1)]
+        sort=[('wishlisted', -1)]
     )
 
     return render_template(
@@ -106,3 +107,4 @@ def top_wishlist(system, limit=50):
         emoji_plus=PLUS,
         emoji_star=STAR
     )
+

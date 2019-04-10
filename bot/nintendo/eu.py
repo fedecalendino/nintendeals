@@ -34,7 +34,7 @@ def fetch_games(system):
     limit = 200
 
     while True:
-        LOG.info('Loading {} games (from {} to {})'.format(system, start, start + limit))
+        LOG.info(f'Loading {system} games (from {start} to {start + limit})')
 
         url = EUROPE[API].format(system=SYSTEMS[system][ALIAS][EU], start=start, limit=limit)
         response = requests.get(url)
@@ -63,7 +63,7 @@ def list_games(system):
             if '-' not in product_id:
                 break
         else:
-            LOG.info('{} is not a valid game'.format(title))
+            LOG.info(f'{title} is not a valid game')
             continue
 
         if not data.get('nsuid_txt'):

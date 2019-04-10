@@ -50,7 +50,7 @@ def _fetch_prices(country, nsuids):
 
             yield data.get('title_id'), price, latest_sale
         except Exception as e:
-            LOG.info('Error: {}/{} > {}'.format(country, data.get('title_id'), str(e)))
+            LOG.info(f'Error: {country}/{data.get("title_id")} > {str(e)}')
             continue
 
 
@@ -62,7 +62,7 @@ def fetch_prices(country, nsuids):
     for index in range(0, int(len(nsuids) / size) + 1):
         chunk = nsuids[size * index:size * (index + 1)]
 
-        LOG.info('Looking prices for {}: {}/{}'.format(country, size * (index + 1), len(nsuids)))
+        LOG.info(f'Looking prices for {country}: {size * (index + 1)}/{len(nsuids)}')
 
         for nsuid, price, sale in _fetch_prices(country, chunk):
             yield nsuid, price, sale

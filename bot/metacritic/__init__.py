@@ -61,7 +61,7 @@ def _get_scores(system, title):
     slug = normalize(title)
 
     url = METACRITIC_URL.format(system=system.lower(), title=slug)
-    LOG.info('Fetching scores for {} on {}: {}'.format(title, system, url))
+    LOG.info(f'Fetching scores for {title} on {system}: {url}')
 
     request = Request(url, headers=HEADERS)
     content = urlopen(request).read()

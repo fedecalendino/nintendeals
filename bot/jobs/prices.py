@@ -30,7 +30,7 @@ def update_prices():
             nsuids_by_country[country].append(price.id)
 
     for country, nsuids in nsuids_by_country.items():
-        LOG.info('Looking prices for {}: {} in total'.format(country, len(nsuids)))
+        LOG.info(f'Looking prices for {country}: {len(nsuids)} in total')
 
         for nsuid, country_price, sale in prices.fetch_prices(country, nsuids):
             save = False
@@ -53,14 +53,14 @@ def update_prices():
                         price.prices[country].latest_sale = sale
 
                         save = True
-                        LOG.info('New sale found for {} ({}%)'.format(nsuid, sale.discount))
+                        LOG.info(f'New sale found for {nsuid} ({sale.discount}%)')
                         deals_found += 1
                 else:
                     country_price.sales.append(sale)
                     price.prices[country].latest_sale = sale
 
                     save = True
-                    LOG.info('New sale found for {} ({}%)'.format(nsuid, sale.discount))
+                    LOG.info(f'New sale found for {nsuid} ({sale.discount}%)')
                     deals_found += 1
 
             if save:

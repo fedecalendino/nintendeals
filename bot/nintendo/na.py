@@ -38,9 +38,9 @@ def fetch_games(system, published_by_nintendo=False):
 
     while True:
         if published_by_nintendo:
-            LOG.info('Loading {} games published by nintendo (from {} to {})'.format(system, start, start + limit))
+            LOG.info(f'Loading {system} games published by nintendo (from {start} to {start + limit})')
         else:
-            LOG.info('Loading {} games (from {} to {})'.format(system, start, start + limit))
+            LOG.info(f'Loading {system} games  (from {start} to {start + limit})')
 
         url = AMERICA[API].format(system=SYSTEMS[system][ALIAS][NA], offset=start, limit=limit, additional=additional)
         response = requests.get(url)

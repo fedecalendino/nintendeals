@@ -34,7 +34,7 @@ def check():
     reddit = Reddit()
 
     for message in reddit.inbox():
-        subject = message.subject.replace('Switch-', 'NX/').upper()
+        subject = message.subject.replace('Switch-', 'NX/').upper()  # Legacy compat
 
         split = subject.split(SEPARATOR)
 

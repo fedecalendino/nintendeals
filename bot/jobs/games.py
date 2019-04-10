@@ -147,7 +147,7 @@ def update_games(system, wishlist_counts={}):
                     save = True
 
             if save:
-                LOG.info('Saving {} ({}) into prices'.format(final.title, nsuid))
+                LOG.info(f'Saving {final.title} ({nsuid}) into prices')
                 prices_db.save(price)
 
     return f'{system} games found: {games_found}'

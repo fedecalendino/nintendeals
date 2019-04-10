@@ -90,8 +90,8 @@ REGIONS = {
         NAME: 'Japan',
         API: 'https://www.nintendo.co.jp/{system}/software/data/eshopinfo.js',
         DETAILS: {
-            SWITCH: 'https://ec.nintendo.com/JP/ja/titles/{}',
-            N3DS: 'https://www.nintendo.co.jp/titles/{}'
+            SWITCH: URL.format(country=JP, lang='jp', nsuid='{nsuid}'),
+            N3DS: 'https://www.nintendo.co.jp/titles/{nsuid}'
         }
     }
 }

@@ -26,16 +26,18 @@ def get_id_map(system):
     if system == N3DS:
         url = "https://www.nintendo.co.jp/data/software/xml/3ds_pkg_dl.xml"
     else:
-        url = 'https://www.nintendo.co.jp/data/software/xml/{}.xml'.format(system.lower())
+        url = f'https://www.nintendo.co.jp/data/software/xml/{system.lower()}.xml'
 
     game_list = xmltodict.parse(requests.get(url).text)
 
-    return {title_info['LinkURL'].rsplit('/', 1)[-1]: title_info
-                for title_info in game_list['TitleInfoList']['TitleInfo']}
+    return {
+        title_info['LinkURL'].rsplit('/', 1)[-1]: title_info
+            for title_info in game_list['TitleInfoList']['TitleInfo']
+    }
 
 
 def list_games(system):
-    LOG.info('Loading {} games '.format(system))
+    LOG.info(f'Loading {system} games')
 
     id_map = get_id_map(system)
 
@@ -46,7 +48,7 @@ def list_games(system):
 
         game.titles[JP] = info.get('TitleName').title()
         game.nsuids[JP] = nsuid
-        game.websites[JP] = JAPAN[DETAILS][system].format(nsuid)
+        game.websites[JP] = JAPAN[DETAILS][system].format(nsuid=nsuid)
 
         game.published_by_nintendo = info.get('MakerName', '') == '任天堂'
 
