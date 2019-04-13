@@ -5,6 +5,7 @@ from commons.keys import API
 from commons.keys import CUT
 from commons.keys import CURRENCY
 from commons.keys import CURRENCY_CODE
+from commons.keys import DATA
 from commons.keys import DETAILS
 from commons.keys import DIGITS
 from commons.keys import FLAG
@@ -35,12 +36,14 @@ from commons.keys import US
 from commons.keys import ZA
 from commons.settings import USER_SUBREDDIT
 
-URL = 'https://ec.nintendo.com/{country}/{lang}/titles/{nsuid}'
+
+ESHOP_URL = 'https://ec.nintendo.com/{country}/{lang}/titles/{nsuid}'
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
 
 SWITCH_SUBREDDITS = os.environ.get('SWITCH_SUBREDDITS').split('|') if os.environ.get('SWITCH_SUBREDDITS') else []
 N3DS_SUBREDDITS = os.environ.get('3DS_SUBREDDITS').split('|') if os.environ.get('3DS_SUBREDDITS') else []
+
 
 SYSTEMS = {
     SWITCH: {
@@ -50,7 +53,7 @@ SYSTEMS = {
         CUT: -5,
         SUBREDDITS: [USER_SUBREDDIT] + SWITCH_SUBREDDITS,
         ALIAS: {
-            NA: 'switch',
+            NA: 'Nintendo Switch',
             EU: 'Nintendo Switch',
             JP: 'switch',
         },
@@ -63,7 +66,7 @@ SYSTEMS = {
         CUT: -4,
         SUBREDDITS: [USER_SUBREDDIT] + N3DS_SUBREDDITS,
         ALIAS: {
-            NA: '3ds',
+            NA: 'Nintendo 3DS',
             EU: '3DS',
             JP: '3ds'
         },
@@ -74,15 +77,14 @@ REGIONS = {
     NA: {
         ID: NA,
         NAME: 'North America',
-        API: 'https://www.nintendo.com/json/content/get/filter/game'
-             '?system={system}&limit={limit}&offset={offset}&sort=title&direction=asc{additional}'
+        API: 'https://u3b6gr4ua3-dsn.algolia.net/1/indexes/*/queries',
+        DATA: 'http://www.nintendo.com/games/detail/{slug}/',
     },
 
     EU: {
         ID: EU,
         NAME: 'Europe',
-        API: 'https://search.nintendo-europe.com/en/select'
-             '?q=*&start={start}&rows={limit}&wt=json&sort=title asc&fq=type:GAME AND system_names_txt:"{system}"'
+        API: 'https://search.nintendo-europe.com/en/select?q=*&start={start}&rows={limit}&wt=json&sort=title asc&fq=type:GAME AND system_names_txt:"{system}"'
     },
 
     JP: {
@@ -90,17 +92,17 @@ REGIONS = {
         NAME: 'Japan',
         API: 'https://www.nintendo.co.jp/{system}/software/data/eshopinfo.js',
         DETAILS: {
-            SWITCH: URL.format(country=JP, lang='jp', nsuid='{nsuid}'),
+            SWITCH: ESHOP_URL.format(country=JP, lang='jp', nsuid='{nsuid}'),
             N3DS: 'https://www.nintendo.co.jp/titles/{nsuid}'
         }
-    }
+    },
 }
 
 COUNTRIES = {
     CA: {
         ID: CA,
         NAME: 'Canada',
-        WEBSITE: URL.format(country=CA, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=CA, lang='en', nsuid='{nsuid}'),
         FLAG: '🇨🇦',
         REGION: NA,
         DIGITS: 5,
@@ -121,7 +123,7 @@ COUNTRIES = {
     US: {
         ID: US,
         NAME: 'United States of America',
-        WEBSITE: URL.format(country=US, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=US, lang='en', nsuid='{nsuid}'),
         FLAG: '🇺🇸',
         REGION: NA,
         DIGITS: 5,
@@ -152,7 +154,7 @@ COUNTRIES = {
     EU: {
         ID: EU,
         NAME: 'European Union',
-        WEBSITE: URL.format(country='ES', lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country='ES', lang='en', nsuid='{nsuid}'),
         FLAG: '🇪🇺',
         REGION: EU,
         DIGITS: 5,
@@ -163,7 +165,7 @@ COUNTRIES = {
     GB: {
         ID: GB,
         NAME: 'Great Britain',
-        WEBSITE: URL.format(country=GB, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=GB, lang='en', nsuid='{nsuid}'),
         FLAG: '🇬🇧',
         REGION: EU,
         DIGITS: 5,
@@ -194,7 +196,7 @@ COUNTRIES = {
     RU: {
         ID: RU,
         NAME: 'Russia',
-        WEBSITE: URL.format(country=RU, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=RU, lang='en', nsuid='{nsuid}'),
         FLAG: '🇷🇺',
         REGION: EU,
         DIGITS: 7,
@@ -205,7 +207,7 @@ COUNTRIES = {
     ZA: {
         ID: ZA,
         NAME: 'South Africa',
-        WEBSITE: URL.format(country=ZA, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=ZA, lang='en', nsuid='{nsuid}'),
         FLAG: '🇿🇦',
         REGION: EU,
         DIGITS: 7,
@@ -226,7 +228,7 @@ COUNTRIES = {
     CH: {
         ID: CH,
         NAME: 'Switzerland',
-        WEBSITE: URL.format(country=CH, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=CH, lang='en', nsuid='{nsuid}'),
         FLAG: '🇨🇭',
         REGION: EU,
         DIGITS: 5,
@@ -237,7 +239,7 @@ COUNTRIES = {
     AU: {
         ID: AU,
         NAME: 'Australia',
-        WEBSITE: URL.format(country=AU, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=AU, lang='en', nsuid='{nsuid}'),
         FLAG: '🇦🇺',
         REGION: EU,
         DIGITS: 5,
@@ -248,7 +250,7 @@ COUNTRIES = {
     NZ: {
         ID: NZ,
         NAME: 'New Zealand',
-        WEBSITE: URL.format(country=NZ, lang='en', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=NZ, lang='en', nsuid='{nsuid}'),
         FLAG: '🇳🇿',
         REGION: EU,
         DIGITS: 5,
@@ -259,7 +261,7 @@ COUNTRIES = {
     JP: {
         ID: JP,
         NAME: 'Japan',
-        WEBSITE: URL.format(country=JP, lang='jp', nsuid='{nsuid}'),
+        WEBSITE: ESHOP_URL.format(country=JP, lang='jp', nsuid='{nsuid}'),
         FLAG: '🇯🇵',
         REGION: JP,
         DIGITS: 7,

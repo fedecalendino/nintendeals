@@ -45,55 +45,73 @@ def fetch_games(system):
             break
 
         for game in json:
-            yield game
+            try:
+                yield game.get('nsuid_txt')[0], game
+            except:
+                continue
 
         start = start + limit
 
 
-def list_games(system):
-    for data in fetch_games(system):
-        title = data.get('title')
+def extract_game_data(system, data):
+    title = data.get('title')
+    fs_id = data.get('fs_id')
 
-        fs_id = data.get('fs_id')
+    if fs_id in FSID_FIXER:
+        data['product_code_txt'], data['nsuid_txt'] = FSID_FIXER.get(fs_id)
 
-        if fs_id in FSID_FIXER:
-            data['product_code_txt'], data['nsuid_txt'] = FSID_FIXER.get(fs_id)
+    for product_id in data.get('product_code_txt', []):
+        if '-' not in product_id:
+            break
+    else:
+        LOG.info(f'{title} is not a valid game')
+        return None
 
-        for product_id in data.get('product_code_txt', []):
-            if '-' not in product_id:
-                break
+    if not data.get('nsuid_txt'):
+        return None
+
+    # Getting nsuids for switch (7) or 3ds (5)
+    nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
+
+    game_code = get_game_id(nsuid=nsuid, game_id=product_id)
+
+    if len(nsuid) < 10 or len(game_code) < 7:
+        return None
+
+    game = Game(_id=game_code, system=system)
+
+    game.titles[EU] = title
+    game.nsuids[EU] = nsuid
+
+    game.categories = get_categories(data.get('game_categories_txt', []))
+
+    game.free_to_play = data.get('price_sorting_f', 1) == 0
+
+    game.published_by_nintendo = data.get('publisher', '') == 'Nintendo'
+    game.number_of_players = data.get('players_to', 0)
+
+    for country, details in COUNTRIES.items():
+        if details[REGION] == EU and WEBSITE in details:
+            game.websites[country] = details[WEBSITE].format(nsuid=nsuid)
+
+    try:
+        game.release_dates[EU] = datetime.strptime(data.get('dates_released_dts')[0][:10], '%Y-%m-%d')
+    except:
+        return None
+
+    return game
+
+
+def list_new_games(system, games_on_db):
+    for nsuid, data in fetch_games(system):
+        if nsuid in games_on_db:
+            continue
+
+        game = extract_game_data(system, data)
+
+        if game:
+            LOG.info(f'Found new game {game}')
+
+            yield nsuid, game
         else:
-            LOG.info(f'{title} is not a valid game')
-            continue
-
-        if not data.get('nsuid_txt'):
-            # LOG.info('{} has no nsuid'.format(title))
-            continue
-
-        # Getting nsuids for switch (7) or 3ds (5)
-        nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
-
-        game_id = get_game_id(nsuid=nsuid, game_id=product_id)
-
-        game = Game(_id=game_id, system=system)
-
-        game.titles[EU] = title
-        game.nsuids[EU] = nsuid
-
-        game.categories = get_categories(data.get('game_categories_txt', []))
-
-        game.free_to_play = data.get('price_sorting_f', 1) == 0
-
-        game.published_by_nintendo = data.get('publisher', '') == 'Nintendo'
-        game.number_of_players = data.get('players_to', 0)
-
-        for country, details in COUNTRIES.items():
-            if details[REGION] == EU and WEBSITE in details:
-                game.websites[country] = details[WEBSITE].format(nsuid=nsuid)
-
-        try:
-            game.release_dates[EU] = datetime.strptime(data.get('dates_released_dts')[0][:10], '%Y-%m-%d')
-        except:
-            continue
-
-        yield game
+            LOG.error(f'Failed to extract data for game with nsuid {nsuid}')

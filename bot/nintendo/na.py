@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 
 import requests
+from bs4 import BeautifulSoup
 
 from bot.nintendo.util import get_categories
 from bot.nintendo.util import get_game_id
@@ -15,6 +16,7 @@ from commons.config import SYSTEMS
 
 from commons.keys import ALIAS
 from commons.keys import API
+from commons.keys import DATA
 from commons.keys import NA
 from commons.keys import REGION
 from commons.keys import WEBSITE
@@ -30,85 +32,122 @@ FIXES = {
 }
 
 
-def fetch_games(system, published_by_nintendo=False):
-    additional = '&publisher=nintendo' if published_by_nintendo else ''
+def fetch_games(system):
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Origin': 'https://www.nintendo.com',
+        'Referer': 'https://www.nintendo.com/games/game-guide/',
+        'DNT': '1',
+        'Host': 'u3b6gr4ua3-dsn.algolia.net',
+        'Accept-Language': 'en-us',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15',
+        'Accept-Encoding': 'br, gzip, deflate',
+        'Connection': 'keep-alive',
+    }
 
-    start = 0
-    limit = 200
+    params = (
+        ('x-algolia-agent', 'Algolia for vanilla JavaScript (lite) 3.22.1;JS Helper 2.20.1'),
+        ('x-algolia-application-id', 'U3B6GR4UA3'),
+        ('x-algolia-api-key', '9a20c93440cf63cf1a7008d75f7438bf'),
+    )
+
+    data = """
+        {
+            "requests": [
+                {
+                    "indexName": "noa_aem_game_en_us",
+                    "params": "hitsPerPage=200&maxValuesPerFacet=30&page={page}",
+                    "facetFilters": [["platform:{system}"]]
+                }
+            ]
+        }
+    """.replace('{system}', SYSTEMS[system][ALIAS][NA])
+
+    page = 1
 
     while True:
-        if published_by_nintendo:
-            LOG.info(f'Loading {system} games published by nintendo (from {start} to {start + limit})')
-        else:
-            LOG.info(f'Loading {system} games  (from {start} to {start + limit})')
+        LOG.info(f'Fetching games from page {page}')
 
-        url = AMERICA[API].format(system=SYSTEMS[system][ALIAS][NA], offset=start, limit=limit, additional=additional)
-        response = requests.get(url)
+        response = requests.post(
+            url=AMERICA[API],
+            headers=headers,
+            params=params,
+            data=data.replace('{page}', str(page))
+        )
 
-        json = response.json()
+        hits = response.json()['results'][0]['hits']
 
-        if not json.get('games', {}).get('game'):
+        if len(hits) == 0:
             break
 
-        for game in json['games']['game']:
-            yield game
+        for hit in hits:
+            if not hit.get('nsuid'):
+                continue
 
-        start += limit
+            yield hit.get('nsuid'), hit.get('slug')
+
+        page += 1
 
 
-def _list_games(system, only_published_by_nintendo=False):
-    for data in fetch_games(system, published_by_nintendo=only_published_by_nintendo):
-        title = data.get('title', '')
-        nsuid = data.get('nsuid')
+def extract_game_data(system, slug):
+    url = AMERICA[DATA].format(slug=slug)
 
-        if nsuid in [None, 'HAC']:
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    scripts = [tag.text for tag in soup.find_all('script') if 'window.game' in tag.text]
+
+    if not len(scripts):
+        return None
+
+    data = {x[0]: x[1] for x in [line.strip().replace('",', '').split(': "') for line in scripts[0].split('\n') if ':' in line]}
+
+    nsuid = data.get('nsuid')
+    game_code = data.get('productCode')
+
+    if len(nsuid) < 10 or len(game_code) < 7:
+        return None
+
+    title = data.get('title')
+
+    game_id = get_game_id(nsuid=nsuid, game_id=game_code)
+
+    game = Game(_id=game_id, system=system)
+    game.titles[NA] = FIXES.get(title, title)
+    game.nsuids[NA] = FIXES.get(nsuid, nsuid)
+    game.categories = get_categories(data.get('genre', '').split(','))
+    game.free_to_play = data.get('msrp') == '0.00'
+    game.published_by_nintendo = data.get('publisher') == 'Nintendo'
+
+    for country, details in COUNTRIES.items():
+        if details[REGION] == NA and WEBSITE in details:
+            game.websites[country] = details[WEBSITE].format(nsuid=nsuid)
+
+    try:
+        game.release_dates[NA] = datetime.strptime(data.get('releaseDate'), '%b %d, %Y')
+    except:
+        return None
+
+    try:
+        number_of_players = soup.find('dd', {'class': 'num-of-players'}).text.strip()
+        game.number_of_players = int(re.sub('[^0-9]*', '', number_of_players))
+    except:
+        game.number_of_players = 0
+
+    return game
+
+
+def list_new_games(system, games_on_db):
+    for nsuid, slug in fetch_games(system):
+        if nsuid in games_on_db:
             continue
 
-        if not data.get('game_code'):
-            # LOG.info('{} has no game id'.format(title))
-            continue
+        game = extract_game_data(system, slug)
 
-        game_id = get_game_id(nsuid=nsuid, game_id=data.get('game_code'))
+        if game:
+            LOG.info(f'Found new game {game}')
 
-        game = Game(_id=game_id, system=system)
-
-        game.titles[NA] = FIXES.get(title, title)
-        game.nsuids[NA] = FIXES.get(nsuid, nsuid)
-
-        game.categories = get_categories(data.get('categories', {}).get('category', []))
-
-        game.free_to_play = data.get('free_to_start', 'false') == 'true'
-
-        if only_published_by_nintendo:
-            game.published_by_nintendo = True
-
-        for country, details in COUNTRIES.items():
-            if details[REGION] == NA and WEBSITE in details:
-                game.websites[country] = details[WEBSITE].format(nsuid=nsuid)
-
-        try:
-            game.number_of_players = int(re.sub('[^0-9]*', '', data.get('number_of_players', '0')))
-        except:
-            game.number_of_players = 0
-
-        try:
-            game.release_dates[NA] = datetime.strptime(data.get('release_date'), '%b %d, %Y')
-        except:
-            continue
-
-        yield game
-
-
-def list_games(system):
-    by_nintendo = []
-
-    for game in _list_games(system, only_published_by_nintendo=True):
-        by_nintendo.append(game.id)
-
-        yield game
-
-    for game in _list_games(system):
-        if game.id in by_nintendo:
-            continue
-
-        yield game
+            yield nsuid, game
+        else:
+            LOG.error(f'Failed to extract data for game with nsuid {nsuid}')

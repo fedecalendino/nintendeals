@@ -21,40 +21,58 @@ LOG = logging.getLogger('nintendo.jp')
 JAPAN = REGIONS[JP]
 LIST_API = JAPAN[API]
 
+NSUID = 'NSUID'
 
-def get_id_map(system):
+
+def fetch_games(system):
+    LOG.info(f'Loading {system} games')
+
     if system == N3DS:
         url = "https://www.nintendo.co.jp/data/software/xml/3ds_pkg_dl.xml"
     else:
         url = f'https://www.nintendo.co.jp/data/software/xml/{system.lower()}.xml'
 
-    game_list = xmltodict.parse(requests.get(url).text)
+    title_info_list = xmltodict.parse(requests.get(url).text)['TitleInfoList']['TitleInfo']
 
-    return {
-        title_info['LinkURL'].rsplit('/', 1)[-1]: title_info
-            for title_info in game_list['TitleInfoList']['TitleInfo']
-    }
+    for game in title_info_list:
+        game[NSUID] = game['LinkURL'].split('/')[-1]
+        yield game[NSUID], game
 
 
-def list_games(system):
-    LOG.info(f'Loading {system} games')
+def extract_game_data(system, data):
+    nsuid = data.get(NSUID)
+    game_code = get_game_id(nsuid=nsuid, game_id=data.get('InitialCode'))
 
-    id_map = get_id_map(system)
+    if len(nsuid) < 10 or len(game_code) < 7:
+        return None
 
-    for nsuid, info in id_map.items():
-        game_id = get_game_id(nsuid=nsuid, game_id=info.get('InitialCode'))
+    game = Game(_id=game_code, system=system)
 
-        game = Game(_id=game_id, system=system)
+    game.titles[JP] = data.get('TitleName').title()
+    game.nsuids[JP] = nsuid
+    game.published_by_nintendo = data.get('MakerName', '') == '任天堂'
+    game.free_to_play = data.get('Price', '') == '無料'
 
-        game.titles[JP] = info.get('TitleName').title()
-        game.nsuids[JP] = nsuid
-        game.websites[JP] = JAPAN[DETAILS][system].format(nsuid=nsuid)
+    game.websites[JP] = JAPAN[DETAILS][system].format(nsuid=nsuid)
 
-        game.published_by_nintendo = info.get('MakerName', '') == '任天堂'
+    try:
+        game.release_dates[JP] = datetime.strptime(data.get('SalesDate'), '%Y.%m.%d')
+    except:
+        return None
 
-        try:
-            game.release_dates[JP] = datetime.strptime(info.get('SalesDate'), '%Y.%m.%d')
-        except:
+    return game
+
+
+def list_new_games(system, games_on_db):
+    for nsuid, data in fetch_games(system):
+        if nsuid in games_on_db:
             continue
 
-        yield game
+        game = extract_game_data(system, data)
+
+        if game:
+            LOG.info(f'Found new game {game}')
+
+            yield nsuid, game
+        else:
+            LOG.error(f'Failed to extract data for game with nsuid {nsuid}')

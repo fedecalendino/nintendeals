@@ -27,104 +27,82 @@ from commons.keys import SYSTEM
 
 LOG = logging.getLogger('jobs.games')
 
-
-def get_wishlisted_count():
-    wishlist_db = WishlistDatabase()
-
-    counts = {}
-
-    for wishlist in wishlist_db.load_all():
-        for game_id in wishlist.games:
-            counts[game_id] = counts.get(game_id, 0) + 1
-
-    return counts
+new_game_finders = {
+    NA: na.list_new_games,
+    EU: eu.list_new_games,
+    JP: jp.list_new_games,
+}
 
 
-def merge_game(game_id, game, system):
-    final = game.get(DB, Game(_id=game_id, system=system))
-
-    for region in REGIONS:
-        regional = game.get(region, None)
-
-        if not regional:
-            continue
-
-        final.nsuids[region] = regional.nsuids.get(region)
-        final.titles[region] = regional.titles.get(region) \
-            .replace('#', '') \
-            .replace('Â®', '®')\
-            .replace('Ã©', 'é')\
-            .replace('Ã', 'Û')\
-            .replace('Û¼', 'ü')\
-            .replace('&#8482;', '')\
-            .replace('&333;', 'o') 
-
-        final.release_dates[region] = regional.release_dates.get(region)
-        final.categories += regional.categories
-
-        final.number_of_players = max([final.number_of_players, regional.number_of_players])
-        final.published_by_nintendo = any([final.published_by_nintendo, regional.published_by_nintendo])
-
-        final.free_to_play = any([final.free_to_play, regional.free_to_play])
-
-        for country, website in regional.websites.items():
-            if website:
-                final.websites[country] = website
-
-    final.categories = list(set(final.categories))
-
-    return final
+TITLE_FIXES = {
+    '#': '',
+    'Â®': '®',
+    'Ã©': 'é',
+    'Ã': 'Û',
+    'Û¼': 'ü',
+    '&#8482;': '',
+    '&333;': 'o',
+}
 
 
-def add(games, region, game):
-    if not games.get(game.id):
-        games[game.id] = {}
-
-    games[game.id][region] = game
-
-
-def update_games(system, wishlist_counts={}):
-    games_found = 0
-
+def update_games(system, wishlist_counts):
     now = datetime.utcnow()
     games_db = GamesDatabase()
     prices_db = PricesDatabase()
 
-    games = {}
+    games = {game.id: game for game in games_db.load_all(filter={SYSTEM: system})}
 
-    for game in games_db.load_all(filter={SYSTEM: system}):
-        add(games, DB, game)
+    new_games_found = {}
 
-    for game in eu.list_games(system):
-        add(games, EU, game)
+    for region in REGIONS:
+        saved_games = [game.nsuids[region] for game in games.values() if game.nsuids[region]]
 
-    for game in jp.list_games(system):
-        add(games, JP, game)
+        for nsuid, new_game in new_game_finders[region](system, saved_games):
+            new_games_found[region] = new_games_found.get(region, 0) + 1
 
-    for game in na.list_games(system):
-        add(games, NA, game)
+            game = games.get(new_game.id, Game(_id=new_game.id, system=system))
+            game.nsuids[region] = new_game.nsuids.get(region)
+
+            title = new_game.titles.get(region)
+
+            for lookup, replacement in TITLE_FIXES.items():
+                if lookup in title:
+                    title = title.replace(lookup, replacement)
+
+            game.titles[region] = title
+
+            game.release_dates[region] = new_game.release_dates.get(region)
+            game.categories += new_game.categories
+            game.categories = list(set(game.categories))
+
+            game.number_of_players = max([game.number_of_players, new_game.number_of_players])
+            game.published_by_nintendo = any([game.published_by_nintendo, new_game.published_by_nintendo])
+
+            game.free_to_play = any([game.free_to_play, new_game.free_to_play])
+
+            for country, website in new_game.websites.items():
+                if website:
+                    game.websites[country] = website
+
+            games[game.id] = game
 
     prices = {price.id: price for price in prices_db.load_all()}
 
     for game_id, game in games.items():
-        if not game.get(DB):
-            games_found += 1
-
-        final = merge_game(game_id, game, system)
         week = str(int(now.strftime("%V")))
-        final.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
-        final.wishlisted = final.wishlisted_average
+        game.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
+        game.wishlisted = game.wishlisted_average
 
-        if final.scores.next_update < now:
-            final.scores = metacritic.get_scores(system, final.titles.values())
+        if game.scores.next_update < now:
+            game.scores = metacritic.get_scores(system, game.titles.values())
 
         try:
-            GamesDatabase().save(final)
+            GamesDatabase().save(game)
         except Exception as e:
-            LOG.error(f'Error saving {final.id}: {str(e)}')
+            LOG.error(f'Error saving {game.id}: {str(e)}')
             continue
 
-        for region, nsuid in final.nsuids.items():
+        for region, nsuid in game.nsuids.items():
             if not nsuid:
                 continue
 
@@ -136,7 +114,7 @@ def update_games(system, wishlist_counts={}):
                 save = True
                 price = Price(
                     _id=nsuid,
-                    game_id=final.id,
+                    game_id=game.id,
                     system=system,
                     region=region
                 )
@@ -147,10 +125,22 @@ def update_games(system, wishlist_counts={}):
                     save = True
 
             if save:
-                LOG.info(f'Saving {final.title} ({nsuid}) into prices')
+                LOG.info(f'Saving {game.title} ({nsuid}) into prices')
                 prices_db.save(price)
 
-    return f'{system} games found: {games_found}'
+    return f'{system} games found: {new_games_found}'
+
+
+def get_wishlisted_count():
+    wishlist_db = WishlistDatabase()
+
+    counts = {}
+
+    for wishlist in wishlist_db.load_all():
+        for game_id in wishlist.games:
+            counts[game_id] = counts.get(game_id, 0) + 1
+
+    return counts
 
 
 def update_all_games():
@@ -168,3 +158,6 @@ def update_all_games():
 
     return '/'.join(results)
 
+
+logging.basicConfig(level=logging.INFO)
+update_all_games()
