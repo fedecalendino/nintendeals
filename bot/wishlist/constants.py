@@ -13,13 +13,13 @@ WL_LIST = 'LIST'
 WL_DELETE = 'DELETE'
 
 
-GAME_ADDED = '###{} was added to your wishlist :)'
-GAME_REMOVED = '###{} was deleted from your wishlist :('
+GAME_ADDED = '###{} was added to your wishlist 😄'
+GAME_REMOVED = '###{} was deleted from your wishlist'
 
-WISHLIST_SHOWED = '###Here is your current wishlist :)'
+WISHLIST_SHOWED = '###Here is your current wishlist 😄'
 WISHLIST_EMPTY = '###Your wishlist is empty'
 WISHLIST_FULL = '###Your wishlist is full ({}/{} games)'
-WISHLIST_DELETED = '###Your wishlist was deleted :('
+WISHLIST_DELETED = '###Your wishlist was deleted ☹️'
 
 INVALID_GAME_ID = '###The game id {} is not valid'
 INVALID_COUNTRY = '###The country {} is not valid'

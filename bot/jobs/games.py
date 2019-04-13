@@ -17,7 +17,6 @@ from commons.config import COUNTRIES
 from commons.config import REGIONS
 from commons.config import SYSTEMS
 
-from commons.keys import DB
 from commons.keys import EU
 from commons.keys import JP
 from commons.keys import NA
@@ -55,7 +54,7 @@ def update_games(system, wishlist_counts):
     new_games_found = {}
 
     for region in REGIONS:
-        saved_games = [game.nsuids[region] for game in games.values() if game.nsuids[region]]
+        saved_games = [game.nsuids[region] for game in games.values() if game.nsuids.get(region)]
 
         for nsuid, new_game in new_game_finders[region](system, saved_games):
             new_games_found[region] = new_games_found.get(region, 0) + 1
@@ -93,7 +92,7 @@ def update_games(system, wishlist_counts):
         game.wishlisted_history[week] = wishlist_counts.get(game_id, 0)
         game.wishlisted = game.wishlisted_average
 
-        if game.scores.next_update < now:
+        if False and game.scores.next_update < now:
             game.scores = metacritic.get_scores(system, game.titles.values())
 
         try:
@@ -157,7 +156,3 @@ def update_all_games():
     LOG.info('Finished')
 
     return '/'.join(results)
-
-
-logging.basicConfig(level=logging.INFO)
-update_all_games()

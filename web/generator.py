@@ -66,7 +66,7 @@ def wishlist(system, country):
             f'nsuids.{region}': {'$ne': None},
             'free_to_play': False
         },
-        sort=[('release_dates.{region}', -1)]
+        sort=[(f'release_dates.{region}', -1)]
     )
 
     return render_template(
@@ -107,4 +107,3 @@ def top_wishlist(system, limit=50):
         emoji_plus=PLUS,
         emoji_star=STAR
     )
-

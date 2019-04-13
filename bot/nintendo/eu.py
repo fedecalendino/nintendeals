@@ -60,18 +60,15 @@ def extract_game_data(system, data):
     if fs_id in FSID_FIXER:
         data['product_code_txt'], data['nsuid_txt'] = FSID_FIXER.get(fs_id)
 
-    for product_id in data.get('product_code_txt', []):
-        if '-' not in product_id:
-            break
-    else:
-        LOG.info(f'{title} is not a valid game')
+    try:
+        # Getting nsuids for switch (7) or 3ds (5)
+        nsuid, product_id = [
+            (nsuid_txt, product_code_txt)
+                for nsuid_txt, product_code_txt in zip(data.get('nsuid_txt', []), data.get('product_code_txt', []))
+                    if nsuid_txt[0] in ['5', '7']
+        ][0]
+    except:
         return None
-
-    if not data.get('nsuid_txt'):
-        return None
-
-    # Getting nsuids for switch (7) or 3ds (5)
-    nsuid = [code for code in data['nsuid_txt'] if code[0] in ['5', '7']][0]
 
     game_code = get_game_id(nsuid=nsuid, game_id=product_id)
 
@@ -79,6 +76,9 @@ def extract_game_data(system, data):
         return None
 
     game = Game(_id=game_code, system=system)
+
+    if game.id == '3DS/JCV':
+        print('')
 
     game.titles[EU] = title
     game.nsuids[EU] = nsuid
