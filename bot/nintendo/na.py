@@ -27,7 +27,7 @@ LOG = logging.getLogger('nintendo.na')
 AMERICA = REGIONS[NA]
 
 FIXES = {
-    "70010000019385": "70010000000529", 
+    "70010000019385": "70010000000529",
     "Splatoon 2 + Nintendo Switch Online Individual Membership (12 Months)" : "Splatoon 2"
 }
 
