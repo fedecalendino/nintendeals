@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from nintendeals.classes.games import Game
 from nintendeals.constants import NA, PLATFORMS
 from nintendeals.noa.external import algolia
-from nintendeals.util import clean, unquote
+from nintendeals.util import unquote
 
 LOG = logging.getLogger('nintendeals.na')
 
@@ -43,7 +43,7 @@ def _scrap(url: str) -> Game:
     game = Game(
         nsuid=data["nsuid"],
         product_code=data["productCode"],
-        title=clean(data["title"]),
+        title=data["title"],
         region=NA,
         platform=PLATFORMS[platform],
     )
@@ -71,7 +71,7 @@ def _scrap(url: str) -> Game:
 
     # Game size (in MBs)
     game.size, unit = _itemprop(soup, "romSize").split(" ")
-    game.size = round(float(game.size) / (1024 if unit == "GB" else 1))
+    game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
 
     # Other properties
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None
@@ -83,7 +83,7 @@ def _scrap(url: str) -> Game:
     game.online_play = _aria_label(soup, "online-play") is not None
     game.publisher = unquote(data["publisher"])
     game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
-    game.slug = unquote(data["slug"])
+    game.na_slug = unquote(data["slug"])
 
     # Unknown
     game.amiibo = None

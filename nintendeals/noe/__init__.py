@@ -1,1 +1,1 @@
-from .details import game_info
+from .info import game_info

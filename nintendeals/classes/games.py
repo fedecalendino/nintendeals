@@ -32,6 +32,8 @@ class Game:
         self.region: str = region
         self.platform: str = platform
 
+        self.na_slug: str = None
+
         self.genres: List[str] = []
         self.languages: List[str] = []
         self.players: int = 0
@@ -50,8 +52,11 @@ class Game:
         self.online_play: bool = None
         self.publisher: str = None
         self.save_data_cloud: bool = None
-        self.slug: str = None
         self.voice_chat: str = None
+
+    @property
+    def unique_id(self) -> str:
+        return self.product_code[-5:-1]
 
     def url(self, country: str, lang: str = "en") -> str:
         country = countries.get(alpha_2=country)

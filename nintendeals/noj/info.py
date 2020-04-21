@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 
 from nintendeals.classes.games import Game
 from nintendeals.constants import JP, PLATFORMS
-from nintendeals.util import clean
 
 LOG = logging.getLogger('nintendeals.jp')
 
@@ -41,7 +40,7 @@ def _scrap(url: str) -> Game:
     game = Game(
         nsuid=nsuid,
         product_code=product_code,
-        title=clean(data["formal_name"]),
+        title=data["formal_name"],
         region=JP,
         platform=PLATFORMS[platform],
     )
@@ -68,7 +67,7 @@ def _scrap(url: str) -> Game:
         pass
 
     # Game size (in MBs)
-    game.size = data.get("total_rom_size", 0) / 1024 / 1024
+    game.size = round(data.get("total_rom_size", 0) / 1024 / 1024)
 
     # Other properties
     features = list(map(lambda lang: lang["name"], data.get("features", [])))

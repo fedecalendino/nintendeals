@@ -8,7 +8,7 @@ from nintendeals.classes.games import Game
 game: Game = noa.game_info(nsuid="70010000000025")
 print(game.product_code)
 print(game.title)
-print(game.slug)
+print(game.na_slug)
 print()
 print(game.release_date)
 print(", ".join(game.genres))
