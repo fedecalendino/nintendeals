@@ -30,6 +30,12 @@ class Game:
         self.region: str = region
         self.platform: str = platform
 
+        self.genres: List[str] = []
+        self.languages: List[str] = []
+        self.players: int = 0
+        self.release_date: datetime = None
+        self.size: int = []
+
         self.amiibo: bool = None
         self.demo: bool = None
         self.description: str = None
@@ -40,16 +46,10 @@ class Game:
         self.iaps: bool = None
         self.local_multiplayer: bool = None
         self.online_play: bool = None
-        self.players: int = 0
         self.publisher: str = None
-        self.release_date: datetime = None
         self.save_data_cloud: bool = None
-        self.size: int = None
         self.slug: str = None
         self.voice_chat: str = None
-
-        self.genres: List[str] = []
-        self.languages: List[str] = []
 
     def url(self, country: str, lang: str = "en") -> str:
         country = countries.get(alpha_2=country)

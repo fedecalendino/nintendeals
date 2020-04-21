@@ -44,48 +44,51 @@ def _scrap(url: str) -> Game:
         product_code=data["productCode"],
         title=clean(data["title"]),
         region=NA,
-        platform = PLATFORMS[platform],
+        platform=PLATFORMS[platform],
     )
 
-    game.amiibo = None
+    # Genres
+    game.genres = unquote(data["genre"]).split(",")
+    game.genres.sort()
+
+    # Languages
+    game.languages = _class(soup, "languages").split(",")
+    game.languages.sort()
+
+    # Players
+    try:
+        game.players = int(re.sub(r"[^\d]*", "", _class(soup, "num-of-players")))
+    except ValueError:
+        game.players = 0
+
+    # Release date
+    try:
+        release_date = _itemprop(soup, "releaseDate")
+        game.release_date = datetime.strptime(release_date, '%b %d, %Y')
+    except ValueError:
+        pass
+
+    # Game size (in MBs)
+    game.size, unit = _itemprop(soup, "romSize").split(" ")
+    game.size = round(float(game.size) / (1024 if unit == "GB" else 1))
+
+    # Other properties
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None
     game.description = _itemprop(soup, "description", tag="div")
     game.developer = _itemprop(soup, "manufacturer")
     game.dlc = _class(soup, "dlc", tag="section") is not None
     game.free_to_play = data["msrp"] == '0'
     game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
-    game.iaps = None
-    game.local_multiplayer = None
     game.online_play = _aria_label(soup, "online-play") is not None
     game.publisher = unquote(data["publisher"])
     game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
     game.slug = unquote(data["slug"])
+
+    # Unknown
+    game.amiibo = None
+    game.iaps = None
+    game.local_multiplayer = None
     game.voice_chat = None
-
-    game.size, unit = _itemprop(soup, "romSize").split(" ")
-    game.size = float(game.size)
-
-    if unit == "GB":
-        game.size = game.size / 1024
-
-    game.size = round(game.size)
-
-    game.genres = unquote(data["genre"]).split(",")
-    game.genres.sort()
-
-    game.languages = _class(soup, "languages").split(",")
-    game.languages.sort()
-
-    try:
-        game.players = int(re.sub(r"[^\d]*", "", _class(soup, "num-of-players")))
-    except ValueError:
-        game.players = 0
-
-    game.release_date = _itemprop(soup, "releaseDate")
-    try:
-        game.release_date = datetime.strptime(game.release_date, '%b %d, %Y')
-    except ValueError:
-        pass
 
     return game
 
@@ -102,7 +105,7 @@ def game_info(nsuid: str) -> Game:
 
     Returns
     -------
-    nintendeals.sources.nintendo.classes.games.Game
+    nintendeals.classes.games.Game
         information of the game
     """
     LOG.info(f"Fetching slug for {nsuid} in algolia")

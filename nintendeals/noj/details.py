@@ -45,6 +45,31 @@ def _scrap(url: str) -> Game:
         platform=PLATFORMS[platform],
     )
 
+    # Genres
+    game.genres = data.get("genre", "").split(" / ")
+    game.genres.sort()
+
+    # Languages
+    game.languages = list(map(lambda lang: lang["name"], data.get("languages", [])))
+    game.languages.sort()
+
+    # Players
+    try:
+        game.players = max(data.get("player_number", {}).values())
+    except ValueError:
+        game.players = 0
+
+    # Release date
+    try:
+        release_date = data["release_date_on_eshop"]
+        game.release_date = datetime.strptime(release_date, '%Y-%m-%d')
+    except ValueError:
+        pass
+
+    # Game size (in MBs)
+    game.size = data.get("total_rom_size", 0) / 1024 / 1024
+
+    # Other properties
     features = list(map(lambda lang: lang["name"], data.get("features", [])))
 
     game.amiibo = extra_info.get("amiibo", "0") == "1"
@@ -59,25 +84,9 @@ def _scrap(url: str) -> Game:
     game.online_play = "Nintendo Switch Online" in features
     game.publisher = data["publisher"]["name"]
     game.save_data_cloud = data.get("cloud_backup_type") == "supported"
-    game.size = data.get("total_rom_size", 0) / 1024 / 1024
+
+    # Unknown
     game.voice_chat = None
-
-    game.genres = data.get("genre", "").split(" / ")
-    game.genres.sort()
-
-    game.languages = list(map(lambda lang: lang["name"], data.get("languages", [])))
-    game.languages.sort()
-
-    try:
-        game.players = max(data.get("player_number", {}).values())
-    except ValueError:
-        game.players = 0
-
-    game.release_date = data["release_date_on_eshop"]
-    try:
-        game.release_date = datetime.strptime(game.release_date, '%Y-%m-%d')
-    except ValueError:
-        pass
 
     return game
 
@@ -94,7 +103,7 @@ def game_info(nsuid: str) -> Game:
 
     Returns
     -------
-    nintendeals.sources.nintendo.classes.games.Game
+    nintendeals.classes.games.Game
         information of the game
     """
     url = DETAIL_URL.format(nsuid=nsuid)

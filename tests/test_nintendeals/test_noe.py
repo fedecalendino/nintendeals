@@ -53,7 +53,7 @@ class TestNoE(TestCase):
         nsuid = "70010000003481"
         game = noe.game_info(nsuid)
 
-        self.assertEqual(game.title, "PokÃ©mon Quest")
+        self.assertEqual(game.title, "Pokémon Quest")
         self.assertEqual(game.product_code, "HACPAK35A")
         self.assertEqual(game.publisher, "Nintendo")
         self.assertEqual(game.players, 1)

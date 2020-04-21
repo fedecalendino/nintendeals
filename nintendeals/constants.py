@@ -16,4 +16,5 @@ PLATFORMS = {
     SWITCH: SWITCH,
     N3DS: N3DS,
     "switch": SWITCH,
+    "3ds": N3DS,
 }

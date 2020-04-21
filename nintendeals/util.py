@@ -32,6 +32,7 @@ def clean(string: str) -> str:
 
     """
     undesired = ["™", ]
+
     for char in undesired:
         string = string.replace(char, "")
 

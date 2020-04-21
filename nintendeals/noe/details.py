@@ -47,11 +47,38 @@ def _scrap(url: str) -> Game:
     game = Game(
         nsuid=data["nsuid"],
         product_code=data["productCode"],
-        title=clean(data["gameTitleMaster"]),
+        title=soup.find("h1").text,
         region=EU,
         platform=PLATFORMS[platform],
     )
 
+    # Genres
+    game.genres = list(map(lambda g: g.strip(), _sibling(soup, string="Categories").split(",")))
+    game.genres.sort()
+
+    # Languages
+    game.languages = _sibling(soup, string="Languages").split(",")
+    game.languages.sort()
+
+    # Players
+    try:
+        text = _sibling(soup, "Players")
+        game.players = max(map(int, text.split(" - ")))
+    except ValueError:
+        game.players = 0
+
+    # Release date
+    try:
+        release_date = data["releaseDate"]
+        game.release_date = datetime.strptime(release_date, '%d/%m/%Y')
+    except ValueError:
+        pass
+
+    # Game size (in MBs)
+    game.size, unit = _sibling(soup, "Download size").split(" ")
+    game.size = round(float(game.size))
+
+    # Other properties
     features = _sibling(soup, string="Features")
 
     game.amiibo = "amiibo" in features
@@ -60,7 +87,6 @@ def _scrap(url: str) -> Game:
     game.developer = _sibling(soup, "Developer")
     game.dlc = "Downloadable content" in features
     game.free_to_play = "\"offdeviceProductPrice\": \"0.0\"" in response.text
-    game.game_vouchers = None
     game.iaps = "Offers in-game purchases" in response.text
     game.local_multiplayer = "Local multiplayer" in features
     game.online_play = "Paid online membership service" in features
@@ -68,26 +94,8 @@ def _scrap(url: str) -> Game:
     game.save_data_cloud = "Save Data Cloud" in features
     game.voice_chat = "Voice Chat" in features
 
-    game.size, unit = _sibling(soup, "Download size").split(" ")
-    game.size = round(float(game.size))
-
-    game.genres = list(map(lambda g: g.strip(), _sibling(soup, string="Categories").split(",")))
-    game.genres.sort()
-
-    game.languages = _sibling(soup, string="Languages").split(",")
-    game.languages.sort()
-
-    try:
-        text = _sibling(soup, "Players")
-        game.players = max(map(int, text.split(" - ")))
-    except ValueError:
-        game.players = 0
-
-    game.release_date = data["releaseDate"]
-    try:
-        game.release_date = datetime.strptime(game.release_date, '%d/%m/%Y')
-    except ValueError:
-        pass
+    # Unknown
+    game.game_vouchers = None
 
     return game
 
@@ -104,10 +112,13 @@ def game_info(nsuid: str) -> Game:
 
     Returns
     -------
-    nintendeals.sources.nintendo.classes.games.Game
+    nintendeals.classes.games.Game
         information of the game
     """
     url = DETAIL_URL.format(nsuid=nsuid)
 
     LOG.info(f"Getting info of game from {url}")
     return _scrap(url)
+
+
+game_info("70010000003481")
