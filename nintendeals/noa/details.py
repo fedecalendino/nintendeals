@@ -10,7 +10,8 @@ from nintendeals.constants import NA, PLATFORMS
 from nintendeals.noa.external import algolia
 from nintendeals.util import clean, unquote
 
-LOG = logging.getLogger('noa')
+LOG = logging.getLogger('nintendeals.na')
+
 DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}/"
 
 

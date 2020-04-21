@@ -6,9 +6,9 @@ from bs4 import BeautifulSoup
 
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
-from nintendeals.util import clean
 
-LOG = logging.getLogger('noe')
+LOG = logging.getLogger('nintendeals.eu')
+
 DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
 
 

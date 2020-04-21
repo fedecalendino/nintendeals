@@ -9,7 +9,8 @@ from nintendeals.classes.games import Game
 from nintendeals.constants import JP, PLATFORMS
 from nintendeals.util import clean
 
-LOG = logging.getLogger('noj')
+LOG = logging.getLogger('nintendeals.jp')
+
 DETAIL_URL = "https://ec.nintendo.com/JP/jp/titles/{nsuid}"
 EXTRA_INFO_URL = "https://search.nintendo.jp/nintendo_soft/search.json?q={nsuid}"
 
