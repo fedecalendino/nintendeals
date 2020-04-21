@@ -46,8 +46,7 @@ def get_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
 
 
 def get_price(country: str, nsuid: str) -> Price:
-    country = countries.get(alpha_2=country)
     assert country
     assert nsuid
 
-    return get_prices(country, [nsuid]).get(nsuid)
+    return get_prices(country, nsuid).get(nsuid)
