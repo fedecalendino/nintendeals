@@ -1,0 +1,25 @@
+os: linux
+dist: xenial
+language: python
+
+python: 3.7
+
+addons:
+  sonarcloud:
+    organization: "federicocalendino"
+
+# Install the codecov pip dependency
+install:
+  - pip install -r requirements.txt
+  - pip install -r requirements-test.txt
+
+# Run the unit test
+script:
+  - coverage run --source nintendeals -m unittest discover
+  - coverage xml
+  - sonar-scanner
+
+# Push the results back to codecov
+after_success:
+  - codecov
+  - bash <(curl -s https://codecov.io/bash)
