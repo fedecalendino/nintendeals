@@ -9,15 +9,22 @@ with open(path.join(this_directory, "readme.md"), encoding="utf-8") as f:
 
 setup(
     name="nintendeals",
-    version="0.1",
+    version="0.2",
     url="https://github.com/federicocalendino/nintendeals",
     license="MIT",
     description="Scrapping tools for Nintendo games and prices on NA, EU and JP.",
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     author="Federico Calendino",
     author_email="federicocalendino@gmail.com",
-    packages=["nintendeals"],
+    packages=[
+        "nintendeals",
+        "nintendeals.classes",
+        "nintendeals.noa",
+        "nintendeals.noa.external",
+        "nintendeals.noe",
+        "nintendeals.noj",
+    ],
     install_requires=["unidecode"],
     keywords=[
         "nintendo",
