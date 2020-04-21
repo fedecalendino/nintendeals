@@ -1,0 +1,40 @@
+body {
+	font-size: 90%;
+}
+
+.logo {
+	width: 36px;
+	height: 36px;
+	margin-right: 10px;
+}
+
+.container {
+    width: 100%;
+    padding-top: 5px;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+table {
+    width: 125%;
+    border-collapse: collapse;
+}
+
+table thead td {
+    border: 1px solid #eeeeee;
+}
+
+tr {
+	line-height: 12px;
+}
+
+.dates {
+    width: 125px;
+    white-space: nowrap;
+}
+
+.players {
+    width: 150px;
+    white-space: nowrap;
+}

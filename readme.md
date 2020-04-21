@@ -1,0 +1,1 @@
+/u/nintendeals bot
