@@ -69,7 +69,7 @@ class Game:
         )
 
     def price(self, country: str) -> Price:
-        return get_price(country, [self.nsuid])
+        return get_price(country, self.nsuid)
 
     def __repr__(self):
         return f'{self.nsuid} > {self.title}'

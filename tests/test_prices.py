@@ -24,3 +24,4 @@ class TestPrices(TestCase):
         self.assertEqual(country, price.country)
         self.assertEqual(currency, price.currency)
         self.assertEqual(value, price.value)
+

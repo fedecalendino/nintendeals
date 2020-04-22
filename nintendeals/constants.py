@@ -9,12 +9,9 @@ REGIONS = {
 }
 
 
-N3DS = "Nintendo 3DS"
 SWITCH = "Nintendo Switch"
 
 PLATFORMS = {
     SWITCH: SWITCH,
-    N3DS: N3DS,
     "switch": SWITCH,
-    "3ds": N3DS,
 }
