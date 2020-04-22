@@ -110,7 +110,7 @@ def game_info(nsuid: str) -> Game:
         information of the game
     """
     LOG.info(f"Fetching slug for {nsuid} in algolia")
-    slug = algolia.query_noa_game_index(nsuid)
+    slug = algolia.find_by_nsuid(nsuid)
     LOG.info(f"Found slug {slug} for {nsuid}")
 
     url = DETAIL_URL.format(slug=slug)

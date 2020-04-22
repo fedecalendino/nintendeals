@@ -49,4 +49,4 @@ def get_price(country: str, nsuid: str) -> Price:
     assert country
     assert nsuid
 
-    return get_prices(country, nsuid).get(nsuid)
+    return get_prices(country, [nsuid]).get(nsuid)

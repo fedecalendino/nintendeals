@@ -1,26 +1,65 @@
-import requests
+import json
+from string import ascii_lowercase, digits
 
-APP_ID = "u3b6gr4ua3"
+from nintendeals.constants import PLATFORMS
+from algoliasearch.search_client import SearchClient
+
+APP_ID = "U3B6GR4UA3"
 API_KEY = "9a20c93440cf63cf1a7008d75f7438bf"
 
-URL = f"https://{APP_ID}-dsn.algolia.net/1/indexes/noa_aem_game_en_us"
+INDEX_NAME = "noa_aem_game_en_us"
 
-HEADERS = {
-  "X-Algolia-API-Key": API_KEY,
-  "X-Algolia-Application-Id": APP_ID.upper(),
-}
+client = SearchClient.create(APP_ID, API_KEY)
+index = client.init_index(INDEX_NAME)
 
 
-def query_noa_game_index(nsuid: str) -> str:
-    params = {
-        "page": 0,
-        "hitsPerPage": 1,
-        "query": nsuid
+def _search_index(query, **options):
+    response = index.search(query, request_options=options)
+    return response.get('hits', [])
+
+
+def find_by_nsuid(nsuid: str) -> str:
+    hits = _search_index(
+        nsuid,
+        attributesToRetrieve=["title", "nsuid", "slug"]
+    )
+
+    return hits[0]["slug"]
+
+
+def search_games(platform: str, query: str) -> json:
+    assert platform in PLATFORMS
+
+    hits_per_page = 500
+
+    options = {
+        "attributesToRetrieve": ["title", "nsuid"],
+        "hitsPerPage": hits_per_page,
+        "facetFilters": [
+            f"platform:{platform}"
+        ]
     }
 
-    response = requests.get(URL, params=params, headers=HEADERS)
-    hit = response.json()["hits"][0]
+    page = -1
 
-    assert hit["nsuid"] == nsuid
+    while True:
+        page += 1
+        games = _search_index(
+            query,
+            page=page,
+            **options
+        )
 
-    return hit["url"].split("/")[-1]
+        if not games:
+            break
+
+        for game in games:
+            nsuid = game.get("nsuid")
+
+            if not nsuid:
+                continue
+
+            yield nsuid, game["title"]
+
+        if len(games) < hits_per_page:
+            break
