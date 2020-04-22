@@ -1,5 +1,4 @@
 import json
-
 from nintendeals.constants import SWITCH
 from algoliasearch.search_client import SearchClient
 
@@ -7,7 +6,6 @@ APP_ID = "U3B6GR4UA3"
 API_KEY = "9a20c93440cf63cf1a7008d75f7438bf"
 
 INDEX_NAME = "noa_aem_game_en_us_title_asc"
-
 INDEX = None
 
 
