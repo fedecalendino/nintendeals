@@ -7,10 +7,3 @@
 
 
 ⚠️ Work in progress ⚠️
-
-## Data Sources
-
-* [Nintendo of America](/nintendeals/sources/nintendo/noa/readme.md)
-* [Nintendo of Europe](/nintendeals/sources/nintendo/noe/readme.md)
-* [Nintendo of Japan](/nintendeals/sources/nintendo/noj/readme.md)
-
