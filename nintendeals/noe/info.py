@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 
 import requests
@@ -6,8 +5,6 @@ from bs4 import BeautifulSoup
 
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
-
-LOG = logging.getLogger('nintendeals.eu')
 
 DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
 
@@ -101,24 +98,7 @@ def _scrap(url: str) -> Game:
 
 
 def game_info(nsuid: str) -> Game:
-    """
-    Given the nsuid of a nintendo game, it will return
-    a game object with all the information from nintendo of europe.
-
-    Parameters
-    ----------
-    nsuid: str
-        nsuid of the game
-
-    Returns
-    -------
-    nintendeals.classes.games.Game
-        information of the game
-    """
     url = DETAIL_URL.format(nsuid=nsuid)
 
-    LOG.info(f"Getting info of game from {url}")
+    print(f"Getting info of game from {url}")
     return _scrap(url)
-
-
-game_info("70010000003481")

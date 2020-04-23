@@ -1,5 +1,4 @@
 import json
-import logging
 from datetime import datetime
 
 import requests
@@ -7,8 +6,6 @@ from bs4 import BeautifulSoup
 
 from nintendeals.classes.games import Game
 from nintendeals.constants import JP, PLATFORMS
-
-LOG = logging.getLogger('nintendeals.jp')
 
 DETAIL_URL = "https://ec.nintendo.com/JP/jp/titles/{nsuid}"
 EXTRA_INFO_URL = "https://search.nintendo.jp/nintendo_soft/search.json?q={nsuid}"
@@ -92,21 +89,7 @@ def _scrap(url: str) -> Game:
 
 
 def game_info(nsuid: str) -> Game:
-    """
-    Given the nsuid of a nintendo game, it will return
-    a game object with all the information from nintendo of japan.
-
-    Parameters
-    ----------
-    nsuid: str
-        nsuid of the game
-
-    Returns
-    -------
-    nintendeals.classes.games.Game
-        information of the game
-    """
     url = DETAIL_URL.format(nsuid=nsuid)
 
-    LOG.info(f"Getting info of game from {url}")
+    print(f"Getting info of game from {url}")
     return _scrap(url)

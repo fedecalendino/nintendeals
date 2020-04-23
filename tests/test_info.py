@@ -1,5 +1,6 @@
-import ddt
 from unittest import TestCase
+
+import ddt
 
 from nintendeals import noa, noe, noj
 

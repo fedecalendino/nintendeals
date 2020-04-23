@@ -1,4 +1,3 @@
-import logging
 import re
 from datetime import datetime
 
@@ -9,8 +8,6 @@ from nintendeals.classes.games import Game
 from nintendeals.constants import NA, PLATFORMS
 from nintendeals.noa.external import algolia
 from nintendeals.util import unquote
-
-LOG = logging.getLogger('nintendeals.na')
 
 DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}/"
 
@@ -95,25 +92,11 @@ def _scrap(url: str) -> Game:
 
 
 def game_info(nsuid: str) -> Game:
-    """
-    Given the nsuid of a nintendo game, it will return
-    a game object with all the information from nintendo of america.
-
-    Parameters
-    ----------
-    nsuid: str
-        nsuid of the game
-
-    Returns
-    -------
-    nintendeals.classes.games.Game
-        information of the game
-    """
-    LOG.info(f"Fetching slug for {nsuid} in algolia")
+    print(f"Fetching slug for {nsuid} in algolia")
     slug = algolia.find_by_nsuid(nsuid)
-    LOG.info(f"Found slug {slug} for {nsuid}")
+    print(f"Found slug {slug} for {nsuid}")
 
     url = DETAIL_URL.format(slug=slug)
 
-    LOG.info(f"Getting info of game from {url}")
+    print(f"Getting info of game from {url}")
     return _scrap(url)

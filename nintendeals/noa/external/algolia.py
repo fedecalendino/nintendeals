@@ -1,6 +1,8 @@
 import json
-from nintendeals.constants import SWITCH
+
 from algoliasearch.search_client import SearchClient
+
+from nintendeals.constants import SWITCH
 
 APP_ID = "U3B6GR4UA3"
 API_KEY = "9a20c93440cf63cf1a7008d75f7438bf"
@@ -41,7 +43,6 @@ def search_games(platform: str) -> json:
 
     options = {
         "allowTyposOnNumericTokens": False,
-        "attributesToRetrieve": ["title", "nsuid"],
         "facetFilters": [
             f"platform:{platform}"
         ],
@@ -60,10 +61,4 @@ def search_games(platform: str) -> json:
         if not games:
             break
 
-        for game in games:
-            nsuid = game.get("nsuid")
-
-            if not nsuid:
-                continue
-
-            yield nsuid, game["title"]
+        yield from games
