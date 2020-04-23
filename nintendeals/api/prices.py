@@ -1,17 +1,20 @@
-from typing import Dict, List, Iterable
+from typing import Dict, Iterable, Iterator, List, Tuple
 
 import requests
 from dateutil.parser import parse as date_parser
-from pycountry import countries
 
+from nintendeals import validate
 from nintendeals.classes.prices import Price
 
 PRICE_API = 'https://api.ec.nintendo.com/v1/price?country={country}&lang=en&ids={ids}'
 
 
 def _fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
-    assert countries.get(alpha_2=country)
-    assert 51 > len(nsuids) > 0
+    if not 51 > len(nsuids) > 0:
+        raise ValueError("The amount of nsuids must between 1 and 50.")
+
+    validate.alpha_2(country)
+    list(map(validate.nsuid_format, nsuids))
 
     print(f"Fetching prices on {country} for {len(nsuids)} nsuids")
 
@@ -55,18 +58,39 @@ def _fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
     return prices
 
 
-def get_prices(country: str, games: Iterable["Game"]) -> Dict[str, Price]:
-    assert country
-    assert games
+def get_prices(country: str, games: Iterable["Game"]) -> Iterator[Tuple[str, Price]]:
+    """
+        Given a valid `country` code and a list of `games` (each with a nsuid)
+    it will retrieve the current pricing of those game in that country.
 
-    size = 50
+    Parameters
+    ----------
+    country: str
+        Valid alpha-2 code of the country.
+    games: List[nintendeals.classes.games.Game]
+        Games to get their pricing.
+
+    Yields
+    -------
+    Tuple[str, nintendeals.classes.prices.Price]
+        Dictionary containing the nsuids as keys and each pricing as value.
+
+    Raises
+    -------
+    nintendeals.exceptions.InvalidAlpha2Code
+        The `country` wasn't a valid alpha-2 code.
+    nintendeals.exceptions.InvalidNsuidFormat
+        Any of the `games` had an nsuid that was either none or invalid.
+    """
+    validate.alpha_2(country)
+    games = filter(lambda g: g.nsuid, games)
 
     prices = {}
     chunk = []
     for game in games:
         chunk.append(game)
 
-        if len(chunk) == size:
+        if len(chunk) == 50:
             nsuids = [game.nsuid for game in chunk if game.nsuid]
             prices.update(_fetch_prices(country, nsuids))
 
@@ -80,7 +104,30 @@ def get_prices(country: str, games: Iterable["Game"]) -> Dict[str, Price]:
 
 
 def get_price(country: str, game: "Game") -> Price:
-    assert country
-    assert game.nsuid
+    """
+        Given a valid `country` code and a `game` (with a nsuid) it will
+    retrieve the current pricing of that game in that country.
+
+    Parameters
+    ----------
+    country: str
+        Valid alpha-2 code of the country.
+    game
+        Game to get its pricing.
+
+    Returns
+    -------
+    nintendeals.classes.prices.Price
+        Pricing of the game in the indicated country.
+
+    Raises
+    -------
+    nintendeals.exceptions.InvalidAlpha2Code
+        The `country` wasn't a valid alpha-2 code.
+    nintendeals.exceptions.InvalidNsuidFormat
+        The nsuid of the `game` was either none or invalid.
+    """
+    validate.alpha_2(country)
+    validate.nsuid_format(game.nsuid)
 
     return _fetch_prices(country, [game.nsuid]).get(game.nsuid)

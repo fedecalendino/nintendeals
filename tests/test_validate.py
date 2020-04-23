@@ -3,7 +3,7 @@ from unittest import TestCase
 import ddt
 
 from nintendeals import validate
-from nintendeals.exceptions import InvalidAlpha2Code, InvalidNsuidFormat
+from nintendeals import exceptions
 
 
 @ddt.ddt
@@ -22,7 +22,7 @@ class TestValidate(TestCase):
             validate.alpha_2(string)
             return
 
-        with self.assertRaises(InvalidAlpha2Code):
+        with self.assertRaises(exceptions.InvalidAlpha2Code):
             validate.alpha_2(string)
 
     @ddt.data(
@@ -40,5 +40,34 @@ class TestValidate(TestCase):
             validate.nsuid_format(string)
             return
 
-        with self.assertRaises(InvalidNsuidFormat):
+        with self.assertRaises(exceptions.InvalidNsuidFormat):
             validate.nsuid_format(string)
+
+    @ddt.data(
+        ("NA", True),
+        ("EU", True),
+        ("JP", True),
+        ("AS", False),
+        ("LA", False),
+    )
+    @ddt.unpack
+    def test_nintendo_region(self, string, is_valid):
+        if is_valid:
+            validate.nintendo_region(string)
+            return
+
+        with self.assertRaises(exceptions.InvalidRegion):
+            validate.nintendo_region(string)
+
+    @ddt.data(
+        ("Nintendo Switch", True),
+        ("Nintendo 3DS", False),
+    )
+    @ddt.unpack
+    def test_supported_platform(self, string, is_valid):
+        if is_valid:
+            validate.supported_platform(string)
+            return
+
+        with self.assertRaises(exceptions.UnsupportedPlaform):
+            validate.supported_platform(string)
