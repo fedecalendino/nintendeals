@@ -13,7 +13,14 @@ DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}/"
 
 
 def _unquote(string: str) -> str:
-    return parse.unquote(string.replace("\\u00", "%"))
+    return parse.unquote(
+        string
+        .replace("\\u00", "%")
+        .replace("\\x27", "'")
+        .replace("\\/", "/")
+        .replace(" : ", ": ")
+        .strip()
+    )
 
 
 def _aria_label(soup, label, tag="a"):
@@ -35,7 +42,12 @@ def _scrap(url: str) -> Game:
     response = requests.get(url, allow_redirects=True)
     soup = BeautifulSoup(response.text, features="html.parser")
 
-    script = next(filter(lambda s: "window.game" in str(s), soup.find_all('script')))
+    scripts = list(filter(lambda s: "window.game" in str(s), soup.find_all('script')))
+
+    if not scripts:
+        return None
+
+    script = scripts[0]
     lines = [line.strip().replace("\",", "") for line in str(script).split("\n") if ':' in line]
     data = dict(map(lambda line: line.split(': "'), lines))
 
@@ -44,7 +56,7 @@ def _scrap(url: str) -> Game:
     game = Game(
         nsuid=data["nsuid"],
         product_code=data["productCode"],
-        title=data["title"],
+        title=_unquote(data["title"]),
         region=NA,
         platform=PLATFORMS[platform],
     )
@@ -71,8 +83,10 @@ def _scrap(url: str) -> Game:
         pass
 
     # Game size (in MBs)
-    game.size, unit = _itemprop(soup, "romSize").split(" ")
-    game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
+    game.size = _itemprop(soup, "romSize")
+    if game.size:
+        game.size, unit = game.size.split(" ")
+        game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
 
     # Other properties
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None

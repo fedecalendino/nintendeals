@@ -13,12 +13,12 @@ def _sibling(soup: BeautifulSoup, string: str, tag: str = "p") -> str:
     p = soup.find(tag, class_="game_info_title", string=string)
 
     if not p:
-        return ""
+        return None
 
     sib = p.find_next_sibling("p")
 
     if not sib:
-        return ""
+        return None
 
     return sib.text
 
@@ -27,7 +27,12 @@ def _scrap(url: str) -> Game:
     response = requests.get(url, allow_redirects=True)
     soup = BeautifulSoup(response.text, features="html.parser")
 
-    script = next(filter(lambda s: "var nsuids = [" in str(s), soup.find_all('script')))
+    scripts = list(filter(lambda s: "var nsuids = [" in str(s), soup.find_all('script')))
+
+    if not scripts:
+        return None
+
+    script = scripts[0]
     lines = [line.strip().replace("\",", "") for line in str(script).split("\n") if ':' in line]
     data = {}
 
@@ -72,8 +77,10 @@ def _scrap(url: str) -> Game:
         pass
 
     # Game size (in MBs)
-    game.size, unit = _sibling(soup, "Download size").split(" ")
-    game.size = round(float(game.size))
+    game.size = _sibling(soup, "Download size")
+    if game.size:
+        game.size, unit = game.size.split(" ")
+        game.size = round(float(game.size))
 
     # Other properties
     features = _sibling(soup, string="Features")

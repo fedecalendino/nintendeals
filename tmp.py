@@ -1,7 +1,8 @@
-from nintendeals.api import prices
-from nintendeals.noa import listing
+from nintendeals import noe as nin
 
-games = list(listing.list_games("Nintendo Switch"))
-prices = prices.get_prices("US", games)
+for game in nin.list_games("Nintendo Switch"):
+    print(game.nsuid)
+    all_info = nin.game_info(game.nsuid)
 
-print("")
+    if all_info:
+        print(all_info.title)
