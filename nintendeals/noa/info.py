@@ -1,4 +1,3 @@
-# TODO document
 import re
 from datetime import datetime
 from urllib import parse
@@ -97,6 +96,20 @@ def _scrap(url: str) -> Game:
 
 
 def game_info(nsuid: str) -> Game:
+    """
+        Given a valid nsuid for a game it will retrieve the information
+    that Nintendo of America provides for it.
+
+    Parameters
+    ----------
+    nsuid: str
+        Valid nsuid of a nintendo game.
+
+    Returns
+    -------
+    classes.nintendeals.games.Game:
+        Information provided by NoA of the game with the given nsuid.
+    """
     print(f"Fetching slug for {nsuid} in algolia")
     slug = algolia.find_by_nsuid(nsuid)
     print(f"Found slug {slug} for {nsuid}")

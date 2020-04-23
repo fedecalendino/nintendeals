@@ -1,4 +1,3 @@
-# TODO document
 import json
 from datetime import datetime
 
@@ -90,6 +89,20 @@ def _scrap(url: str) -> Game:
 
 
 def game_info(nsuid: str) -> Game:
+    """
+        Given a valid nsuid for a game it will retrieve the information
+    that Nintendo of Japan provides for it.
+
+    Parameters
+    ----------
+    nsuid: str
+        Valid nsuid of a nintendo game.
+
+    Returns
+    -------
+    classes.nintendeals.games.Game:
+        Information provided by NoJ of the game with the given nsuid.
+    """
     url = DETAIL_URL.format(nsuid=nsuid)
 
     print(f"Getting info of game from {url}")
