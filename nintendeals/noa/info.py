@@ -1,6 +1,7 @@
 # TODO document
 import re
 from datetime import datetime
+from urllib import parse
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,24 +9,27 @@ from bs4 import BeautifulSoup
 from nintendeals.classes.games import Game
 from nintendeals.constants import NA, PLATFORMS
 from nintendeals.noa.external import algolia
-from nintendeals.util import unquote
 
 DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}/"
 
 
+def _unquote(string: str) -> str:
+    return parse.unquote(string.replace("\\u00", "%"))
+
+
 def _aria_label(soup, label, tag="a"):
     tag = soup.find(tag, {"aria-label": label})
-    return tag and unquote(tag.text.strip())
+    return tag and _unquote(tag.text.strip())
 
 
 def _class(soup, cl, tag="dd"):
     tag = soup.find(tag, {"class": cl})
-    return tag and unquote(tag.text.strip())
+    return tag and _unquote(tag.text.strip())
 
 
 def _itemprop(soup, prop, tag="dd"):
     tag = soup.find(tag, {"itemprop": prop})
-    return tag and unquote(tag.text.strip())
+    return tag and _unquote(tag.text.strip())
 
 
 def _scrap(url: str) -> Game:
@@ -47,7 +51,7 @@ def _scrap(url: str) -> Game:
     )
 
     # Genres
-    game.genres = unquote(data["genre"]).split(",")
+    game.genres = _unquote(data["genre"]).split(",")
     game.genres.sort()
 
     # Languages
@@ -79,9 +83,9 @@ def _scrap(url: str) -> Game:
     game.free_to_play = data["msrp"] == '0'
     game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
     game.online_play = _aria_label(soup, "online-play") is not None
-    game.publisher = unquote(data["publisher"])
+    game.publisher = _unquote(data["publisher"])
     game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
-    game.na_slug = unquote(data["slug"])
+    game.na_slug = _unquote(data["slug"])
 
     # Unknown
     game.amiibo = None
