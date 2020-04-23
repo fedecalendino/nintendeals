@@ -136,9 +136,7 @@ class TestDetails(TestCase):
     )
     @ddt.unpack
     def test_noa(self, nsuid, title, checker):
-        nintendo = noa
-
-        game = nintendo.game_info(nsuid)
+        game = noa.game_info(nsuid)
         self.assertEqual(title, game.title)
         checker(self, game)
 
@@ -150,10 +148,10 @@ class TestDetails(TestCase):
     )
     @ddt.unpack
     def test_noe(self, nsuid, title, checker):
-        nintendo = noe
+        game = noe.game_info(nsuid)
 
-        game = nintendo.game_info(nsuid)
         self.assertEqual(title, game.title)
+
         checker(self, game)
 
     @ddt.data(
@@ -164,8 +162,8 @@ class TestDetails(TestCase):
     )
     @ddt.unpack
     def test_noj(self, nsuid, title, checker):
-        nintendo = noj
+        game = noj.game_info(nsuid)
 
-        game = nintendo.game_info(nsuid)
         self.assertEqual(title, game.title)
+
         checker(self, game)
