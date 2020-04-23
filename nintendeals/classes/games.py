@@ -1,4 +1,3 @@
-# TODO document
 from datetime import datetime
 from typing import List
 
@@ -58,6 +57,23 @@ class Game:
         return self.product_code[-5:-1] if self.product_code else None
 
     def url(self, country: str, lang: str = "en") -> str:
+        """
+            Given a valid `country` code and an optional language it
+        will provide a url that will redirect to this game's eShop page.
+
+        Parameters
+        ----------
+        country: str
+            Valid country code.
+        lang: str (default: "en")
+            Valid iso-code for language.
+
+        Returns
+        -------
+        str
+            URL for the eShop of the game.
+
+        """
         if not self.nsuid:
             return None
 
@@ -71,6 +87,21 @@ class Game:
         )
 
     def price(self, country: str) -> Price:
+        """
+            Using the price API it will retrieve the pricing
+        of the game in the given country. It will only work if
+        the country is is under the region of the game.
+
+        Parameters
+        ----------
+        country: str
+            Valid country code.
+
+        Returns
+        -------
+        nintendeals.classes.prices.Price
+            Pricing of this game in the given country.
+        """
         return get_price(country, self)
 
     def __repr__(self):
