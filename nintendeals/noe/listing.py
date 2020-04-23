@@ -15,6 +15,20 @@ SYSTEM_NAMES = {
 
 
 def list_games(platform: str) -> Iterator[Game]:
+    """
+        Given a supported platform it will provide an iterator
+    of all games found in the listing service Nintendo of Europe.
+
+    Parameters
+    ----------
+    platform: str
+        Valid nintendo platform.
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Partial information of a game provided by NoE.
+    """
     assert platform in SYSTEM_NAMES
     system_name = SYSTEM_NAMES[platform]
 

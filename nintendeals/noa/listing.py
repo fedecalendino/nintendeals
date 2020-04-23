@@ -9,6 +9,21 @@ from nintendeals.noa.external.algolia import search_games
 
 
 def list_games(platform: str) -> Iterator[Game]:
+    """
+        Given a supported platform it will provide an iterator
+    of all games found in the listing service of Nintendo of America.
+        * Only games with nsuids will be available.
+
+    Parameters
+    ----------
+    platform: str
+        Valid nintendo platform.
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Partial information of a game provided by NoA.
+    """
     for data in search_games(platform=platform):
         game = Game(
             title=data["title"],
