@@ -1,3 +1,4 @@
+# TODO document
 import json
 
 from algoliasearch.search_client import SearchClient

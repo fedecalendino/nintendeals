@@ -1,3 +1,4 @@
+# TODO document
 from urllib import parse
 
 
