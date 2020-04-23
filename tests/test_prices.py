@@ -2,7 +2,6 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals.api import prices
 from nintendeals.classes.games import Game
 from nintendeals.constants import SWITCH, NA, EU, JP
 
