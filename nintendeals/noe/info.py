@@ -114,5 +114,4 @@ def game_info(nsuid: str) -> Game:
     """
     url = DETAIL_URL.format(nsuid=nsuid)
 
-    print(f"Getting info of game from {url}")
     return _scrap(url)

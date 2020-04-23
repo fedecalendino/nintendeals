@@ -16,8 +16,6 @@ def _fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
     validate.alpha_2(country)
     list(map(validate.nsuid_format, nsuids))
 
-    print(f"Fetching prices on {country} for {len(nsuids)} nsuids")
-
     url = PRICE_API.format(country=country, ids=','.join(nsuids))
     response = requests.get(url)
     json = response.json()
@@ -100,7 +98,7 @@ def get_prices(country: str, games: Iterable["Game"]) -> Iterator[Tuple[str, Pri
         nsuids = [game.nsuid for game in chunk if game.nsuid]
         prices.update(_fetch_prices(country, nsuids))
 
-    return prices
+    yield from prices.items()
 
 
 def get_price(country: str, game: "Game") -> Price:

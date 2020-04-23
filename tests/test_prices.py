@@ -3,8 +3,9 @@ from unittest import TestCase
 import ddt
 
 from nintendeals.classes.games import Game
+from nintendeals.api import prices
 from nintendeals.constants import SWITCH, NA, EU, JP
-
+from nintendeals import noa
 
 @ddt.ddt
 class TestPrices(TestCase):
@@ -34,3 +35,20 @@ class TestPrices(TestCase):
         self.assertEqual(currency, price.currency)
         self.assertEqual(value, price.value)
 
+    def test_get_prices(self):
+        nsuids = [
+            "70010000000025",  # BotW
+            "70010000001130",  # SMO
+            "70010000000529",  # S2
+            "70010000012332",  # SSBU
+        ]
+
+        games = map(noa.game_info, nsuids)
+
+        for nsuid, price in prices.get_prices("US", games):
+            self.assertIn(nsuid, nsuids)
+            self.assertIn(price.nsuid, nsuids)
+
+            self.assertEqual("US", price.country)
+            self.assertEqual("USD", price.currency)
+            self.assertEqual(59.99, price.value)

@@ -60,7 +60,7 @@ def _scrap(url: str) -> Game:
     # Players
     try:
         game.players = int(re.sub(r"[^\d]*", "", _class(soup, "num-of-players")))
-    except ValueError:
+    except (ValueError, TypeError):
         game.players = 0
 
     # Release date
@@ -110,11 +110,7 @@ def game_info(nsuid: str) -> Game:
     classes.nintendeals.games.Game:
         Information provided by NoA of the game with the given nsuid.
     """
-    print(f"Fetching slug for {nsuid} in algolia")
     slug = algolia.find_by_nsuid(nsuid)
-    print(f"Found slug {slug} for {nsuid}")
-
     url = DETAIL_URL.format(slug=slug)
 
-    print(f"Getting info of game from {url}")
     return _scrap(url)
