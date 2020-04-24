@@ -66,7 +66,7 @@ def _scrap(url: str) -> Game:
     try:
         text = _sibling(soup, "Players")
         game.players = max(map(int, text.split(" - ")))
-    except ValueError:
+    except (AttributeError, ValueError):
         game.players = 0
 
     # Release date
