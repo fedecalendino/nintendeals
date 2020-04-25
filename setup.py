@@ -9,7 +9,7 @@ with open(path.join(this_directory, "readme.md"), encoding="utf-8") as f:
 
 setup(
     name="nintendeals",
-    version="0.3",
+    version="1.0",
     url="https://github.com/federicocalendino/nintendeals",
     license="MIT",
     description="Scrapping tools for Nintendo games and prices on NA, EU and JP.",
@@ -26,7 +26,14 @@ setup(
         "nintendeals.noe",
         "nintendeals.noj",
     ],
-    install_requires=["unidecode"],
+    install_requires=[
+        "algoliasearch",
+        "beautifulsoup4",
+        "pycountry",
+        "python-dateutil",
+        "requests",
+        "xmltodict",
+    ],
     keywords=[
         "nintendo",
         "eshop",
