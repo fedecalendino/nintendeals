@@ -12,7 +12,7 @@ setup(
     version="1.0",
     url="https://github.com/federicocalendino/nintendeals",
     license="MIT",
-    description="Scrapping tools for Nintendo games and prices on NA, EU and JP.",
+    description="Scraping tools for Nintendo games and prices on NA, EU and JP.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Federico Calendino",
