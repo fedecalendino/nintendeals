@@ -10,7 +10,7 @@
 -----
 
 Named after the my old [reddit bot](https://reddit.com/u/nintendeals), nintendeals is now a library with 
-all the scrappers and integrations of nintendo services that I used.
+all the scrapers and integrations of nintendo services that I used.
 
 
 ## Terminology
@@ -226,4 +226,4 @@ None
 * Improve logging usage to indicate api calls or eshop websites requests
 * Keep working on documentation
 * Improve performance
-* Lazy attributes on Game class to reduce scrapping.
+* Lazy attributes on Game class to reduce scraping.
