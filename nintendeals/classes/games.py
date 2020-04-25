@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import List
 
-from pycountry import countries
-
 from nintendeals.api.prices import get_price
 from nintendeals.classes.prices import Price
 from nintendeals.constants import PLATFORMS, REGIONS
+from nintendeals import validate
 
 ESHOP_URL = 'https://ec.nintendo.com/{country}/{lang}/titles/{nsuid}'
 
@@ -73,15 +72,18 @@ class Game:
         str
             URL for the eShop of the game.
 
+        Raises
+        -------
+        nintendeals.exceptions.InvalidAlpha2Code
+            The `country` wasn't a valid alpha-2 code.
         """
         if not self.nsuid:
             return None
 
-        country = countries.get(alpha_2=country)
-        assert country
+        validate.alpha_2(country)
 
         return ESHOP_URL.format(
-            country=country.alpha_2,
+            country=country,
             lang=lang,
             nsuid=self.nsuid
         )

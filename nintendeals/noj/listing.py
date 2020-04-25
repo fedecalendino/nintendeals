@@ -17,7 +17,20 @@ FILENAMES = {
 def list_games(platform: str) -> Iterator[Game]:
     """
         Given a supported platform it will provide an iterator
-    of all games found in the listing service Nintendo of Japan.
+    of with a subset of data for all games found in the listing
+    service Nintendo of Japan.
+
+    Game data
+    ---------
+        * title: str
+        * region: str (JP)
+        * platform: str
+        * nsuid: str
+        * product_code: str
+
+        * developer: str
+        * free_to_play: bool
+        * release_date: datetime
 
     Parameters
     ----------

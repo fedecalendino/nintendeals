@@ -16,7 +16,32 @@ SYSTEM_NAMES = {
 def list_games(platform: str) -> Iterator[Game]:
     """
         Given a supported platform it will provide an iterator
-    of all games found in the listing service Nintendo of Europe.
+    of with a subset of data for all games found in the listing
+    service Nintendo of Europe.
+
+    Game data
+    ---------
+        * title: str
+        * region: str (EU)
+        * platform: str
+        * nsuid: str (optional)
+        * product_code: str (optional)
+
+        * amiibo: bool
+        * demo: bool
+        * developer: str
+        * dlc: bool
+        * free_to_play: bool
+        * game_vouchers: bool
+        * genres: List[str]
+        * languages: List[str]
+        * local_multiplayer: bool
+        * online_play: bool
+        * players: int
+        * publisher: str
+        * release_date: datetime
+        * save_data_cloud: bool
+        * voice_chat: bool
 
     Parameters
     ----------

@@ -111,8 +111,32 @@ def _scrap(url: str) -> Game:
 
 def game_info(nsuid: str) -> Game:
     """
-        Given a valid nsuid for a game it will retrieve the information
-    that Nintendo of America provides for it.
+        Given an `nsuid` valid for the American region, it will provide the
+    information of the game with that nsuid.
+
+    Game data
+    ---------
+        * title: str
+        * region: str (NAs)
+        * platform: str
+        * nsuid: str
+        * product_code: str
+
+        * demo: bool
+        * description: str
+        * developer: str
+        * dlc: bool
+        * free_to_play: bool
+        * genres: List[str]
+        * languages: List[str]
+        * na_slug: str
+        * online_play: bool
+        * players: int
+        * publisher: str
+        * release_date: datetime
+        * save_data_cloud: bool
+        * size: int
+        * game_vouchers: bool
 
     Parameters
     ----------

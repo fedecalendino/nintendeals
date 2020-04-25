@@ -10,8 +10,23 @@ from nintendeals.noa.external.algolia import search_games
 def list_games(platform: str) -> Iterator[Game]:
     """
         Given a supported platform it will provide an iterator
-    of all games found in the listing service of Nintendo of America.
-        * Only games with nsuids will be available.
+    of with a subset of data for all games found in the listing
+    service Nintendo of America.
+
+    Game data
+    ---------
+        * title: str
+        * region: str (NA)
+        * platform: str
+        * nsuid: str (optional)
+
+        * description: str
+        * free_to_play: bool
+        * genres: List[str]
+        * na_slug: str
+        * players: int
+        * publisher: str
+        * release_date : datetime
 
     Parameters
     ----------
@@ -35,7 +50,7 @@ def list_games(platform: str) -> Iterator[Game]:
         game.genres = data.get("categories", [])
 
         try:
-            release_date = data["releaseDateMask"][0].split("T")[0]
+            release_date = data["releaseDateMask"].split("T")[0]
             game.release_date = datetime.strptime(release_date, '%Y-%m-%d')
         except ValueError:
             pass

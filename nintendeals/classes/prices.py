@@ -20,6 +20,13 @@ class Price:
         self.sale_end: datetime = None
 
     @property
+    def sale_discount(self) -> float:
+        if self.sale_value is None:
+            return 0.0
+
+        return int(100 * self.sale_value / self.value)
+
+    @property
     def is_free_to_play(self) -> bool:
         return self.value == 0.0
 

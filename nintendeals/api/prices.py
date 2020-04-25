@@ -59,7 +59,7 @@ def _fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
 def get_prices(country: str, games: Iterable["Game"]) -> Iterator[Tuple[str, Price]]:
     """
         Given a valid `country` code and a list of `games` (each with a nsuid)
-    it will retrieve the current pricing of those game in that country.
+    it will retrieve the current pricing of those games for that country.
 
     Parameters
     ----------
@@ -103,8 +103,8 @@ def get_prices(country: str, games: Iterable["Game"]) -> Iterator[Tuple[str, Pri
 
 def get_price(country: str, game: "Game") -> Price:
     """
-        Given a valid `country` code and a `game` (with a nsuid) it will
-    retrieve the current pricing of that game in that country.
+        Given a valid `country` code and a `game` (with an nsuid) it will
+    retrieve the current pricing of that game for that country.
 
     Parameters
     ----------
