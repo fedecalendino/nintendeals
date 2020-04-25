@@ -1,0 +1,23 @@
+# TMP
+tmp.py
+
+# PyCharm
+.DS_Store
+.idea/
+
+# Python
+*.py[co]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+
+# Virtual Envs
+.venv/
+venv/
+
+# Testing
+.coverage
+coverage
