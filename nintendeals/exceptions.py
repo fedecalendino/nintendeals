@@ -26,6 +26,6 @@ class InvalidRegion(ValueError):
         )
 
 
-class UnsupportedPlaform(ValueError):
+class UnsupportedPlatform(ValueError):
     def __init__(self, platform: str):
         super().__init__(f"The platform {platform} is not supported.")

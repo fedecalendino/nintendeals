@@ -7,7 +7,7 @@ from nintendeals.exceptions import (
     InvalidAlpha2Code,
     InvalidNsuidFormat,
     InvalidRegion,
-    UnsupportedPlaform,
+    UnsupportedPlatform,
 )
 
 NSUID_REGEX = re.compile(r"\d001\d{10}")
@@ -92,7 +92,7 @@ def supported_platform(platform: str):
         The `platform` wasn't supported.
     """
     if platform not in PLATFORMS:
-        raise UnsupportedPlaform(platform)
+        raise UnsupportedPlatform(platform)
 
 
 def nintendo_region(region: str):
