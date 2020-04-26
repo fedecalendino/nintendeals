@@ -19,7 +19,7 @@ Before getting into any details first we need too get into the same page with a 
 
 ### Region
 
-Here we game three regions NA, EU and JP each one corresponding to Nintendo of America (NoA), Nintendo of Europe (NoE)
+Here we have three regions NA, EU and JP each one corresponding to Nintendo of America (NoA), Nintendo of Europe (NoE)
 and Nintendo of Japan (NoJ). Each of these regions have set of countries they are "in charge of":
 
 NoA:
