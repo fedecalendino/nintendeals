@@ -52,7 +52,6 @@ def _fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
 
         prices[price.nsuid] = price
 
-    print(f" * Found {found} prices and {sales} sales")
     return prices
 
 
