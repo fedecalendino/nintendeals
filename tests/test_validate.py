@@ -69,5 +69,5 @@ class TestValidate(TestCase):
             validate.supported_platform(string)
             return
 
-        with self.assertRaises(exceptions.UnsupportedPlaform):
+        with self.assertRaises(exceptions.UnsupportedPlatform):
             validate.supported_platform(string)
