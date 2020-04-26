@@ -3,6 +3,7 @@ import json
 from algoliasearch.search_client import SearchClient
 
 from nintendeals.constants import SWITCH
+from nintendeals.exceptions import UnsupportedPlatform
 
 APP_ID = "U3B6GR4UA3"
 API_KEY = "9a20c93440cf63cf1a7008d75f7438bf"
@@ -38,8 +39,11 @@ def find_by_nsuid(nsuid: str) -> str:
 
 
 def search_games(platform: str) -> json:
-    assert platform in PLATFORM_CODES
-    platform_code = PLATFORM_CODES[platform]
+    try:
+        platform_code = PLATFORM_CODES[platform]
+
+    except KeyError:
+        raise UnsupportedPlatform(platform)
 
     options = {
         "allowTyposOnNumericTokens": False,

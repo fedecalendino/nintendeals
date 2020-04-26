@@ -5,6 +5,7 @@ import requests
 import xmltodict
 
 from nintendeals.classes.games import Game
+from nintendeals.exceptions import UnsupportedPlatform
 from nintendeals.constants import JP, SWITCH
 
 LISTING_URL = 'https://www.nintendo.co.jp/data/software/xml/{platform}.xml'
@@ -42,7 +43,7 @@ def list_games(platform: str) -> Iterator[Game]:
     Iterator[classes.nintendeals.games.Game]:
         Partial information of a game provided by NoJ.
     """
-    assert platform in FILENAMES
+    if not platform in FILENAMES: raise UnsupportedPlatform(platform)
 
     url = LISTING_URL.format(platform=FILENAMES.get(platform))
     response = requests.get(url)
