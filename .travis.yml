@@ -6,7 +6,7 @@ python: 3.8
 
 addons:
   sonarcloud:
-    organization: "federicocalendino"
+    organization: "fedecalendino"
 
 # Install the codecov pip dependency
 install:

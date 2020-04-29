@@ -9,14 +9,14 @@ with open(path.join(this_directory, "readme.md"), encoding="utf-8") as f:
 
 setup(
     name="nintendeals",
-    version="1.0",
-    url="https://github.com/federicocalendino/nintendeals",
+    version="1.1",
+    url="https://github.com/fedecalendino/nintendeals",
     license="MIT",
     description="Scrapping tools for Nintendo games and prices on NA, EU and JP.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Federico Calendino",
-    author_email="federicocalendino@gmail.com",
+    author_email="federico@calendino.com",
     packages=[
         "nintendeals",
         "nintendeals.api",

@@ -1,10 +1,10 @@
-# nintendeals
+ # nintendeals
 > "nintendeals was a bot, he loved learning and deals on nintendo's eshop." **LetsFunHans** 💬️
 
 [![Version](https://img.shields.io/pypi/v/nintendeals?logo=pypi)](https://pypi.org/project/nintendeals)
-[![Build Status](https://img.shields.io/travis/federicocalendino/nintendeals/master?logo=travis)](https://travis-ci.com/federicocalendino/nintendeals)
-[![Quality Gate Status](https://img.shields.io/sonar/alert_status/federicocalendino_nintendeals?logo=sonarcloud&server=https://sonarcloud.io)](https://sonarcloud.io/dashboard?id=federicocalendino_nintendeals)
-[![CodeCoverage](https://img.shields.io/codecov/c/gh/federicocalendino/nintendeals?logo=codecov)](https://codecov.io/gh/federicocalendino/nintendeals)
+[![Build Status](https://img.shields.io/travis/fedecalendino/nintendeals/master?logo=travis)](https://travis-ci.com/fedecalendino/nintendeals)
+[![Quality Gate Status](https://img.shields.io/sonar/alert_status/fedecalendino_nintendeals?logo=sonarcloud&server=https://sonarcloud.io)](https://sonarcloud.io/dashboard?id=fedecalendino_nintendeals)
+[![CodeCoverage](https://img.shields.io/codecov/c/gh/fedecalendino/nintendeals?logo=codecov)](https://codecov.io/gh/fedecalendino/nintendeals)
 
 
 -----
@@ -55,7 +55,7 @@ Taking Splatoon 2 as an example, we have these 3 product codes for it (one per r
 * "HAC**AAB6**A" (JP)
 
 The difference with the nsuid is that (as you can see bolded) the product code has a constant between all regions, 
-and this is what I decided to call [unique_id](https://github.com/federicocalendino/nintendeals/blob/master/nintendeals/classes/games.py#L55) 
+and this is what I decided to call [unique_id](https://github.com/fedecalendino/nintendeals/blob/master/nintendeals/classes/games.py#L55) 
 and it is what we can you to join a game across all regions.
 
 You can also see this code in the front of your Nintendo Switch [cartridge](https://media.karousell.com/media/photos/products/2019/08/17/splatoon_2_cartridge_only_1566040350_4f38e061_progressive.jpg).
@@ -68,7 +68,7 @@ and Listing, but Pricing is the same for all as it only requires a country and a
 ### Listing
 
 Even thought there are different version for each region, they all work in the same way. Given a supported 
-platform ([for this library](https://github.com/federicocalendino/nintendeals/blob/master/nintendeals/constants.py#L15))
+platform ([for this library](https://github.com/fedecalendino/nintendeals/blob/master/nintendeals/constants.py#L15))
 they will retrieve a list games in the selected region (in the form of an iterator).
 
 ```python
