@@ -4,6 +4,7 @@ from typing import List
 from nintendeals.api.prices import get_price
 from nintendeals.classes.prices import Price
 from nintendeals.constants import PLATFORMS, REGIONS
+from nintendeals.exceptions import InvalidTitle, InvalidRegion, UnsupportedPlatform
 from nintendeals import validate
 
 ESHOP_URL = 'https://ec.nintendo.com/{country}/{lang}/titles/{nsuid}'
@@ -19,9 +20,9 @@ class Game:
         nsuid: str = None,
         product_code: str = None,
     ):
-        assert title
-        assert region in REGIONS
-        assert platform in PLATFORMS
+        if not title: raise InvalidTitle(title)
+        if not region in REGIONS: raise InvalidRegion(region)
+        if not platform in PLATFORMS: raise UnsupportedPlatform(platform)
 
         self.title: str = title
         self.region: str = region

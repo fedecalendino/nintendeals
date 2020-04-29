@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from nintendeals.classes.games import Game
+from nintendeals.exceptions import NsuidMismatch
 from nintendeals.constants import JP, PLATFORMS
 
 DETAIL_URL = "https://ec.nintendo.com/JP/jp/titles/{nsuid}"
@@ -29,7 +30,7 @@ def _scrap(url: str) -> Game:
     nsuid = str(data["id"])
     extra_info = _get_extra_info(nsuid)
 
-    assert extra_info["nsuid"] == nsuid
+    if extra_info["nsuid"] != nsuid: raise NsuidMismatch((nsuid, extra_info["nsuid"]))
 
     platform = data["platform"]["name"]
     product_code = f"{extra_info['hard'].replace('1_', '')}{extra_info['icode']}"
