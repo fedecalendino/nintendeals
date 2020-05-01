@@ -62,8 +62,8 @@ You can also see this code in the front of your Nintendo Switch [cartridge](http
 
 ## Services
 
-This library provides three types of services: Info, Listing and Pricing. Each region has a different version of Info 
-and Listing, but Pricing is the same for all as it only requires a country and an nsuid.
+This library provides three types of services: Info, Listing, Searching and Pricing. Each region has a different 
+version of Info, Listing and Searching, but Pricing is the same for all as it only requires a country and an nsuid.
 
 ### Listing
 
@@ -74,7 +74,7 @@ they will retrieve a list games in the selected region (in the form of an iterat
 ```python
 from nintendeals import noa
 
-for game in noa.list_games("Nintendo Switch"):
+for game in noa.list_switch_games():
     print(game.title, "/", game.nsuid)
 ```
 
@@ -89,7 +89,7 @@ for game in noa.list_games("Nintendo Switch"):
 ```python
 from nintendeals import noe
 
-for game in noe.list_games("Nintendo Switch"):
+for game in noe.list_switch_games():
     print(game.title, "/", game.nsuid)
 ```
 
@@ -100,6 +100,44 @@ for game in noe.list_games("Nintendo Switch"):
 >> Resident Evil 0 / 70010000012848
 >> 64.0 / 70010000020867
 ```
+
+### Searching
+
+Built on top of the listing services, these provide a simple way to search for games by title or release_date:
+
+```python
+from nintendeals import noa
+
+for game in noa.search_switch_games(title="Zelda"):
+    print(game.title, "/", game.nsuid)
+```
+
+```text
+>>> The Legend of Zelda: Breath of the Wild / 70010000000025
+>>> The Legend of Zelda: Breath of the Wild - Master Edition / None
+>>> The Legend of Zelda: Breath of the Wild - Special Edition / None
+>>> The Legend of Zelda: Breath of the Wild Explorer's Edition / None
+>>> The Legend of Zelda: Breath of the Wild: Starter Pack / None
+>>> The Legend of Zelda: Link's Awakening / 70010000020033
+>>> The Legend of Zelda: Link's Awakening: Dreamer Edition / None
+>>> Cadence of Hyrule - Crypt of the NecroDancer Featuring the Legend of Zelda / 70010000021364
+```
+
+```python
+from datetime import datetime
+from nintendeals import noe
+
+for game in noe.search_switch_games(
+        title="Hollow Knight",
+        release_date_to=datetime(2018, 12, 31)
+):
+    print(game.title, "/", game.nsuid)
+```
+
+```text
+>> Hollow Knight / 70010000003207
+```
+
 
 ### Info
 
