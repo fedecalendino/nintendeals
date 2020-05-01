@@ -5,46 +5,16 @@ import requests
 import xmltodict
 
 from nintendeals.classes.games import Game
-from nintendeals.exceptions import UnsupportedPlatform
 from nintendeals.constants import JP, SWITCH
 
-LISTING_URL = 'https://www.nintendo.co.jp/data/software/xml/{platform}.xml'
+LISTING_URL = "https://www.nintendo.co.jp/data/software/xml/{platform}.xml"
 
 FILENAMES = {
     SWITCH: "switch",
 }
 
 
-def list_games(platform: str) -> Iterator[Game]:
-    """
-        Given a supported platform it will provide an iterator
-    of with a subset of data for all games found in the listing
-    service Nintendo of Japan.
-
-    Game data
-    ---------
-        * title: str
-        * region: str (JP)
-        * platform: str
-        * nsuid: str
-        * product_code: str
-
-        * developer: str
-        * free_to_play: bool
-        * release_date: datetime
-
-    Parameters
-    ----------
-    platform: str
-        Valid nintendo platform.
-
-    Returns
-    -------
-    Iterator[classes.nintendeals.games.Game]:
-        Partial information of a game provided by NoJ.
-    """
-    if not platform in FILENAMES: raise UnsupportedPlatform(platform)
-
+def _list_games(platform: str) -> Iterator[Game]:
     url = LISTING_URL.format(platform=FILENAMES.get(platform))
     response = requests.get(url)
 
@@ -64,7 +34,32 @@ def list_games(platform: str) -> Iterator[Game]:
 
         try:
             game.release_date = datetime.strptime(data.get('SalesDate'), '%Y.%m.%d')
-        except:
-            return None
+        except (ValueError, TypeError):
+            game.release_date = None
 
         yield game
+
+
+def list_switch_games() -> Iterator[Game]:
+    """
+        List all the games in Nintendo of Japan. A subset of data
+    will be provided for each game.
+
+    Game data
+    ---------
+        * title: str
+        * nsuid: str
+        * product_code: str
+        * platform: str = "Nintendo Switch"
+        * region: str = "JP"
+
+        * developer: str
+        * free_to_play: bool
+        * release_date: datetime (may be None)
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Iterator of games from Nintendo of Japan.
+    """
+    yield from _list_games(SWITCH)

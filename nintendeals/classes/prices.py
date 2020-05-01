@@ -21,7 +21,7 @@ class Price:
 
     @property
     def sale_discount(self) -> float:
-        if self.sale_value is None:
+        if not self.on_sale:
             return 0.0
 
         return int(100 * self.sale_value / self.value)

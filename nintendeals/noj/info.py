@@ -30,7 +30,8 @@ def _scrap(url: str) -> Game:
     nsuid = str(data["id"])
     extra_info = _get_extra_info(nsuid)
 
-    if extra_info["nsuid"] != nsuid: raise NsuidMismatch((nsuid, extra_info["nsuid"]))
+    if extra_info["nsuid"] != nsuid:
+        raise NsuidMismatch((nsuid, extra_info["nsuid"]))
 
     platform = data["platform"]["name"]
     product_code = f"{extra_info['hard'].replace('1_', '')}{extra_info['icode']}"
@@ -92,15 +93,16 @@ def _scrap(url: str) -> Game:
 def game_info(nsuid: str) -> Game:
     """
         Given an `nsuid` valid for the Japan region, it will provide the
-    information of the game with that nsuid.
+    complete information of the game with that nsuid provided by Nintendo
+    of Japan.
 
     Game data
     ---------
         * title: str
-        * region: str (JP)
-        * platform: str
         * nsuid: str
         * product_code: str
+        * platform: str
+        * region: str = "JP"
 
         * amiibo: bool
         * demo: bool
@@ -131,5 +133,4 @@ def game_info(nsuid: str) -> Game:
         Information provided by NoJ of the game with the given nsuid.
     """
     url = DETAIL_URL.format(nsuid=nsuid)
-
     return _scrap(url)
