@@ -3,42 +3,12 @@ from datetime import datetime
 from typing import Iterator
 
 from nintendeals.classes.games import Game
-from nintendeals.constants import NA
-from nintendeals.noa.external.algolia import search_games
+from nintendeals.constants import NA, SWITCH
+from nintendeals.noa.external import algolia
 
 
-def list_games(platform: str) -> Iterator[Game]:
-    """
-        Given a supported platform it will provide an iterator
-    of with a subset of data for all games found in the listing
-    service Nintendo of America.
-
-    Game data
-    ---------
-        * title: str
-        * region: str (NA)
-        * platform: str
-        * nsuid: str (optional)
-
-        * description: str
-        * free_to_play: bool
-        * genres: List[str]
-        * na_slug: str
-        * players: int
-        * publisher: str
-        * release_date : datetime
-
-    Parameters
-    ----------
-    platform: str
-        Valid nintendo platform.
-
-    Returns
-    -------
-    Iterator[classes.nintendeals.games.Game]:
-        Partial information of a game provided by NoA.
-    """
-    for data in search_games(platform=platform):
+def _list_games(platform: str, **kwargs) -> Iterator[Game]:
+    for data in algolia.search_games(platform=platform, **kwargs):
         game = Game(
             title=data["title"],
             region=NA,
@@ -65,3 +35,32 @@ def list_games(platform: str) -> Iterator[Game]:
         game.publisher = data.get("publishers", [None])[0]
 
         yield game
+
+
+def list_switch_games(**kwargs) -> Iterator[Game]:
+    """
+        List all the games in Nintendo of America. A subset of data
+    will be provided for each game.
+
+    Game data
+    ---------
+        * title: str
+        * nsuid: str (may be None)
+        * product_code: str (Unavailable)
+        * platform: str = "Nintendo Switch"
+        * region: str = "NA"
+
+        * description: str
+        * free_to_play: bool
+        * genres: List[str]
+        * na_slug: str
+        * players: int
+        * publisher: str
+        * release_date : datetime
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Iterator of games from Nintendo of America.
+    """
+    yield from _list_games(SWITCH, **kwargs)

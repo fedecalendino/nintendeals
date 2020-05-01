@@ -5,11 +5,12 @@ from urllib import parse
 import requests
 from bs4 import BeautifulSoup
 
+from nintendeals import validate
 from nintendeals.classes.games import Game
 from nintendeals.constants import NA, PLATFORMS
 from nintendeals.noa.external import algolia
 
-DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}/"
+DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}"
 
 
 def _unquote(string: str) -> str:
@@ -117,10 +118,10 @@ def game_info(nsuid: str) -> Game:
     Game data
     ---------
         * title: str
-        * region: str (NAs)
-        * platform: str
         * nsuid: str
         * product_code: str
+        * platform: str
+        * region: str = "NA"
 
         * demo: bool
         * description: str
@@ -148,6 +149,8 @@ def game_info(nsuid: str) -> Game:
     classes.nintendeals.games.Game:
         Information provided by NoA of the game with the given nsuid.
     """
+    validate.nsuid_format(nsuid)
+
     slug = algolia.find_by_nsuid(nsuid)
     url = DETAIL_URL.format(slug=slug)
 
