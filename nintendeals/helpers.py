@@ -11,13 +11,13 @@ def filter_by_date(
             and not release_date:
         return False
 
-    if released_at and released_at != release_date:
+    if released_at and release_date != released_at:
         return False
 
-    if released_after and released_after > release_date:
+    if released_after and release_date < released_after:
         return False
 
-    if released_before and released_before < release_date:
+    if released_before and release_date > released_before:
         return False
 
     return True
