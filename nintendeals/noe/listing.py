@@ -4,7 +4,6 @@ from typing import Iterator
 import requests
 
 from nintendeals.classes.games import Game
-from nintendeals.exceptions import UnsupportedPlatform
 from nintendeals.constants import EU, SWITCH
 
 LISTING_URL = 'https://search.nintendo-europe.com/en/select'

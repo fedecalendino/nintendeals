@@ -2,12 +2,11 @@ import re
 
 from pycountry import countries
 
-from nintendeals.constants import PLATFORMS, REGIONS
+from nintendeals.constants import REGIONS
 from nintendeals.exceptions import (
     InvalidAlpha2Code,
     InvalidNsuidFormat,
     InvalidRegion,
-    UnsupportedPlatform,
 )
 
 NSUID_REGEX = re.compile(r"\d001\d{10}")
@@ -69,30 +68,6 @@ def nsuid_format(nsuid: str):
 
     if match is None:
         raise InvalidNsuidFormat(nsuid)
-
-
-def supported_platform(platform: str):
-    """
-        Validates that the given `platform` is supported by this library.
-
-    Parameters
-    ----------
-    platform: str
-        Platform to validate.
-
-    Examples
-    -------
-    >>> supported_platform("Nintendo Switch")  # ✅️
-    >>> supported_platform("Nintendo 3DS")     # ❌️
-    >>> supported_platform("Microsoft XBox")   # ❌️
-
-    Raises
-    -------
-    nintendeals.exceptions.UnsupportedPlaform
-        The `platform` wasn't supported.
-    """
-    if platform not in PLATFORMS:
-        raise UnsupportedPlatform(platform)
 
 
 def nintendo_region(region: str):

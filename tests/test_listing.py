@@ -17,10 +17,10 @@ class TestDetails(TestCase):
         (noj, JP),
     )
     @ddt.unpack
-    def test_listings(self, nintendo, region):
+    def test_list_switch_games(self, nintendo, region):
         count = 0
 
-        for game in nintendo.list_games(SWITCH):
+        for game in nintendo.list_switch_games():
             if count == self.LIMIT:
                 break
 
@@ -29,4 +29,3 @@ class TestDetails(TestCase):
             self.assertIsNotNone(game.title)
             self.assertEqual(region, game.region)
             self.assertEqual(SWITCH, game.platform)
-

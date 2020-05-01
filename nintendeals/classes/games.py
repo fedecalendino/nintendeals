@@ -1,11 +1,11 @@
 from datetime import datetime
 from typing import List
 
+from nintendeals import validate
 from nintendeals.api.prices import get_price
 from nintendeals.classes.prices import Price
-from nintendeals.constants import PLATFORMS, REGIONS
-from nintendeals.exceptions import InvalidTitle, InvalidRegion, UnsupportedPlatform
-from nintendeals import validate
+from nintendeals.constants import REGIONS
+from nintendeals.exceptions import InvalidTitle, InvalidRegion
 
 ESHOP_URL = 'https://ec.nintendo.com/{country}/{lang}/titles/{nsuid}'
 
@@ -20,9 +20,11 @@ class Game:
         nsuid: str = None,
         product_code: str = None,
     ):
-        if not title: raise InvalidTitle(title)
-        if not region in REGIONS: raise InvalidRegion(region)
-        if not platform in PLATFORMS: raise UnsupportedPlatform(platform)
+        if not title:
+            raise InvalidTitle(title)
+
+        if region not in REGIONS:
+            raise InvalidRegion(region)
 
         self.title: str = title
         self.region: str = region

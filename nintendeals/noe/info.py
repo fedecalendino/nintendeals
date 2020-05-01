@@ -3,9 +3,9 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
+from nintendeals import validate
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
-from nintendeals import validate
 
 DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
 

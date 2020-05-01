@@ -2,10 +2,11 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals.classes.games import Game
-from nintendeals.api import prices
-from nintendeals.constants import SWITCH, NA, EU, JP
 from nintendeals import noa
+from nintendeals.api import prices
+from nintendeals.classes.games import Game
+from nintendeals.constants import SWITCH, NA, EU, JP
+
 
 @ddt.ddt
 class TestPrices(TestCase):

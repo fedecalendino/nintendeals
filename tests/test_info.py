@@ -3,6 +3,7 @@ from unittest import TestCase
 import ddt
 
 from nintendeals import noa, noe, noj
+from nintendeals.constants import SWITCH
 
 
 @ddt.ddt
@@ -11,7 +12,7 @@ class TestDetails(TestCase):
     def _assert_botw_props(self, game):
         self.assertEqual("AAAA", game.unique_id)
 
-        self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual(SWITCH, game.platform)
         self.assertEqual(2017, game.release_date.year)
         self.assertEqual(3, game.release_date.month)
 
@@ -41,7 +42,7 @@ class TestDetails(TestCase):
     def _assert_lets_go_eevee_props(self, game):
         self.assertEqual("ADW3", game.unique_id)
 
-        self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual(SWITCH, game.platform)
         self.assertEqual(2018, game.release_date.year)
         self.assertEqual(11, game.release_date.month)
 
@@ -71,7 +72,7 @@ class TestDetails(TestCase):
     def _assert_dead_cells_props(self, game):
         self.assertEqual("ANXT", game.unique_id)
 
-        self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual(SWITCH, game.platform)
         self.assertEqual(2018, game.release_date.year)
         self.assertEqual(8, game.release_date.month)
 
@@ -101,7 +102,7 @@ class TestDetails(TestCase):
     def _assert_pokemon_quest_props(self, game):
         self.assertEqual("AK35", game.unique_id)
 
-        self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual(SWITCH, game.platform)
         self.assertEqual(2018, game.release_date.year)
         self.assertEqual(5, game.release_date.month)
 
@@ -149,9 +150,7 @@ class TestDetails(TestCase):
     @ddt.unpack
     def test_noe(self, nsuid, title, checker):
         game = noe.game_info(nsuid)
-
         self.assertEqual(title, game.title)
-
         checker(self, game)
 
     @ddt.data(
@@ -163,7 +162,5 @@ class TestDetails(TestCase):
     @ddt.unpack
     def test_noj(self, nsuid, title, checker):
         game = noj.game_info(nsuid)
-
         self.assertEqual(title, game.title)
-
         checker(self, game)

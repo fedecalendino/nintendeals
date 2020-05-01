@@ -4,10 +4,10 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from nintendeals.classes.games import Game
-from nintendeals.exceptions import NsuidMismatch
-from nintendeals.constants import JP, PLATFORMS
 from nintendeals import validate
+from nintendeals.classes.games import Game
+from nintendeals.constants import JP, PLATFORMS
+from nintendeals.exceptions import NsuidMismatch
 
 DETAIL_URL = "https://ec.nintendo.com/JP/jp/titles/{nsuid}"
 EXTRA_INFO_URL = "https://search.nintendo.jp/nintendo_soft/search.json?q={nsuid}"

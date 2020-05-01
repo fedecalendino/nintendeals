@@ -2,8 +2,7 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals import validate
-from nintendeals import exceptions
+from nintendeals import validate, exceptions
 
 
 @ddt.ddt
@@ -58,16 +57,3 @@ class TestValidate(TestCase):
 
         with self.assertRaises(exceptions.InvalidRegion):
             validate.nintendo_region(string)
-
-    @ddt.data(
-        ("Nintendo Switch", True),
-        ("Nintendo 3DS", False),
-    )
-    @ddt.unpack
-    def test_supported_platform(self, string, is_valid):
-        if is_valid:
-            validate.supported_platform(string)
-            return
-
-        with self.assertRaises(exceptions.UnsupportedPlatform):
-            validate.supported_platform(string)
