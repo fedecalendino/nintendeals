@@ -15,19 +15,22 @@ def search_switch_games(
     params = {}
 
     if title:
-        params = {"query": title}
+        params = {"query": f"\"{title}\""}
 
     for game in list_switch_games(**params):
-        if release_date and game.release_date:
-            if release_date != game.release_date:
+        if release_date:
+            if not game.release_date \
+                    or release_date != game.release_date:
                 continue
 
-        if release_date_from and game.release_date:
-            if release_date_from > game.release_date:
+        if release_date_from:
+            if not game.release_date \
+                    or release_date_from > game.release_date:
                 continue
 
-        if release_date_to and game.release_date:
-            if release_date_to < game.release_date:
+        if release_date_to:
+            if not game.release_date \
+                    or release_date_to < game.release_date:
                 continue
 
         yield game

@@ -7,7 +7,7 @@ from nintendeals.constants import SWITCH, NA, EU, JP
 
 
 @ddt.ddt
-class TestDetails(TestCase):
+class TestListSwitchGames(TestCase):
 
     LIMIT = 200
 

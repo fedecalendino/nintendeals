@@ -7,7 +7,7 @@ from nintendeals.constants import SWITCH
 
 
 @ddt.ddt
-class TestDetails(TestCase):
+class TestGameInfo(TestCase):
 
     def _assert_botw_props(self, game):
         self.assertEqual("AAAA", game.unique_id)
