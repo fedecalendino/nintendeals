@@ -14,47 +14,9 @@ SYSTEM_NAMES = {
 }
 
 
-def list_games(platform: str) -> Iterator[Game]:
-    """
-        Given a supported platform it will provide an iterator
-    of with a subset of data for all games found in the listing
-    service Nintendo of Europe.
+def _list_games(platform: str, **kwargs) -> Iterator[Game]:
+    query = kwargs.get("query", "*")
 
-    Game data
-    ---------
-        * title: str
-        * region: str (EU)
-        * platform: str
-        * nsuid: str (optional)
-        * product_code: str (optional)
-
-        * amiibo: bool
-        * demo: bool
-        * developer: str
-        * dlc: bool
-        * free_to_play: bool
-        * game_vouchers: bool
-        * genres: List[str]
-        * languages: List[str]
-        * local_multiplayer: bool
-        * online_play: bool
-        * players: int
-        * publisher: str
-        * release_date: datetime
-        * save_data_cloud: bool
-        * voice_chat: bool
-
-    Parameters
-    ----------
-    platform: str
-        Valid nintendo platform.
-
-    Returns
-    -------
-    Iterator[classes.nintendeals.games.Game]:
-        Partial information of a game provided by NoE.
-    """
-    if not platform in SYSTEM_NAMES: raise UnsupportedPlatform(platform)
     system_name = SYSTEM_NAMES[platform]
 
     rows = 200
@@ -64,7 +26,7 @@ def list_games(platform: str) -> Iterator[Game]:
         start += rows
 
         params = {
-            "q": "*",
+            "q": query,
             "wt": "json",
             "sort": "title asc",
             "start": start,
@@ -97,8 +59,8 @@ def list_games(platform: str) -> Iterator[Game]:
             try:
                 release_date = data["dates_released_dts"][0].split("T")[0]
                 game.release_date = datetime.strptime(release_date, '%Y-%m-%d')
-            except ValueError:
-                pass
+            except (ValueError, TypeError):
+                game.release_date = None
 
             game.amiibo = data.get("near_field_comm_b", False)
             game.demo = data.get("demo_availability", False)
@@ -113,3 +75,40 @@ def list_games(platform: str) -> Iterator[Game]:
             game.voice_chat = data.get("voice_chat_b", False)
 
             yield game
+
+
+def list_switch_games(**kwargs) -> Iterator[Game]:
+    """
+        List all the games in Nintendo of Europe. A subset of data
+    will be provided for each game.
+
+    Game data
+    ---------
+        * title: str
+        * nsuid: str (may be None)
+        * product_code: str (may be None)
+        * region: str = "EU"
+        * platform: str = "Nintendo Switch"
+
+        * amiibo: bool
+        * demo: bool
+        * developer: str
+        * dlc: bool
+        * free_to_play: bool
+        * game_vouchers: bool
+        * genres: List[str]
+        * languages: List[str]
+        * local_multiplayer: bool
+        * online_play: bool
+        * players: int
+        * publisher: str
+        * release_date: datetime
+        * save_data_cloud: bool
+        * voice_chat: bool
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Iterator of games from Nintendo of Europe.
+    """
+    yield from _list_games(SWITCH, **kwargs)

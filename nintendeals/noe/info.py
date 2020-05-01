@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
+from nintendeals import validate
 
 DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
 
@@ -107,15 +108,16 @@ def _scrap(url: str) -> Game:
 def game_info(nsuid: str) -> Game:
     """
         Given an `nsuid` valid for the European region, it will provide the
-    information of the game with that nsuid.
+    complete information of the game with that nsuid provided by Nintendo
+    of Europe.
 
     Game data
     ---------
         * title: str
-        * region: str (EU)
+        * nsuid: str (may be None)
+        * product_code: str (may be None)
         * platform: str
-        * nsuid: str (optional)
-        * product_code: str (optional)
+        * region: str = "EU"
 
         * amiibo: bool
         * demo: bool
@@ -145,6 +147,7 @@ def game_info(nsuid: str) -> Game:
     classes.nintendeals.games.Game:
         Information provided by NoE of the game with the given nsuid.
     """
-    url = DETAIL_URL.format(nsuid=nsuid)
+    validate.nsuid_format(nsuid)
 
+    url = DETAIL_URL.format(nsuid=nsuid)
     return _scrap(url)
