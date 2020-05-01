@@ -21,8 +21,8 @@ class TestSearchSwitchGames(TestCase):
     def test_search_switch_games(self, nintendo, region):
         for game in nintendo.search_switch_games(
             title="Hollow Knight",
-            release_date_from=datetime(2018, 6, 11),
-            release_date_to=datetime(2018, 6, 13),
+            released_before=datetime(2018, 6, 11),
+            released_after=datetime(2018, 6, 13),
         ):
             self.assertIn("Hollow Knight", game.title)
             self.assertEqual(region, game.region)

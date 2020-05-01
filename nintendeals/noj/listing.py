@@ -1,13 +1,12 @@
 from datetime import datetime
-from typing import Iterator, List
 from functools import lru_cache
+from typing import Iterator, List
 
 import requests
 import xmltodict
 
 from nintendeals.classes.games import Game
 from nintendeals.constants import JP, SWITCH
-
 
 LISTING_URL = "https://www.nintendo.co.jp/data/software/xml/{platform}.xml"
 

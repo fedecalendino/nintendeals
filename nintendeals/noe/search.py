@@ -2,15 +2,16 @@ from datetime import datetime
 from typing import Iterator
 
 from nintendeals.classes.games import Game
+from nintendeals.helpers import filter_by_date
 from nintendeals.noe import list_switch_games
 
 
 def search_switch_games(
-        *,
-        title: str = None,
-        release_date: datetime = None,
-        release_date_from: datetime = None,
-        release_date_to: datetime = None,
+    *,
+    title: str = None,
+    released_at: datetime = None,
+    released_after: datetime = None,
+    released_before: datetime = None,
 ) -> Iterator[Game]:
     """
         Search and fillter all the games in Nintendo of Europe. A subset of data
@@ -44,12 +45,12 @@ def search_switch_games(
     ----------
     title: str (Optional)
         String that should be contained in the title of each game.
-    release_date: datetime (Optional)
-        Keep only those games that have the exact same release date.
-    release_date_from: datetime (Optional)
-        Keep only those games have a release date later than this.
-    release_date_to: datetime (Optional)
-        Keep only those games have a release date prior than this.
+    released_at: datetime (Optional)
+        Keep only those games that have been released on this date.
+    released_after: datetime (Optional)
+        Keep only those games that have been released after this date.
+    released_before: datetime (Optional)
+        Keep only those games that have been released before this date.
 
     Returns
     -------
@@ -62,19 +63,12 @@ def search_switch_games(
         params = {"query": f"\"{title}\""}
 
     for game in list_switch_games(**params):
-        if release_date:
-            if not game.release_date \
-                    or release_date != game.release_date:
-                continue
-
-        if release_date_from:
-            if not game.release_date \
-                    or release_date_from > game.release_date:
-                continue
-
-        if release_date_to:
-            if not game.release_date \
-                    or release_date_to < game.release_date:
-                continue
+        if not filter_by_date(
+                game.release_date,
+                released_at,
+                released_after,
+                released_before
+        ):
+            continue
 
         yield game

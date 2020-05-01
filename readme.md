@@ -128,8 +128,8 @@ from datetime import datetime
 from nintendeals import noe
 
 for game in noe.search_switch_games(
-        title="Hollow Knight",
-        release_date_to=datetime(2018, 12, 31)
+    title="Hollow Knight",
+    released_before=datetime(2018, 12, 31)
 ):
     print(game.title, "/", game.nsuid)
 ```
