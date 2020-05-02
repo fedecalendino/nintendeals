@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from typing import Dict, Iterable, Iterator, List, Optional, Tuple
+from typing import Dict, Iterator, List, Optional, Tuple
 
 import requests
 from dateutil.parser import parse as date_parser
@@ -27,7 +27,7 @@ def _fetch_prices(
     if not 51 > len(nsuids) > 0:
         raise ValueError("The amount of nsuids must between 1 and 50.")
 
-    log.info("Calling prices api with %i nsuids", len(nsuids), country)
+    log.info("Calling prices api with %i nsuids", len(nsuids))
 
     response = requests.get(
         url=PRICE_API_URL,

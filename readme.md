@@ -148,7 +148,7 @@ Coming back to the nsuid of Breath of the Wild as an example:
 ```python
 from nintendeals import noa
 
-game = noa.game_info("70010000000025")
+game = noa.game_info(nsuid="70010000000025")
 print(game.title)
 print(game.unique_id)
 print(game.release_date)
@@ -167,7 +167,7 @@ True
 ```python
 from nintendeals import noe
 
-game = noe.game_info("70010000000023")
+game = noe.game_info(nsuid="70010000000023")
 print(game.title)
 print(game.unique_id)
 print(game.release_date)
@@ -196,11 +196,11 @@ the American region will be able to fetch you the prices of Canada, Mexico and U
 from nintendeals import noe
 from nintendeals.api import prices
 
-game = noe.game_info("70010000007705")
+game = noe.game_info(country="70010000007705")
 print(game.title)
 print()
 
-price = prices.get_price("CZ", game)  # Czech Republic
+price = prices.get_price(country="CZ", game=game)  # Czech Republic
 print(price.currency)
 print(price.value)
 print(price.sale_discount, "%")
@@ -209,7 +209,7 @@ print(price.sale_start)
 print(price.sale_end)
 
 # Alternatively you can do this for the same effect:
-price = game.price("CZ") 
+price = game.price(country="CZ") 
 ``` 
 
 ```text
@@ -230,12 +230,12 @@ but it expects a list of games instead of only one:
 from nintendeals import noa
 from nintendeals.api import prices
 
-botw = noa.game_info("70010000000025")
+botw = noa.game_info(nsuid="70010000000025")
 print(botw.title)
-celeste = noa.game_info("70010000006442")
+celeste = noa.game_info(nsuid="70010000006442")
 print(celeste.title)
 
-prices = prices.get_prices("US", [botw, celeste])
+prices = prices.get_prices(country="US", games=[botw, celeste])
 
 for nsuid, price in prices:
     print(nsuid)
@@ -261,7 +261,5 @@ None
 ## To Do list
 
 * Improve exception management for unexisting games or prices
-* Improve logging usage to indicate api calls or eshop websites requests
-* Keep working on documentation
 * Improve performance
 * Lazy attributes on Game class to reduce scraping.

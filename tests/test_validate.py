@@ -2,8 +2,7 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals import exceptions
-from nintendeals import validate
+from nintendeals import exceptions, validate
 
 
 @ddt.ddt
