@@ -66,4 +66,6 @@ def list_switch_games(**kwargs) -> Iterator[Game]:
     Iterator[classes.nintendeals.games.Game]:
         Iterator of games from Nintendo of America.
     """
+    log.info("Fetching list of nintendo switch games")
+
     yield from _list_games(SWITCH, **kwargs)

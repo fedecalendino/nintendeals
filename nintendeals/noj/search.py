@@ -48,6 +48,8 @@ def search_switch_games(
     Iterator[classes.nintendeals.games.Game]:
         Iterator of games from Nintendo of Japan.
     """
+    log.info("Searching nintendo switch games")
+
     for game in list_switch_games():
         if title and title not in game.title:
             continue

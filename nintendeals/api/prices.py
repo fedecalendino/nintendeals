@@ -27,7 +27,7 @@ def _fetch_prices(
     if not 51 > len(nsuids) > 0:
         raise ValueError("The amount of nsuids must between 1 and 50.")
 
-    log.info("Fetching prices for %i nsuids in %s", len(nsuids), country)
+    log.info("Calling prices api with %i nsuids", len(nsuids), country)
 
     response = requests.get(
         url=PRICE_API_URL,

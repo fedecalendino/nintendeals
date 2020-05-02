@@ -165,4 +165,7 @@ def game_info(*, nsuid: str) -> Game:
         The nsuid was either none or has an invalid format.
     """
     url = DETAIL_URL.format(nsuid=nsuid)
+
+    log.info("Fetching info for %s from %s", nsuid, url)
+
     return _scrap(url)

@@ -26,6 +26,8 @@ def _search_index(query, **options):
         client = SearchClient.create(APP_ID, API_KEY)
         INDEX = client.init_index(INDEX_NAME)
 
+    log.info("Searching index for %s", query)
+
     response = INDEX.search(query, request_options=options)
     return response.get('hits', [])
 

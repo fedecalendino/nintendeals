@@ -160,4 +160,7 @@ def game_info(*, nsuid: str) -> Game:
     """
     slug = algolia.find_by_nsuid(nsuid)
     url = DETAIL_URL.format(slug=slug)
+
+    log.info("Fetching info for %s from %s", nsuid, url)
+
     return _scrap(url)

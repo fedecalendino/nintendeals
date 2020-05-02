@@ -60,6 +60,8 @@ def search_switch_games(
     Iterator[classes.nintendeals.games.Game]:
         Iterator of games from Nintendo of Europe.
     """
+    log.info("Searching nintendo switch games")
+
     params = {}
 
     if title:
