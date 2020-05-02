@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Iterator
 
@@ -11,6 +12,8 @@ LISTING_URL = 'https://search.nintendo-europe.com/en/select'
 SYSTEM_NAMES = {
     SWITCH: "Switch",
 }
+
+log = logging.getLogger(__name__)
 
 
 def _list_games(platform: str, **kwargs) -> Iterator[Game]:

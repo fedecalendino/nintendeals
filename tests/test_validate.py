@@ -2,7 +2,8 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals import validate, exceptions
+from nintendeals import exceptions
+from nintendeals import validate
 
 
 @ddt.ddt
@@ -16,13 +17,16 @@ class TestValidate(TestCase):
         ("C", False),
     )
     @ddt.unpack
-    def test_alpha_2(self, string, is_valid):
-        if is_valid:
-            validate.alpha_2(string)
-            return
+    def test_validate_country(self, string, is_valid):
+        @validate.country
+        def tmp(*, country: str = ""):
+            return country
 
-        with self.assertRaises(exceptions.InvalidAlpha2Code):
-            validate.alpha_2(string)
+        if is_valid:
+            tmp(country=string)
+        else:
+            with self.assertRaises(exceptions.InvalidAlpha2Code):
+                tmp(country=string)
 
     @ddt.data(
         ("70010000000025", True),
@@ -34,13 +38,16 @@ class TestValidate(TestCase):
         (70010000000026, False),
     )
     @ddt.unpack
-    def test_nsuid_format(self, string, is_valid):
-        if is_valid:
-            validate.nsuid_format(string)
-            return
+    def test_validate_nsuid(self, string, is_valid):
+        @validate.nsuid
+        def tmp(*, nsuid: str = ""):
+            return nsuid
 
-        with self.assertRaises(exceptions.InvalidNsuidFormat):
-            validate.nsuid_format(string)
+        if is_valid:
+            tmp(nsuid=string)
+        else:
+            with self.assertRaises(exceptions.InvalidNsuidFormat):
+                tmp(nsuid=string)
 
     @ddt.data(
         ("NA", True),
@@ -50,10 +57,13 @@ class TestValidate(TestCase):
         ("LA", False),
     )
     @ddt.unpack
-    def test_nintendo_region(self, string, is_valid):
-        if is_valid:
-            validate.nintendo_region(string)
-            return
+    def test_validate_region(self, string, is_valid):
+        @validate.region
+        def tmp(*, region: str = ""):
+            return region
 
-        with self.assertRaises(exceptions.InvalidRegion):
-            validate.nintendo_region(string)
+        if is_valid:
+            tmp(region=string)
+        else:
+            with self.assertRaises(exceptions.InvalidRegion):
+                tmp(region=string)

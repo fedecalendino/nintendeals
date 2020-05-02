@@ -1,9 +1,12 @@
+import logging
 from datetime import datetime
 from typing import Iterator
 
 from nintendeals.classes.games import Game
 from nintendeals.helpers import filter_by_date
 from nintendeals.noe import list_switch_games
+
+log = logging.getLogger(__name__)
 
 
 def search_switch_games(

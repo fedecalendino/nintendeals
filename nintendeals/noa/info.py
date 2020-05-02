@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import datetime
 from urllib import parse
@@ -11,6 +12,8 @@ from nintendeals.constants import NA, PLATFORMS
 from nintendeals.noa.external import algolia
 
 DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}"
+
+log = logging.getLogger(__name__)
 
 
 def _unquote(string: str) -> str:
@@ -110,7 +113,8 @@ def _scrap(url: str) -> Game:
     return game
 
 
-def game_info(nsuid: str) -> Game:
+@validate.nsuid
+def game_info(*, nsuid: str) -> Game:
     """
         Given an `nsuid` valid for the American region, it will provide the
     information of the game with that nsuid.
@@ -148,10 +152,12 @@ def game_info(nsuid: str) -> Game:
     -------
     classes.nintendeals.games.Game:
         Information provided by NoA of the game with the given nsuid.
-    """
-    validate.nsuid_format(nsuid)
 
+    Raises
+    -------
+    nintendeals.exceptions.InvalidNsuidFormat
+        The nsuid was either none or has an invalid format.
+    """
     slug = algolia.find_by_nsuid(nsuid)
     url = DETAIL_URL.format(slug=slug)
-
     return _scrap(url)

@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 import requests
@@ -8,6 +9,8 @@ from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
 
 DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
+
+log = logging.getLogger(__name__)
 
 
 def _sibling(soup: BeautifulSoup, string: str, tag: str = "p") -> str:
@@ -28,13 +31,19 @@ def _scrap(url: str) -> Game:
     response = requests.get(url, allow_redirects=True)
     soup = BeautifulSoup(response.text, features="html.parser")
 
-    scripts = list(filter(lambda s: "var nsuids = [" in str(s), soup.find_all('script')))
+    scripts = list(filter(
+        lambda s: "var nsuids = [" in str(s), soup.find_all('script')
+    ))
 
     if not scripts:
         return None
 
     script = scripts[0]
-    lines = [line.strip().replace("\",", "") for line in str(script).split("\n") if ':' in line]
+    lines = [
+        line.strip().replace("\",", "") for line in str(script).split("\n")
+        if ':' in line
+    ]
+
     data = {}
 
     for line in lines:
@@ -56,12 +65,14 @@ def _scrap(url: str) -> Game:
     )
 
     # Genres
-    game.genres = list(map(lambda g: g.strip(), _sibling(soup, string="Categories").split(",")))
-    game.genres.sort()
+    game.genres = list(sorted(map(
+        lambda g: g.strip(), _sibling(soup, string="Categories").split(",")
+    )))
 
     # Languages
-    game.languages = _sibling(soup, string="Languages").split(",")
-    game.languages.sort()
+    game.languages = list(sorted(
+        _sibling(soup, string="Languages").split(",")
+    ))
 
     # Players
     try:
@@ -105,7 +116,8 @@ def _scrap(url: str) -> Game:
     return game
 
 
-def game_info(nsuid: str) -> Game:
+@validate.nsuid
+def game_info(*, nsuid: str) -> Game:
     """
         Given an `nsuid` valid for the European region, it will provide the
     complete information of the game with that nsuid provided by Nintendo
@@ -146,8 +158,11 @@ def game_info(nsuid: str) -> Game:
     -------
     classes.nintendeals.games.Game:
         Information provided by NoE of the game with the given nsuid.
-    """
-    validate.nsuid_format(nsuid)
 
+    Raises
+    -------
+    nintendeals.exceptions.InvalidNsuidFormat
+        The nsuid was either none or has an invalid format.
+    """
     url = DETAIL_URL.format(nsuid=nsuid)
     return _scrap(url)

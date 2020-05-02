@@ -104,7 +104,8 @@ def get_prices(
     nintendeals.exceptions.InvalidAlpha2Code
         The `country` wasn't a valid alpha-2 code.
     nintendeals.exceptions.InvalidNsuidFormat
-        Any of the `games` had an nsuid that was either none or invalid.
+        Any of the `games` had an nsuid that is either none or
+    has an invalid format.
     """
     log.info("Fetching prices for %i games in %s", len(games), country)
 
@@ -157,7 +158,7 @@ def get_price(
     nintendeals.exceptions.InvalidAlpha2Code
         The `country` wasn't a valid alpha-2 code.
     nintendeals.exceptions.InvalidNsuidFormat
-        The nsuid of the `game` was either none or invalid.
+        The nsuid was either none or has an invalid format.
     """
     log.info("Fetching price for %s games in %s", game.title, country)
 

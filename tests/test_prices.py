@@ -29,7 +29,7 @@ class TestPrices(TestCase):
             nsuid=nsuid,
         )
 
-        price = game.price(country)
+        price = game.price(country=country)
 
         self.assertEqual(nsuid, price.nsuid)
         self.assertEqual(country, price.country)
@@ -44,7 +44,9 @@ class TestPrices(TestCase):
             "70010000012332",  # SSBU
         ]
 
-        games = list(map(noa.game_info, nsuids))
+        games = list(map(
+            lambda n: noa.game_info(nsuid=n), nsuids
+        ))
 
         for nsuid, price in prices.get_prices(country="US", games=games):
             self.assertIn(nsuid, nsuids)

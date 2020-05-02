@@ -137,7 +137,7 @@ class TestGameInfo(TestCase):
     )
     @ddt.unpack
     def test_noa(self, nsuid, title, checker):
-        game = noa.game_info(nsuid)
+        game = noa.game_info(nsuid=nsuid)
         self.assertEqual(title, game.title)
         checker(self, game)
 
@@ -149,7 +149,7 @@ class TestGameInfo(TestCase):
     )
     @ddt.unpack
     def test_noe(self, nsuid, title, checker):
-        game = noe.game_info(nsuid)
+        game = noe.game_info(nsuid=nsuid)
         self.assertEqual(title, game.title)
         checker(self, game)
 
@@ -161,6 +161,6 @@ class TestGameInfo(TestCase):
     )
     @ddt.unpack
     def test_noj(self, nsuid, title, checker):
-        game = noj.game_info(nsuid)
+        game = noj.game_info(nsuid=nsuid)
         self.assertEqual(title, game.title)
         checker(self, game)

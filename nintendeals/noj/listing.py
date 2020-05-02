@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from functools import lru_cache
 from typing import Iterator, List
@@ -13,6 +14,8 @@ LISTING_URL = "https://www.nintendo.co.jp/data/software/xml/{platform}.xml"
 FILENAMES = {
     SWITCH: "switch",
 }
+
+log = logging.getLogger(__name__)
 
 
 @lru_cache()

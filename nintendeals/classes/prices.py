@@ -1,10 +1,14 @@
 from datetime import datetime
+from nintendeals import validate
 
 
 class Price:
 
+    @validate.nsuid
+    @validate.country
     def __init__(
             self,
+            *,
             nsuid: str,
             country: str,
             currency: str,

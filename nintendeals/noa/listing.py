@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import datetime
 from typing import Iterator
@@ -5,6 +6,8 @@ from typing import Iterator
 from nintendeals.classes.games import Game
 from nintendeals.constants import NA, SWITCH
 from nintendeals.noa.external import algolia
+
+log = logging.getLogger(__name__)
 
 
 def _list_games(platform: str, **kwargs) -> Iterator[Game]:

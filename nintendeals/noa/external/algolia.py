@@ -1,4 +1,4 @@
-
+import logging
 from typing import Iterator, Dict
 
 from algoliasearch.search_client import SearchClient
@@ -15,6 +15,8 @@ INDEX = None
 PLATFORM_CODES = {
     SWITCH: "7001"
 }
+
+log = logging.getLogger(__name__)
 
 
 def _search_index(query, **options):

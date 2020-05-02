@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 import requests
@@ -10,12 +11,14 @@ from nintendeals.constants import JP, PLATFORMS
 from nintendeals.exceptions import NsuidMismatch
 
 DETAIL_URL = "https://ec.nintendo.com/JP/jp/titles/{nsuid}"
-EXTRA_INFO_URL = "https://search.nintendo.jp/nintendo_soft/search.json?q={nsuid}"
+EXTRA_INFO_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
+
+log = logging.getLogger(__name__)
 
 
-def _get_extra_info(nsuid: str) -> json:
-    url = EXTRA_INFO_URL.format(nsuid=nsuid)
-    response = requests.get(url)
+@validate.nsuid
+def _get_extra_info(*, nsuid: str) -> json:
+    response = requests.get(EXTRA_INFO_URL, params={"q": nsuid})
 
     return response.json()["result"]["items"][-1]
 
@@ -24,12 +27,22 @@ def _scrap(url: str) -> Game:
     response = requests.get(url, allow_redirects=True)
     soup = BeautifulSoup(response.text, features="html.parser")
 
-    script = next((s for s in soup.find_all("script") if "var NXSTORE = NXSTORE || {};" in str(s)))
-    json_data = next((line for line in str(script).split("\n") if "NXSTORE.titleDetail.jsonData = " in line))
-    data = json.loads(json_data.replace("NXSTORE.titleDetail.jsonData = ", "")[:-1])
+    script = next((
+        s for s in soup.find_all("script")
+        if "var NXSTORE = NXSTORE || {};" in str(s)
+    ))
+
+    json_data = next((
+        line for line in str(script).split("\n")
+        if "NXSTORE.titleDetail.jsonData = " in line
+    ))
+
+    data = json.loads(
+        json_data.replace("NXSTORE.titleDetail.jsonData = ", "")[:-1]
+    )
 
     nsuid = str(data["id"])
-    extra_info = _get_extra_info(nsuid)
+    extra_info = _get_extra_info(nsuid=nsuid)
 
     if extra_info["nsuid"] != nsuid:
         raise NsuidMismatch((nsuid, extra_info["nsuid"]))
@@ -46,12 +59,12 @@ def _scrap(url: str) -> Game:
     )
 
     # Genres
-    game.genres = data.get("genre", "").split(" / ")
-    game.genres.sort()
+    game.genres = list(sorted(data.get("genre", "").split(" / ")))
 
     # Languages
-    game.languages = list(map(lambda lang: lang["name"], data.get("languages", [])))
-    game.languages.sort()
+    game.languages = list(sorted(map(
+        lambda lang: lang["name"], data.get("languages", [])
+    )))
 
     # Players
     try:
@@ -70,7 +83,9 @@ def _scrap(url: str) -> Game:
     game.size = round(data.get("total_rom_size", 0) / 1024 / 1024)
 
     # Other properties
-    features = list(map(lambda lang: lang["name"], data.get("features", [])))
+    features = list(map(
+        lambda lang: lang["name"], data.get("features", [])
+    ))
 
     game.amiibo = extra_info.get("amiibo", "0") == "1"
     game.demo = len(data.get("demos", [])) > 0
@@ -91,7 +106,8 @@ def _scrap(url: str) -> Game:
     return game
 
 
-def game_info(nsuid: str) -> Game:
+@validate.nsuid
+def game_info(*, nsuid: str) -> Game:
     """
         Given an `nsuid` valid for the Japan region, it will provide the
     complete information of the game with that nsuid provided by Nintendo
@@ -132,8 +148,11 @@ def game_info(nsuid: str) -> Game:
     -------
     classes.nintendeals.games.Game:
         Information provided by NoJ of the game with the given nsuid.
-    """
-    validate.nsuid_format(nsuid)
 
+    Raises
+    -------
+    nintendeals.exceptions.InvalidNsuidFormat
+        The nsuid was either none or has an invalid format.
+    """
     url = DETAIL_URL.format(nsuid=nsuid)
     return _scrap(url)
