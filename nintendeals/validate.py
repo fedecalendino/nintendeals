@@ -64,9 +64,7 @@ def nsuid_format(nsuid: str):
     if not isinstance(nsuid, str):
         raise InvalidNsuidFormat(nsuid)
 
-    match = NSUID_REGEX.match(nsuid)
-
-    if match is None:
+    if not NSUID_REGEX.match(nsuid):
         raise InvalidNsuidFormat(nsuid)
 
 
@@ -92,3 +90,51 @@ def nintendo_region(region: str):
     """
     if region not in REGIONS:
         raise InvalidRegion(region)
+
+
+def _nsuid(nsuid: str):
+    if not isinstance(nsuid, str):
+        raise InvalidNsuidFormat(nsuid)
+
+    if not NSUID_REGEX.match(nsuid):
+        raise InvalidNsuidFormat(nsuid)
+
+
+def _game(game: "Game"):
+    _nsuid(game.nsuid)
+
+
+def country(func):
+    def wrapper(*args, **kwargs):
+        code_ = kwargs.get("country")
+        country_ = countries.get(alpha_2=code_)
+
+        if not country_:
+            raise InvalidAlpha2Code(code_)
+
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def nsuids(func):
+    def wrapper(*args, **kwargs):
+        list(map(_nsuid, kwargs.get("nsuids", [])))
+
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def games(func):
+    def wrapper(*args, **kwargs):
+        list(map(_game, kwargs.get("games", [])))
+
+        return func(*args, **kwargs)
+    return wrapper
+
+
+def game(func):
+    def wrapper(*args, **kwargs):
+        _game(kwargs["game"])
+
+        return func(*args, **kwargs)
+    return wrapper

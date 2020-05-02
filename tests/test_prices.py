@@ -44,9 +44,9 @@ class TestPrices(TestCase):
             "70010000012332",  # SSBU
         ]
 
-        games = map(noa.game_info, nsuids)
+        games = list(map(noa.game_info, nsuids))
 
-        for nsuid, price in prices.get_prices("US", games):
+        for nsuid, price in prices.get_prices(country="US", games=games):
             self.assertIn(nsuid, nsuids)
             self.assertIn(price.nsuid, nsuids)
 
