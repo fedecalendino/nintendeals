@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from nintendeals import validate
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
+from nintendeals.noe.listing import list_3ds_games
 
 DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
 
@@ -156,6 +157,13 @@ def game_info(*, nsuid: str) -> Game:
         * save_data_cloud: bool
         * voice_chat: bool
 
+        # 3DS Features
+        * download_play: bool
+        * motion_control: bool
+        * spot_pass: bool
+        * street_pass: bool
+        * virtual_console: bool
+
     Parameters
     ----------
     nsuid: str
@@ -171,8 +179,11 @@ def game_info(*, nsuid: str) -> Game:
     nintendeals.exceptions.InvalidNsuidFormat
         The nsuid was either none or has an invalid format.
     """
-    url = DETAIL_URL.format(nsuid=nsuid)
+    if nsuid[0] == "7":
+        url = DETAIL_URL.format(nsuid=nsuid)
+        log.info("Fetching info for %s from %s", nsuid, url)
 
-    log.info("Fetching info for %s from %s", nsuid, url)
+        return _scrap(url)
 
-    return _scrap(url)
+    games = list(list_3ds_games(nsuid=nsuid))
+    return games[0] if games else []

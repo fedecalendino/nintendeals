@@ -19,8 +19,14 @@ log = logging.getLogger(__name__)
 
 def _list_games(platform: str, **kwargs) -> Iterator[Game]:
     query = kwargs.get("query", "*")
+    nsuid = kwargs.get("nsuid")
 
     system_name = SYSTEM_NAMES[platform]
+
+    if nsuid:
+        fq = f"type:GAME AND system_names_txt:\"{system_name}\""
+    else:
+        fq = f"nsuid_txt:\"{nsuid}\""
 
     rows = 200
     start = -rows
@@ -34,7 +40,7 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
             "sort": "title asc",
             "start": start,
             "rows": rows,
-            "fq": f"type:GAME AND system_names_txt:\"{system_name}\""
+            "fq": fq
         }
 
         response = requests.get(url=LISTING_URL, params=params)
