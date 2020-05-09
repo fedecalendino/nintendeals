@@ -27,27 +27,35 @@ class Game:
         self.nsuid: str = nsuid
         self.product_code: str = product_code
 
-        self.na_slug: str = None
-
+        self.description: str = None
+        self.developer: str = None
         self.genres: List[str] = []
         self.languages: List[str] = []
         self.players: int = 0
+        self.publisher: str = None
         self.release_date: datetime = None
         self.size: int = None
 
+        # Common Features
         self.amiibo: bool = None
         self.demo: bool = None
-        self.description: str = None
-        self.developer: str = None
         self.dlc: bool = None
         self.free_to_play: bool = None
-        self.game_vouchers: bool = None
         self.iaps: bool = None
         self.local_multiplayer: bool = None
         self.online_play: bool = None
-        self.publisher: str = None
+
+        # 3DS Features
+        self.street_pass: bool = False
+        self.virtual_console: bool = False
+
+        # Switch Features
+        self.game_vouchers: bool = None
         self.save_data_cloud: bool = None
         self.voice_chat: str = None
+
+        # NA Info
+        self.na_slug: str = None
 
     @property
     def unique_id(self) -> str:
