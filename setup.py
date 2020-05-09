@@ -21,6 +21,7 @@ setup(
         "nintendeals",
         "nintendeals.api",
         "nintendeals.classes",
+        "nintendeals.classes.platforms",
         "nintendeals.noa",
         "nintendeals.noa.external",
         "nintendeals.noe",

@@ -1,8 +1,8 @@
 import logging
 from datetime import datetime
-from typing import Iterator
+from typing import Iterator, Union
 
-from nintendeals.classes.games import Game
+from nintendeals.classes import N3DSGame, SwitchGame
 from nintendeals.helpers import filter_by_date
 from nintendeals.noj import list_3ds_games, list_switch_games
 
@@ -16,7 +16,8 @@ def _search_games(
     released_at: datetime = None,
     released_after: datetime = None,
     released_before: datetime = None,
-) -> Iterator[Game]:
+) -> Iterator[Union[N3DSGame, SwitchGame]]:
+
     for game in listing():
         if title and title not in game.title:
             continue
@@ -38,23 +39,23 @@ def search_3ds_games(
     released_at: datetime = None,
     released_after: datetime = None,
     released_before: datetime = None,
-) -> Iterator[Game]:
+) -> Iterator[N3DSGame]:
     """
         Search and filter all the 3DS games in Nintendo of Japan. The
-    following subset of data will be provided for each game.
+    following subset of data will be available for each game.
 
     Game data
     ---------
         * title: str
         * nsuid: str
         * product_code: str
-        * platform: str = "Nintendo 3DS"
         * region: str = "JP"
+        * platform: str = "Nintendo 3DS"
 
         * developer: str
         * release_date: datetime (may be None)
 
-        # Common Features
+        # Features
         * free_to_play: bool
 
     Parameters
@@ -68,10 +69,10 @@ def search_3ds_games(
     released_before: datetime (Optional)
         Keep only those games that have been released before this date.
 
-    Returns
+    Yields
     -------
-    Iterator[classes.nintendeals.games.Game]:
-        Iterator of 3DS games from Nintendo of Japan.
+    nintendeals.classes.N3DSGame:
+        3DS game from Nintendo of Japan.
     """
     log.info("Searching Nintendo 3DS games")
 
@@ -90,7 +91,7 @@ def search_switch_games(
     released_at: datetime = None,
     released_after: datetime = None,
     released_before: datetime = None,
-) -> Iterator[Game]:
+) -> Iterator[SwitchGame]:
     """
         Search and filter all the Switch games in Nintendo of Japan. The
     following subset of data will be provided for each game.
@@ -100,13 +101,13 @@ def search_switch_games(
         * title: str
         * nsuid: str
         * product_code: str
-        * platform: str = "Nintendo Switch"
         * region: str = "JP"
+        * platform: str = "Nintendo Switch"
 
         * developer: str
         * release_date: datetime (may be None)
 
-        # Common Features
+        # Features
         * free_to_play: bool
 
     Parameters
@@ -120,10 +121,10 @@ def search_switch_games(
     released_before: datetime (Optional)
         Keep only those games that have been released before this date.
 
-    Returns
+    Yields
     -------
-    Iterator[classes.nintendeals.games.Game]:
-        Iterator of Switch games from Nintendo of Japan.
+    nintendeals.classes.SwitchGame:
+        Switch game from Nintendo of Japan.
     """
     log.info("Searching Nintendo Switch games")
 

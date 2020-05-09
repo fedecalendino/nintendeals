@@ -23,7 +23,7 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
 
     system_name = SYSTEM_NAMES[platform]
 
-    if nsuid:
+    if not nsuid:
         fq = f"type:GAME AND system_names_txt:\"{system_name}\""
     else:
         fq = f"nsuid_txt:\"{nsuid}\""
