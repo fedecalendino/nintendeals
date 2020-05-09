@@ -18,4 +18,5 @@ PLATFORMS = {
     N3DS: N3DS,
     "3ds": N3DS,
     "threeDS": N3DS,
+    "2_CTR": N3DS,
 }

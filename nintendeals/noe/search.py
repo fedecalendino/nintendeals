@@ -73,7 +73,6 @@ def search_switch_games(
         * save_data_cloud: bool
         * voice_chat: bool
 
-
     Parameters
     ----------
     title: str (Optional)
@@ -142,7 +141,6 @@ def search_3ds_games(
         * street_pass: bool
         * virtual_console: bool
 
-
     Parameters
     ----------
     title: str (Optional)
@@ -168,7 +166,3 @@ def search_3ds_games(
         released_after=released_after,
         released_before=released_before,
     )
-
-
-for game in search_switch_games(title="Zelda"):
-    print(game, game.nsuid)
