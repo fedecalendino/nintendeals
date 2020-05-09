@@ -24,10 +24,10 @@ def _search_games(
 
     for game in listing(**params):
         if not filter_by_date(
-                game.release_date,
-                released_at,
-                released_after,
-                released_before
+            game.release_date,
+            released_at,
+            released_after,
+            released_before
         ):
             continue
 

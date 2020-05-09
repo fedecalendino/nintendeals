@@ -22,10 +22,10 @@ def _search_games(
             continue
 
         if not filter_by_date(
-                game.release_date,
-                released_at,
-                released_after,
-                released_before
+            game.release_date,
+            released_at,
+            released_after,
+            released_before
         ):
             continue
 
@@ -71,7 +71,7 @@ def search_3ds_games(
     Returns
     -------
     Iterator[classes.nintendeals.games.Game]:
-        Iterator of 3DS games from Nintendo of Europe.
+        Iterator of 3DS games from Nintendo of Japan.
     """
     log.info("Searching Nintendo 3DS games")
 
@@ -123,7 +123,7 @@ def search_switch_games(
     Returns
     -------
     Iterator[classes.nintendeals.games.Game]:
-        Iterator of Switch games from Nintendo of Europe.
+        Iterator of Switch games from Nintendo of Japan.
     """
     log.info("Searching Nintendo Switch games")
 
