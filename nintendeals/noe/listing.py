@@ -5,12 +5,13 @@ from typing import Iterator
 import requests
 
 from nintendeals.classes.games import Game
-from nintendeals.constants import EU, SWITCH
+from nintendeals.constants import EU, N3DS, SWITCH
 
 LISTING_URL = 'https://search.nintendo-europe.com/en/select'
 
 SYSTEM_NAMES = {
     SWITCH: "Switch",
+    N3DS: "3ds",
 }
 
 log = logging.getLogger(__name__)
@@ -43,14 +44,21 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
             break
 
         for data in json:
+            product_codes = [
+                pc for pc in data.get("product_code_txt", [])
+                if "-" not in pc
+            ] or [None]
+
             game = Game(
                 title=data["title_extras_txt"][0],
                 region=EU,
                 platform=platform,
                 nsuid=data.get("nsuid_txt", [None])[0],
-                product_code=data.get("product_code_txt", [None])[0],
+                product_code=product_codes[0],
             )
 
+            game.developer = data.get("developer")
+            game.publisher = data.get("publisher")
             game.genres = data.get("pretty_game_categories_txt", [])
             game.players = data.get("players_to")
             game.languages = list(map(
@@ -64,16 +72,30 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
             except (ValueError, TypeError):
                 game.release_date = None
 
+            if "datasize_readable_txt" in data:
+                size, unit = data.get("datasize_readable_txt", [""])[0].split()
+
+                if unit.lower() == "blocks":
+                    game.size = int(size) // 8
+
+            # Common Features
             game.amiibo = data.get("near_field_comm_b", False)
             game.demo = data.get("demo_availability", False)
-            game.developer = data.get("developer")
             game.dlc = data.get("dlc_shown_b", False)
             game.free_to_play = data.get("price_regular_f") == 0.0
-            game.game_vouchers = data.get("switch_game_voucher_b", False)
             game.local_multiplayer = data.get("local_play", False)
             game.online_play = data.get("internet", False)
-            game.publisher = data.get("publisher")
+
+            # 3DS Only
+            game.download_play = data.get("download_play", False)
+            game.motion_control = data.get("motion_control_3ds", False)
+            game.spot_pass = data.get("spot_pass", False)
+            game.street_pass = data.get("street_pass", False)
+            game.virtual_console = '3ds_virtualconsole' in data.get("system_type", [""])[0]
+
+            # Switch Only
             game.save_data_cloud = data.get("cloud_saves_b", False)
+            game.game_vouchers = data.get("switch_game_voucher_b", False)
             game.voice_chat = data.get("voice_chat_b", False)
 
             yield game
@@ -81,8 +103,8 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
 
 def list_switch_games(**kwargs) -> Iterator[Game]:
     """
-        List all the games in Nintendo of Europe. A subset of data
-    will be provided for each game.
+        List all the Switch games in Nintendo of Europe. The following subset
+    of data will be provided for each game.
 
     Game data
     ---------
@@ -92,27 +114,76 @@ def list_switch_games(**kwargs) -> Iterator[Game]:
         * region: str = "EU"
         * platform: str = "Nintendo Switch"
 
-        * amiibo: bool
-        * demo: bool
         * developer: str
-        * dlc: bool
-        * free_to_play: bool
-        * game_vouchers: bool
         * genres: List[str]
         * languages: List[str]
-        * local_multiplayer: bool
-        * online_play: bool
         * players: int
         * publisher: str
         * release_date: datetime
+
+        # Common Features
+        * amiibo: bool
+        * demo: bool
+        * dlc: bool
+        * free_to_play: bool
+        * local_multiplayer: bool
+        * online_play: bool
+
+        # Switch Features
+        * game_vouchers: bool
         * save_data_cloud: bool
         * voice_chat: bool
 
     Returns
     -------
     Iterator[classes.nintendeals.games.Game]:
-        Iterator of games from Nintendo of Europe.
+        Iterator of Switch games from Nintendo of Europe.
     """
-    log.info("Fetching list of nintendo switch games")
+    log.info("Fetching list of Nintendo Switch games")
 
     yield from _list_games(SWITCH, **kwargs)
+
+
+def list_3ds_games(**kwargs) -> Iterator[Game]:
+    """
+        List all the 3DS games in Nintendo of Europe. The following subset
+    of data will be provided for each game.
+
+    Game data
+    ---------
+        * title: str
+        * nsuid: str (may be None)
+        * product_code: str (may be None)
+        * region: str = "EU"
+        * platform: str = "Nintendo 3DS"
+
+        * developer: str
+        * genres: List[str]
+        * languages: List[str]
+        * players: int
+        * publisher: str
+        * release_date: datetime
+
+        # Common Features
+        * amiibo: bool
+        * demo: bool
+        * dlc: bool
+        * free_to_play: bool
+        * local_multiplayer: bool
+        * online_play: bool
+
+        # 3DS Features
+        * download_play: bool
+        * motion_control: bool
+        * spot_pass: bool
+        * street_pass: bool
+        * virtual_console: bool
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Iterator of 3DS games from Nintendo of Europe.
+    """
+    log.info("Fetching list of Nintendo 3DS games")
+
+    yield from _list_games(N3DS, **kwargs)

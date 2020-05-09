@@ -105,7 +105,7 @@ def _scrap(url: str) -> Game:
         game.size, unit = game.size.split(" ")
 
         if unit.lower() == "blocks":
-            game.size = int(game.size) / 8
+            game.size = int(game.size) // 8
         else:
             game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
 
@@ -184,7 +184,3 @@ def game_info(*, nsuid: str) -> Game:
     log.info("Fetching info for %s from %s", nsuid, url)
 
     return _scrap(url)
-
-
-game = game_info(nsuid="50010000040656")
-print(game)

@@ -46,6 +46,9 @@ class Game:
         self.online_play: bool = None
 
         # 3DS Features
+        self.download_play: bool = False
+        self.motion_control: bool = False
+        self.spot_pass: bool = False
         self.street_pass: bool = False
         self.virtual_console: bool = False
 

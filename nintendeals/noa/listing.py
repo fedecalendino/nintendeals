@@ -43,39 +43,6 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
         yield game
 
 
-def list_switch_games(**kwargs) -> Iterator[Game]:
-    """
-        List all the Switch games in Nintendo of America. The following subset
-    of data will be provided for each game.
-
-    Game data
-    ---------
-        * title: str
-        * nsuid: str (may be None)
-        * product_code: str (Unavailable)
-        * platform: str = "Nintendo Switch"
-        * region: str = "NA"
-        * na_slug: str
-
-        * description: str
-        * developer: str
-        * genres: List[str]
-        * publisher: str
-        * release_date: datetime
-
-        # Common Features
-        * free_to_play: bool
-
-    Returns
-    -------
-    Iterator[classes.nintendeals.games.Game]:
-        Iterator of Switch games from Nintendo of America.
-    """
-    log.info("Fetching list of Nintendo Switch games")
-
-    yield from _list_games(SWITCH, **kwargs)
-
-
 def list_3ds_games(**kwargs) -> Iterator[Game]:
     """
         List all the 3DS games in Nintendo of America. The following subset
@@ -110,3 +77,36 @@ def list_3ds_games(**kwargs) -> Iterator[Game]:
     log.info("Fetching list of Nintendo 3DS games")
 
     yield from _list_games(N3DS, **kwargs)
+
+
+def list_switch_games(**kwargs) -> Iterator[Game]:
+    """
+        List all the Switch games in Nintendo of America. The following subset
+    of data will be provided for each game.
+
+    Game data
+    ---------
+        * title: str
+        * nsuid: str (may be None)
+        * product_code: str (Unavailable)
+        * platform: str = "Nintendo Switch"
+        * region: str = "NA"
+        * na_slug: str
+
+        * description: str
+        * developer: str
+        * genres: List[str]
+        * publisher: str
+        * release_date: datetime
+
+        # Common Features
+        * free_to_play: bool
+
+    Returns
+    -------
+    Iterator[classes.nintendeals.games.Game]:
+        Iterator of Switch games from Nintendo of America.
+    """
+    log.info("Fetching list of Nintendo Switch games")
+
+    yield from _list_games(SWITCH, **kwargs)
