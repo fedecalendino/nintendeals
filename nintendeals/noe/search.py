@@ -65,10 +65,10 @@ def search_switch_games(
         * demo: bool
         * dlc: bool
         * free_to_play: bool
-        * local_multiplayer: bool
-        * online_play: bool
 
         # Switch Features
+        * local_multiplayer: bool
+        * nso_required: bool
         * game_vouchers: bool
         * save_data_cloud: bool
         * voice_chat: bool
@@ -131,8 +131,6 @@ def search_3ds_games(
         * demo: bool
         * dlc: bool
         * free_to_play: bool
-        * local_multiplayer: bool
-        * online_play: bool
 
         # 3DS Features
         * download_play: bool

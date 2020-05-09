@@ -83,8 +83,6 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
             game.demo = data.get("demo_availability", False)
             game.dlc = data.get("dlc_shown_b", False)
             game.free_to_play = data.get("price_regular_f") == 0.0
-            game.local_multiplayer = data.get("local_play", False)
-            game.online_play = data.get("internet", False)
 
             # 3DS Only
             game.download_play = data.get("download_play", False)
@@ -94,6 +92,8 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
             game.virtual_console = '3ds_virtualconsole' in data.get("system_type", [""])[0]
 
             # Switch Only
+            game.local_multiplayer = data.get("local_play", False)
+            game.nso_required = data.get("paid_subscription_required_b", False)
             game.save_data_cloud = data.get("cloud_saves_b", False)
             game.game_vouchers = data.get("switch_game_voucher_b", False)
             game.voice_chat = data.get("voice_chat_b", False)
@@ -126,11 +126,11 @@ def list_switch_games(**kwargs) -> Iterator[Game]:
         * demo: bool
         * dlc: bool
         * free_to_play: bool
-        * local_multiplayer: bool
-        * online_play: bool
 
         # Switch Features
         * game_vouchers: bool
+        * local_multiplayer: bool
+        * nso_required: bool
         * save_data_cloud: bool
         * voice_chat: bool
 
@@ -169,8 +169,6 @@ def list_3ds_games(**kwargs) -> Iterator[Game]:
         * demo: bool
         * dlc: bool
         * free_to_play: bool
-        * local_multiplayer: bool
-        * online_play: bool
 
         # 3DS Features
         * download_play: bool

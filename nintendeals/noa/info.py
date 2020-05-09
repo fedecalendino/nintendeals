@@ -113,7 +113,6 @@ def _scrap(url: str) -> Game:
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None
     game.dlc = _class(soup, "dlc", tag="section") is not None
     game.free_to_play = data["msrp"] == '0'
-    game.online_play = _aria_label(soup, "online-play") is not None
 
     # 3DS Features
     game.street_pass = "StreetPass" in game.description
@@ -121,6 +120,7 @@ def _scrap(url: str) -> Game:
 
     # Switch Features
     game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
+    game.nso_required = _aria_label(soup, "online-play") is not None
     game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
 
     return game
@@ -153,7 +153,6 @@ def game_info(*, nsuid: str) -> Game:
         * demo: bool
         * dlc: bool
         * free_to_play: bool
-        * online_play: bool
 
         # 3DS Features
         * street_pass: bool
@@ -161,6 +160,7 @@ def game_info(*, nsuid: str) -> Game:
 
         # Switch Features
         * game_vouchers: bool
+        * nso_required: bool
         * save_data_cloud: bool
 
     Parameters

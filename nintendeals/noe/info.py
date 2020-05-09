@@ -64,6 +64,10 @@ def _scrap(url: str) -> Game:
         platform=PLATFORMS[platform],
     )
 
+    game.description = soup.find("div", class_="col-xs-12 content").text.strip()
+    game.developer = _sibling(soup, "Developer")
+    game.publisher = _sibling(soup, "Publisher")
+
     # Genres
     game.genres = list(sorted(map(
         lambda g: g.strip(), _sibling(soup, string="Categories").split(",")
@@ -97,21 +101,20 @@ def _scrap(url: str) -> Game:
     # Other properties
     features = _sibling(soup, string="Features")
 
+    # Common Features
     game.amiibo = "amiibo" in features
     game.demo = "Demo available" in features
-    game.description = soup.find("div", class_="col-xs-12 content").text.strip()
-    game.developer = _sibling(soup, "Developer")
     game.dlc = "Downloadable content" in features
     game.free_to_play = "\"offdeviceProductPrice\": \"0.0\"" in response.text
     game.iaps = "Offers in-game purchases" in response.text
+
+    # 3DS Features
+
+    # Switch Features
     game.local_multiplayer = "Local multiplayer" in features
-    game.online_play = "Paid online membership service" in features
-    game.publisher = _sibling(soup, "Publisher")
+    game.nso_required = "Paid online membership service" in features
     game.save_data_cloud = "Save Data Cloud" in features
     game.voice_chat = "Voice Chat" in features
-
-    # Unknown
-    game.game_vouchers = None
 
     return game
 
@@ -131,22 +134,26 @@ def game_info(*, nsuid: str) -> Game:
         * platform: str
         * region: str = "EU"
 
-        * amiibo: bool
-        * demo: bool
         * description: str
         * developer: str
-        * dlc: bool
-        * free_to_play: bool
         * genres: List[str]
-        * iaps: bool
         * languages: List[str]
-        * local_multiplayer: bool
-        * online_play: bool
         * players: int
         * publisher: str
-        * release_date: datetime
-        * save_data_cloud: bool
         * size: int
+        * release_date: datetime
+
+        # Common Features
+        * amiibo: bool
+        * demo: bool
+        * dlc: bool
+        * free_to_play: bool
+        * iaps: bool
+
+        # Switch Features
+        * local_multiplayer: bool
+        * nso_required: bool
+        * save_data_cloud: bool
         * voice_chat: bool
 
     Parameters

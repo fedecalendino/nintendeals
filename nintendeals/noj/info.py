@@ -138,10 +138,10 @@ def _scrap_switch(url: str) -> Game:
     game.free_to_play = extra_info.get("dprice") == 0.0
     game.iaps = data.get("in_app_purchase", False)
     game.local_multiplayer = data["player_number"].get("local_min", 0) > 0
-    game.online_play = "Nintendo Switch Online" in features
 
     # Switch Features
     game.game_vouchers = len(data.get("included_pretickets", [])) > 0
+    game.nso_required = "Nintendo Switch Online" in features
     game.save_data_cloud = data.get("cloud_backup_type") == "supported"
 
     return game
@@ -176,10 +176,10 @@ def game_info(*, nsuid: str) -> Game:
         * free_to_play: bool
         * iaps: bool
         * local_multiplayer: bool
-        * online_play: bool
 
         # Switch Features
         * save_data_cloud: bool
+        * nso_required: bool
 
     Parameters
     ----------

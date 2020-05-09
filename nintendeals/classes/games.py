@@ -42,18 +42,19 @@ class Game:
         self.dlc: bool = None
         self.free_to_play: bool = None
         self.iaps: bool = None
-        self.local_multiplayer: bool = None
-        self.online_play: bool = None
 
         # 3DS Features
-        self.download_play: bool = False
-        self.motion_control: bool = False
-        self.spot_pass: bool = False
-        self.street_pass: bool = False
-        self.virtual_console: bool = False
+        self.download_play: bool = None
+        self.internet: bool = None
+        self.motion_control: bool = None
+        self.spot_pass: bool = None
+        self.street_pass: bool = None
+        self.virtual_console: bool = None
 
         # Switch Features
         self.game_vouchers: bool = None
+        self.local_multiplayer: bool = None
+        self.nso_required: bool = None
         self.save_data_cloud: bool = None
         self.voice_chat: str = None
 

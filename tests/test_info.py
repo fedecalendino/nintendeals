@@ -19,7 +19,7 @@ class TestGameInfo(TestCase):
         self.assertFalse(game.demo)
         self.assertTrue(game.dlc)
         self.assertFalse(game.free_to_play)
-        self.assertFalse(game.online_play)
+        self.assertFalse(game.nso_required)
         self.assertTrue(game.save_data_cloud)
 
         self.assertEqual(1, game.players)
@@ -49,7 +49,7 @@ class TestGameInfo(TestCase):
         self.assertTrue(game.demo)
         self.assertFalse(game.dlc)
         self.assertFalse(game.free_to_play)
-        self.assertTrue(game.online_play)
+        self.assertTrue(game.nso_required)
         self.assertFalse(game.save_data_cloud)
 
         self.assertEqual(2, game.players)
@@ -79,7 +79,7 @@ class TestGameInfo(TestCase):
         self.assertFalse(game.demo)
         self.assertTrue(game.dlc)
         self.assertFalse(game.free_to_play)
-        self.assertFalse(game.online_play)
+        self.assertFalse(game.nso_required)
         self.assertTrue(game.save_data_cloud)
 
         self.assertEqual(1, game.players)
@@ -109,7 +109,7 @@ class TestGameInfo(TestCase):
         self.assertFalse(game.demo)
         self.assertTrue(game.dlc)
         self.assertTrue(game.free_to_play)
-        self.assertFalse(game.online_play)
+        self.assertFalse(game.nso_required)
         self.assertTrue(game.save_data_cloud)
 
         self.assertEqual(1, game.players)
