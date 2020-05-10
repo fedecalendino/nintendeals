@@ -24,13 +24,6 @@ class InvalidRegion(ValueError):
         )
 
 
-class NsuidMismatch(ValueError):
-    def __init__(self, nsuids: tuple):
-        super().__init__(
-            f"Two or more nsuids mismatched unexpectedly: {nsuids}"
-        )
-
-
 class InvalidTitle(TypeError):
     def __init__(self):
         super().__init__("The title cannot be an empty string or None")

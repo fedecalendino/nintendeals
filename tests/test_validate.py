@@ -29,7 +29,7 @@ class TestValidate(TestCase):
 
     @ddt.data(
         ("70010000000025", True),
-        ("10010123456789", True),
+        ("50010123456789", True),
         ("71210000000023", False),
         ("700100000000", False),
         ("0000000023", False),
