@@ -11,14 +11,14 @@ class SwitchGame(Game):
 
     def __init__(
         self,
-        title: str,
         region: str,
+        title: str,
         nsuid: str = None,
         product_code: str = None,
     ):
         super().__init__(
-            title=title,
             region=region,
+            title=title,
             nsuid=nsuid,
             product_code=product_code
         )

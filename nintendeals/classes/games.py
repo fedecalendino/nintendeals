@@ -13,13 +13,13 @@ class Game:
     @validate.nsuid(nullable=True)
     def __init__(
         self,
-        title: str,
         region: str,
+        title: str,
         nsuid: str = None,
         product_code: str = None,
     ):
-        self.title: str = title
         self.region: str = region
+        self.title: str = title
         self.nsuid: str = nsuid
         self.product_code: str = product_code
 

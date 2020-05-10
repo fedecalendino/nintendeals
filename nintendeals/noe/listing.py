@@ -58,8 +58,8 @@ def _list_games(
             ] or [None]
 
             game = game_class(
-                title=data["title_extras_txt"][0],
                 region=EU,
+                title=data["title_extras_txt"][0],
                 nsuid=data.get("nsuid_txt", [None])[0],
                 product_code=product_codes[0],
             )

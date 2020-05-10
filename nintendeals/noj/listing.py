@@ -29,8 +29,8 @@ def _list_games(
 
     for data in xml:
         game = game_class(
-            title=data["TitleName"],
             region=JP,
+            title=data["TitleName"],
             nsuid=data["LinkURL"].split("/")[-1],
             product_code=data["InitialCode"],
         )

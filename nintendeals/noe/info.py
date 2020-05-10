@@ -62,10 +62,10 @@ def _scrap_switch(nsuid: str) -> Game:
         data[split[0].replace("\"", "")] = split[1].replace("\"", "")
 
     game = SwitchGame(
+        region=EU,
+        title=soup.find("h1").text,
         nsuid=data["nsuid"],
         product_code=data["productCode"],
-        title=soup.find("h1").text,
-        region=EU,
     )
 
     game.description = soup.find("div", class_="col-xs-12 content").text.strip()
@@ -124,7 +124,7 @@ def _scrap_switch(nsuid: str) -> Game:
 @validate.nsuid
 def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
     """
-        Given a valid nsuid for the JP region, it will retrieve the
+        Given a valid nsuid for the EU region, it will retrieve the
     information of the game with that nsuid from Nintendo of Europe.
 
     Game data

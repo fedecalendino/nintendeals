@@ -106,8 +106,8 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     product_code = f"{extra['hard'][2:]}{extra['icode']}"
 
     game = SwitchGame(
-        title=data["formal_name"],
         region=JP,
+        title=data["formal_name"],
         nsuid=nsuid,
         product_code=product_code,
     )
