@@ -8,12 +8,10 @@ from dateutil.parser import parse as date_parser
 from nintendeals import validate
 from nintendeals.classes.prices import Price
 
-PRICE_API_URL = 'https://api.ec.nintendo.com/v1/price'
-
 log = logging.getLogger(__name__)
 
 
-def _parse_date(string: str) -> datetime:
+def _parse_date(string: str) -> datetime:  # pragma: no cover
     return date_parser(string).replace(tzinfo=None)
 
 
@@ -30,7 +28,7 @@ def _fetch_prices(
     log.info("Calling prices api with %i nsuids", len(nsuids))
 
     response = requests.get(
-        url=PRICE_API_URL,
+        url="https://api.ec.nintendo.com/v1/price",
         params={
             "country": country,
             "lang": "en",
@@ -63,7 +61,7 @@ def _fetch_prices(
 
         discount_price = data.get("discount_price")
 
-        if discount_price:
+        if discount_price:  # pragma: no cover
             price.sale_value = float(discount_price["raw_value"])
             price.sale_start = _parse_date(discount_price['start_datetime'])
             price.sale_end = _parse_date(discount_price['end_datetime'])
