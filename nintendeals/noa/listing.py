@@ -3,10 +3,10 @@ import re
 from datetime import datetime
 from typing import Iterator, Type, Union
 
-from nintendeals.classes.games import Game
-from nintendeals.constants import NA, SWITCH, N3DS
-from nintendeals.noa.external import algolia
 from nintendeals.classes import N3dsGame, SwitchGame
+from nintendeals.classes.games import Game
+from nintendeals.constants import NA
+from nintendeals.noa.external import algolia
 
 log = logging.getLogger(__name__)
 

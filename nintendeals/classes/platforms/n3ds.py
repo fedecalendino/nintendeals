@@ -1,5 +1,6 @@
-from nintendeals.classes.games import Game
 from typing import Optional
+
+from nintendeals.classes.games import Game
 
 
 class N3dsGame(Game):

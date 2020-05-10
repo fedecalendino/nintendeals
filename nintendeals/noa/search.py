@@ -1,11 +1,8 @@
 import logging
 from datetime import datetime
-from typing import Iterator
-
 from typing import Iterator, Union
 
 from nintendeals.classes import N3dsGame, SwitchGame
-from nintendeals.classes.games import Game
 from nintendeals.helpers import filter_by_date
 from nintendeals.noa import list_3ds_games, list_switch_games
 

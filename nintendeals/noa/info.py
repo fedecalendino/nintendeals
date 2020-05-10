@@ -1,18 +1,17 @@
 import logging
 import re
 from datetime import datetime
-from urllib import parse
 from typing import Type, Union
+from urllib import parse
 
 import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
-from nintendeals.classes.games import Game
-from nintendeals.constants import NA, PLATFORMS
-from nintendeals.noa.external import algolia
 from nintendeals.classes import N3dsGame, SwitchGame
-from nintendeals.constants import EU, N3DS, SWITCH
+from nintendeals.classes.games import Game
+from nintendeals.constants import NA, N3DS, SWITCH
+from nintendeals.noa.external import algolia
 
 log = logging.getLogger(__name__)
 

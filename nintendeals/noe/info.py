@@ -6,11 +6,10 @@ import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
-from nintendeals.classes.games import Game
-from nintendeals.constants import EU, PLATFORMS
-from nintendeals.noe.listing import list_3ds_games
 from nintendeals.classes import N3dsGame, SwitchGame
-
+from nintendeals.classes.games import Game
+from nintendeals.constants import EU
+from nintendeals.noe.listing import list_3ds_games
 
 log = logging.getLogger(__name__)
 
