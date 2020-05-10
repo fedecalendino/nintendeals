@@ -1,6 +1,8 @@
 from typing import Optional
 
 from nintendeals.classes.games import Game
+from nintendeals.constants import NA, EU, JP
+from nintendeals import validate
 
 
 class N3dsGame(Game):
