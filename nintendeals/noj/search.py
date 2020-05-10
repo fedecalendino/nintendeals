@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import Iterator, Union
 
-from nintendeals.classes import N3DSGame, SwitchGame
+from nintendeals.classes import N3dsGame, SwitchGame
 from nintendeals.helpers import filter_by_date
 from nintendeals.noj import list_3ds_games, list_switch_games
 
@@ -16,7 +16,7 @@ def _search_games(
     released_at: datetime = None,
     released_after: datetime = None,
     released_before: datetime = None,
-) -> Iterator[Union[N3DSGame, SwitchGame]]:
+) -> Iterator[Union[N3dsGame, SwitchGame]]:
 
     for game in listing():
         if title and title not in game.title:
@@ -39,24 +39,9 @@ def search_3ds_games(
     released_at: datetime = None,
     released_after: datetime = None,
     released_before: datetime = None,
-) -> Iterator[N3DSGame]:
+) -> Iterator[N3dsGame]:
     """
-        Search and filter all the 3DS games in Nintendo of Japan. The
-    following subset of data will be available for each game.
-
-    Game data
-    ---------
-        * title: str
-        * nsuid: str
-        * product_code: str
-        * region: str = "JP"
-        * platform: str = "Nintendo 3DS"
-
-        * developer: str
-        * release_date: datetime (may be None)
-
-        # Features
-        * free_to_play: bool
+        Search and filter all the 3DS games in Nintendo of Japan.
 
     Parameters
     ----------
@@ -71,8 +56,12 @@ def search_3ds_games(
 
     Yields
     -------
-    nintendeals.classes.N3DSGame:
+    nintendeals.classes.N3dsGame:
         3DS game from Nintendo of Japan.
+
+    See Also
+    ---------
+    nintendeals.noj.list_3ds_games
     """
     log.info("Searching Nintendo 3DS games")
 
@@ -93,22 +82,7 @@ def search_switch_games(
     released_before: datetime = None,
 ) -> Iterator[SwitchGame]:
     """
-        Search and filter all the Switch games in Nintendo of Japan. The
-    following subset of data will be provided for each game.
-
-    Game data
-    ---------
-        * title: str
-        * nsuid: str
-        * product_code: str
-        * region: str = "JP"
-        * platform: str = "Nintendo Switch"
-
-        * developer: str
-        * release_date: datetime (may be None)
-
-        # Features
-        * free_to_play: bool
+        Search and filter all the Switch games in Nintendo of Japan.
 
     Parameters
     ----------
@@ -125,6 +99,10 @@ def search_switch_games(
     -------
     nintendeals.classes.SwitchGame:
         Switch game from Nintendo of Japan.
+
+    See Also
+    ---------
+    nintendeals.noj.list_switch_games
     """
     log.info("Searching Nintendo Switch games")
 

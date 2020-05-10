@@ -7,18 +7,21 @@ import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
-from nintendeals.classes import N3DSGame, SwitchGame
+from nintendeals.classes import N3dsGame, SwitchGame
 from nintendeals.constants import JP
-
-SWITCH_DETAIL_URL = "https://ec.nintendo.com/JP/jp/titles/{nsuid}"
-N3DS_DETAIL_URL = "https://www.nintendo.co.jp/titles/{nsuid}"
-EXTRA_INFO_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
 
 log = logging.getLogger(__name__)
 
 
 def _get_extra_info(*, nsuid: str) -> json:
-    response = requests.get(EXTRA_INFO_URL, params={"q": nsuid})
+    response = requests.get(
+        url="https://search.nintendo.jp/nintendo_soft/search.json",
+        params={"q": nsuid}
+    )
+
+    if response.status_code != 200:
+        return None
+
     items = response.json()["result"]["items"]
 
     if not items:
@@ -27,7 +30,7 @@ def _get_extra_info(*, nsuid: str) -> json:
     return items[-1]
 
 
-def _scrap_3ds(nsuid: str) -> N3DSGame:
+def _scrap_3ds(nsuid: str) -> N3dsGame:
     extra = _get_extra_info(nsuid=nsuid)
 
     if not extra:
@@ -35,7 +38,7 @@ def _scrap_3ds(nsuid: str) -> N3DSGame:
 
     product_code = f"{extra['hard'][2:]}{extra['icode']}"
 
-    game = N3DSGame(
+    game = N3dsGame(
         title=extra["title"],
         region=JP,
         nsuid=nsuid,
@@ -50,14 +53,18 @@ def _scrap_3ds(nsuid: str) -> N3DSGame:
 
     # Players
     try:
-        game.players = max([int(p) for p in extra.get("player", [])])
+        game.players = max((
+            int(p) for p in extra.get("player", [])
+        ))
     except ValueError:
         game.players = 0
 
     # Release date
     try:
-        release_date = extra["sdate"]
-        game.release_date = datetime.strptime(release_date, '%Y.%m.%d')
+        game.release_date = datetime.strptime(
+            extra["sdate"],
+            '%Y.%m.%d'
+        )
     except ValueError:
         pass
 
@@ -74,10 +81,8 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     if not extra:
         return None
 
-    response = requests.get(
-        url=SWITCH_DETAIL_URL.format(nsuid=nsuid),
-        allow_redirects=True
-    )
+    url = f"https://ec.nintendo.com/JP/jp/titles/{nsuid}"
+    response = requests.get(url, allow_redirects=True)
 
     if response.status_code != 200:
         return None
@@ -112,7 +117,9 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     game.publisher = data["publisher"]["name"]
 
     # Genres
-    game.genres = list(sorted(data.get("genre", "").split(" / ")))
+    game.genres = list(sorted(
+        data.get("genre", "").split(" / ")
+    ))
 
     # Languages
     game.languages = list(sorted(map(
@@ -128,7 +135,8 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     # Release date
     try:
         game.release_date = datetime.strptime(
-            data.get("release_date_on_eshop", ""), '%Y-%m-%d'
+            data.get("release_date_on_eshop", ""),
+            '%Y-%m-%d'
         )
     except ValueError:
         pass
@@ -158,7 +166,7 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
 
 
 @validate.nsuid
-def game_info(*, nsuid: str) -> Union[N3DSGame, SwitchGame, Type[None]]:
+def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
     """
         Given a valid nsuid for the JP region, it will retrieve the
     information of the game with that nsuid from Nintendo of Japan.

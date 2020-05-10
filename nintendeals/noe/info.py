@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from typing import Type, Union
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,8 +9,8 @@ from nintendeals import validate
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU, PLATFORMS
 from nintendeals.noe.listing import list_3ds_games
+from nintendeals.classes import N3dsGame, SwitchGame
 
-DETAIL_URL = "https://ec.nintendo.com/GB/en/titles/{nsuid}"
 
 log = logging.getLogger(__name__)
 
@@ -28,8 +29,13 @@ def _sibling(soup: BeautifulSoup, string: str, tag: str = "p") -> str:
     return sib.text
 
 
-def _scrap(url: str) -> Game:
+def _scrap_switch(nsuid: str) -> Game:
+    url = f"https://ec.nintendo.com/GB/en/titles/{nsuid}"
     response = requests.get(url, allow_redirects=True)
+
+    if response.status_code != 200:
+        return None
+
     soup = BeautifulSoup(response.text, features="html.parser")
 
     scripts = list(filter(
@@ -55,14 +61,11 @@ def _scrap(url: str) -> Game:
 
         data[split[0].replace("\"", "")] = split[1].replace("\"", "")
 
-    platform = data["systemTypeMasterSystem"]
-
-    game = Game(
+    game = SwitchGame(
         nsuid=data["nsuid"],
         product_code=data["productCode"],
         title=soup.find("h1").text,
         region=EU,
-        platform=PLATFORMS[platform],
     )
 
     game.description = soup.find("div", class_="col-xs-12 content").text.strip()
@@ -109,8 +112,6 @@ def _scrap(url: str) -> Game:
     game.free_to_play = "\"offdeviceProductPrice\": \"0.0\"" in response.text
     game.iaps = "Offers in-game purchases" in response.text
 
-    # 3DS Features
-
     # Switch Features
     game.local_multiplayer = "Local multiplayer" in features
     game.nso_required = "Paid online membership service" in features
@@ -121,11 +122,10 @@ def _scrap(url: str) -> Game:
 
 
 @validate.nsuid
-def game_info(*, nsuid: str) -> Game:
+def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
     """
-        Given an `nsuid` valid for the European region, it will provide the
-    complete information of the game with that nsuid provided by Nintendo
-    of Europe.
+        Given a valid nsuid for the JP region, it will retrieve the
+    information of the game with that nsuid from Nintendo of Europe.
 
     Game data
     ---------
@@ -171,19 +171,25 @@ def game_info(*, nsuid: str) -> Game:
 
     Returns
     -------
-    classes.nintendeals.games.Game:
-        Information provided by NoE of the game with the given nsuid.
+    nintendeals.classes.N3DSGame:
+        3DS game from Nintendo of Europe.
+    nintendeals.classes.SwitchGame:
+        Switch game from Nintendo of Europe.
+    None:
+        No game with the provided nsuid was found on Nintendo of Europe.
 
     Raises
     -------
     nintendeals.exceptions.InvalidNsuidFormat
         The nsuid was either none or has an invalid format.
     """
-    if nsuid[0] == "7":
-        url = DETAIL_URL.format(nsuid=nsuid)
-        log.info("Fetching info for %s from %s", nsuid, url)
+    if nsuid.startswith("5"):
+        log.info("Fetching info for %s", nsuid)
+        games = list(list_3ds_games(nsuid=nsuid))
+        return games[0] if games else None
 
-        return _scrap(url)
+    if nsuid.startswith("7"):
+        log.info("Fetching info for %s", nsuid)
+        return _scrap_switch(nsuid=nsuid)
 
-    games = list(list_3ds_games(nsuid=nsuid))
-    return games[0] if games else []
+    return None

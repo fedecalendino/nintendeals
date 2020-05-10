@@ -2,7 +2,7 @@ from nintendeals.classes.games import Game
 from typing import Optional
 
 
-class N3DSGame(Game):
+class N3dsGame(Game):
 
     platform = "Nintendo 3DS"
 
