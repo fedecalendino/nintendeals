@@ -5,7 +5,7 @@ import ddt
 from nintendeals import noa
 from nintendeals.api import prices
 from nintendeals.classes.games import Game
-from nintendeals.constants import SWITCH, NA, EU, JP
+from nintendeals.constants import NA, EU, JP
 
 
 @ddt.ddt
@@ -25,7 +25,6 @@ class TestPrices(TestCase):
         game = Game(
             title="title",
             region=region,
-            platform=SWITCH,
             nsuid=nsuid,
         )
 
