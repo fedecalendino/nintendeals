@@ -13,6 +13,7 @@ class TestSwitchGames(TestCase):
 
         self.assertEqual("70010000006442", game.nsuid)
         self.assertEqual("ACF3", game.unique_id)
+
         self.assertEqual("Matt Makes Games Inc.", game.developer)
         self.assertEqual("Matt Makes Games Inc.", game.publisher)
 
@@ -50,6 +51,7 @@ class TestSwitchGames(TestCase):
 
         self.assertEqual("70010000006441", game.nsuid)
         self.assertEqual("ACF3", game.unique_id)
+
         self.assertEqual("Matt Makes Games Inc.", game.developer)
         self.assertEqual("Matt Makes Games Inc.", game.publisher)
 
@@ -87,6 +89,7 @@ class TestSwitchGames(TestCase):
 
         self.assertEqual("70010000010822", game.nsuid)
         self.assertEqual("ACF3", game.unique_id)
+
         self.assertEqual("Matt Makes Games Inc.", game.developer)
         self.assertEqual("Matt Makes Games", game.publisher)
 
