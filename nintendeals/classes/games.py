@@ -106,7 +106,7 @@ class Game:
             if country == "ZA":
                 country = "CO.ZA"
 
-            return f"https://www.nintendo.{country.lower()}/{lang}/{self.eu_slug}"
+            return f"https://www.nintendo.{country.lower()}/{lang}{self.eu_slug}"
 
         if self.region == JP:
             return f"https://www.nintendo.co.jp/titles/{self.nsuid}"
