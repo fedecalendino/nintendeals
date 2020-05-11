@@ -4,19 +4,11 @@ import ddt
 
 from nintendeals import noa
 from nintendeals.api import prices
+from tests.util import spy
 
 
 @ddt.ddt
 class TestPrices(TestCase):
-
-    def setUp(self):
-        self.old_fetch_prices = prices._fetch_prices
-        self.mock_fetch_prices = mock.Mock(wraps=prices._fetch_prices)
-
-        prices._fetch_prices = self.mock_fetch_prices
-
-    def tearDown(self):
-        prices._fetch_prices = self.old_fetch_prices
 
     def test_prices(self):
         data = {
@@ -36,37 +28,31 @@ class TestPrices(TestCase):
 
         games = [noa.game_info(nsuid=nsuid) for nsuid in data]
 
-        # Testing price method for each game
-        for game in games:
-            price = game.price(country="US")
+        with spy(prices, "_fetch_prices") as spied:
+            for game in games:
+                price = game.price(country="US")
+                expected_price = data[game.nsuid]
 
-            self.assertIn(price.nsuid, data)
+                self.assertIn(price.nsuid, data)
+                self.assertEqual("US", price.country)
+                self.assertEqual("USD", price.currency)
+                self.assertEqual(expected_price, price.value)
 
-            expected_price = data[game.nsuid]
-
-            self.assertEqual("US", price.country)
-            self.assertEqual("USD", price.currency)
-            self.assertEqual(expected_price, price.value)
-
-        self.assertEqual(
-            len(games),
-            self.mock_fetch_prices.call_count
-        )
-
-        self.mock_fetch_prices.reset_mock()
+            self.assertEqual(len(games), spied.call_count)
 
         # Testing price fetching in bulk
-        for nsuid, price in prices.get_prices(games=games, country="US"):
-            self.assertIn(nsuid, data)
-            self.assertIn(price.nsuid, data)
+        with spy(prices, "_fetch_prices") as spied:
+            for nsuid, price in prices.get_prices(games=games, country="US"):
+                self.assertIn(nsuid, data)
+                self.assertIn(price.nsuid, data)
 
-            expected_price = data[nsuid]
+                expected_price = data[nsuid]
 
-            self.assertEqual("US", price.country)
-            self.assertEqual("USD", price.currency)
-            self.assertEqual(expected_price, price.value)
+                self.assertEqual("US", price.country)
+                self.assertEqual("USD", price.currency)
+                self.assertEqual(expected_price, price.value)
 
-        self.assertEqual(1, self.mock_fetch_prices.call_count)
+            self.assertEqual(1, spied.call_count)
 
     def test_non_existent_prices(self):
         data = [
@@ -97,7 +83,9 @@ class TestPrices(TestCase):
         game = noa.game_info(nsuid=nsuid)
 
         games = [game] * 222
-        found = list(prices.get_prices(games=games, country="US"))
+
+        with spy(prices, "_fetch_prices") as spied:
+            found = list(prices.get_prices(games=games, country="US"))
 
         self.assertEqual(1, len(found))
 
@@ -108,4 +96,70 @@ class TestPrices(TestCase):
             self.assertEqual("USD", price.currency)
             self.assertEqual(59.99, price.value)
 
-        self.assertEqual(5, self.mock_fetch_prices.call_count)
+        self.assertEqual(5, spied.call_count)
+
+    @ddt.data(("70010000000025", False), ("70010000000529", True))
+    @ddt.unpack
+    def test_sales(self, nsuid, on_sale):
+        class MockedResponse:
+            status_code = 200
+
+            def json(self):
+                return {
+                    "personalized": False,
+                    "country": "US",
+                    "prices": [
+                        {
+                            "title_id": 70010000000025,
+                            "sales_status": "onsale",
+                            "regular_price": {
+                                "amount": "$59.99",
+                                "currency": "USD",
+                                "raw_value": "59.99"
+                            },
+                        },
+                        {
+                            "title_id": 70010000000529,
+                            "sales_status": "onsale",
+                            "regular_price": {
+                                "amount": "$59.99",
+                                "currency": "USD",
+                                "raw_value": "59.99"
+                            },
+                            "discount_price": {
+                                "amount": "$41.99",
+                                "currency": "USD",
+                                "raw_value": "41.99",
+                                "start_datetime": "2020-04-30T06:00:00Z",
+                                "end_datetime": "2020-05-10T14:59:59Z"
+                            }
+                        }
+                    ]
+                }
+
+            def raise_for_status(self):
+                pass
+
+        game = noa.game_info(nsuid=nsuid)
+
+        with mock.patch("requests.get") as patched:
+            patched.return_value = MockedResponse()
+            price = game.price(country="US")
+
+        self.assertEqual(game.nsuid, price.nsuid)
+        self.assertFalse(price.is_free_to_play)
+
+        self.assertEqual("US", price.country)
+        self.assertEqual("USD", price.currency)
+        self.assertEqual(59.99, price.value)
+
+        if not on_sale:
+            self.assertEqual("USD 59.99", str(price))
+            self.assertEqual(None, price.sale_value)
+            self.assertEqual(0, price.sale_discount)
+            self.assertFalse(price.is_sale_active)
+        else:
+            self.assertEqual("USD 41.99*", str(price))
+            self.assertEqual(41.99, price.sale_value)
+            self.assertEqual(70, price.sale_discount)
+            self.assertFalse(price.is_sale_active)

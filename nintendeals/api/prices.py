@@ -11,7 +11,7 @@ from nintendeals.classes.prices import Price
 log = logging.getLogger(__name__)
 
 
-def _parse_date(string: str) -> datetime:  # pragma: no cover
+def _parse_date(string: str) -> datetime:
     return date_parser(string).replace(tzinfo=None)
 
 
@@ -61,7 +61,7 @@ def _fetch_prices(
 
         discount_price = data.get("discount_price")
 
-        if discount_price:  # pragma: no cover
+        if discount_price:
             price.sale_value = float(discount_price["raw_value"])
             price.sale_start = _parse_date(discount_price['start_datetime'])
             price.sale_end = _parse_date(discount_price['end_datetime'])
