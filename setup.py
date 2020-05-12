@@ -9,7 +9,7 @@ with open(path.join(this_directory, "readme.md"), encoding="utf-8") as f:
 
 setup(
     name="nintendeals",
-    version="1.2",
+    version="1.3",
     url="https://github.com/fedecalendino/nintendeals",
     license="MIT",
     description="Scraping tools for Nintendo games and prices on NA, EU and JP.",
@@ -21,6 +21,7 @@ setup(
         "nintendeals",
         "nintendeals.api",
         "nintendeals.classes",
+        "nintendeals.classes.platforms",
         "nintendeals.noa",
         "nintendeals.noa.external",
         "nintendeals.noe",

@@ -1,26 +1,30 @@
 import logging
 import re
 from datetime import datetime
-from typing import Iterator
+from typing import Iterator, Type, Union
 
+from nintendeals.classes import N3dsGame, SwitchGame
 from nintendeals.classes.games import Game
-from nintendeals.constants import NA, SWITCH
+from nintendeals.constants import NA
 from nintendeals.noa.external import algolia
 
 log = logging.getLogger(__name__)
 
 
-def _list_games(platform: str, **kwargs) -> Iterator[Game]:
-    for data in algolia.search_games(platform=platform, **kwargs):
-        game = Game(
-            title=data["title"],
+def _list_games(
+    game_class: Type,
+    **kwargs
+) -> Iterator[Union[N3dsGame, SwitchGame]]:
+
+    for data in algolia.search_games(platform=game_class.platform, **kwargs):
+        game = game_class(
             region=NA,
-            platform=platform,
+            title=data["title"],
             nsuid=data.get("nsuid"),
         )
 
         game.na_slug = data["slug"]
-        game.genres = data.get("categories", [])
+        game.genres = list(sorted(data.get("categories", [])))
 
         try:
             release_date = data["releaseDateMask"].split("T")[0]
@@ -36,14 +40,53 @@ def _list_games(platform: str, **kwargs) -> Iterator[Game]:
         game.description = data.get("description")
         game.free_to_play = data.get("msrp") == 0.0
         game.publisher = data.get("publishers", [None])[0]
+        game.developer = data.get("developers", [None])[0]
+
+        game.virtual_console = True if data.get("virtualConsole", "na") != "na" else None
 
         yield game
 
 
-def list_switch_games(**kwargs) -> Iterator[Game]:
+def list_3ds_games(**kwargs) -> Iterator[Game]:
     """
-        List all the games in Nintendo of America. A subset of data
-    will be provided for each game.
+        List all the 3DS games in Nintendo of America. The following subset
+    of data will be available for each game.
+
+    Game data
+    ---------
+        * title: str
+        * nsuid: str (may be None)
+        * product_code: str (Unavailable)
+        * platform: str = "Nintendo 3DS"
+        * region: str = "NA"
+        * na_slug: str
+
+        * description: str
+        * developer: str
+        * genres: List[str]
+        * publisher: str
+        * release_date: datetime
+
+        # Features
+        * free_to_play: bool
+
+        # 3DS Features
+        * virtual_console: bool
+
+    Yields
+    -------
+    nintendeals.classes.N3dsGame:
+        3DS game from Nintendo of America.
+    """
+    log.info("Fetching list of Nintendo 3DS games")
+
+    yield from _list_games(N3dsGame, **kwargs)
+
+
+def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
+    """
+        List all the Switch games in Nintendo of America. The following subset
+    of data will be available for each game.
 
     Game data
     ---------
@@ -52,20 +95,22 @@ def list_switch_games(**kwargs) -> Iterator[Game]:
         * product_code: str (Unavailable)
         * platform: str = "Nintendo Switch"
         * region: str = "NA"
+        * na_slug: str
 
         * description: str
-        * free_to_play: bool
+        * developer: str
         * genres: List[str]
-        * na_slug: str
-        * players: int
         * publisher: str
-        * release_date : datetime
+        * release_date: datetime
 
-    Returns
+        # Common Features
+        * free_to_play: bool
+
+    Yields
     -------
-    Iterator[classes.nintendeals.games.Game]:
-        Iterator of games from Nintendo of America.
+    nintendeals.classes.SwitchGame:
+        Switch game from Nintendo of America.
     """
-    log.info("Fetching list of nintendo switch games")
+    log.info("Fetching list of Nintendo Switch games")
 
-    yield from _list_games(SWITCH, **kwargs)
+    yield from _list_games(SwitchGame, **kwargs)

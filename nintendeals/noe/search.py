@@ -1,48 +1,51 @@
 import logging
 from datetime import datetime
-from typing import Iterator
+from typing import Iterator, Union
 
-from nintendeals.classes.games import Game
+from nintendeals.classes import N3dsGame, SwitchGame
 from nintendeals.helpers import filter_by_date
-from nintendeals.noe import list_switch_games
+from nintendeals.noe import list_3ds_games, list_switch_games
 
 log = logging.getLogger(__name__)
 
 
-def search_switch_games(
+def _search_games(
+    listing,
     *,
     title: str = None,
     released_at: datetime = None,
     released_after: datetime = None,
     released_before: datetime = None,
-) -> Iterator[Game]:
+) -> Iterator[Union[N3dsGame, SwitchGame]]:
+    params = {}
+
+    if title:
+        params = {"query": f"\"{title}\""}
+
+    for game in listing(**params):
+        if title and title not in game.title:
+            continue
+
+        if not filter_by_date(
+            game.release_date,
+            released_at,
+            released_after,
+            released_before
+        ):
+            continue
+
+        yield game
+
+
+def search_3ds_games(
+    *,
+    title: str = None,
+    released_at: datetime = None,
+    released_after: datetime = None,
+    released_before: datetime = None,
+) -> Iterator[N3dsGame]:
     """
-        Search and fillter all the games in Nintendo of Europe. A subset of data
-    will be provided for each game.
-
-    Game data
-    ---------
-        * title: str
-        * nsuid: str (may be None)
-        * product_code: str (may be None)
-        * region: str = "EU"
-        * platform: str = "Nintendo Switch"
-
-        * amiibo: bool
-        * demo: bool
-        * developer: str
-        * dlc: bool
-        * free_to_play: bool
-        * game_vouchers: bool
-        * genres: List[str]
-        * languages: List[str]
-        * local_multiplayer: bool
-        * online_play: bool
-        * players: int
-        * publisher: str
-        * release_date: datetime
-        * save_data_cloud: bool
-        * voice_chat: bool
+        Search and filter all the 3DS games in Nintendo of Europe.
 
     Parameters
     ----------
@@ -55,25 +58,62 @@ def search_switch_games(
     released_before: datetime (Optional)
         Keep only those games that have been released before this date.
 
-    Returns
+    Yields
     -------
-    Iterator[classes.nintendeals.games.Game]:
-        Iterator of games from Nintendo of Europe.
+    nintendeals.classes.N3dsGame:
+        3DS game from Nintendo of Europe.
+
+    See Also
+    ---------
+    nintendeals.noe.list_3ds_games
     """
-    log.info("Searching nintendo switch games")
+    log.info("Searching Nintendo 3DS games")
 
-    params = {}
+    yield from _search_games(
+        list_3ds_games,
+        title=title,
+        released_at=released_at,
+        released_after=released_after,
+        released_before=released_before,
+    )
 
-    if title:
-        params = {"query": f"\"{title}\""}
 
-    for game in list_switch_games(**params):
-        if not filter_by_date(
-                game.release_date,
-                released_at,
-                released_after,
-                released_before
-        ):
-            continue
+def search_switch_games(
+    *,
+    title: str = None,
+    released_at: datetime = None,
+    released_after: datetime = None,
+    released_before: datetime = None,
+) -> Iterator[SwitchGame]:
+    """
+        Search and filter all the Switch games in Nintendo of Europe.
 
-        yield game
+    Parameters
+    ----------
+    title: str (Optional)
+        String that should be contained in the title of each game.
+    released_at: datetime (Optional)
+        Keep only those games that have been released on this date.
+    released_after: datetime (Optional)
+        Keep only those games that have been released after this date.
+    released_before: datetime (Optional)
+        Keep only those games that have been released before this date.
+
+    Yields
+    -------
+    nintendeals.classes.SwitchGame:
+        Switch game from Nintendo of Europe.
+
+    See Also
+    ---------
+    nintendeals.noe.list_switch_games
+    """
+    log.info("Searching Nintendo Switch games")
+
+    yield from _search_games(
+        list_switch_games,
+        title=title,
+        released_at=released_at,
+        released_after=released_after,
+        released_before=released_before,
+    )

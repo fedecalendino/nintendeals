@@ -8,8 +8,6 @@ from dateutil.parser import parse as date_parser
 from nintendeals import validate
 from nintendeals.classes.prices import Price
 
-PRICE_API_URL = 'https://api.ec.nintendo.com/v1/price'
-
 log = logging.getLogger(__name__)
 
 
@@ -30,7 +28,7 @@ def _fetch_prices(
     log.info("Calling prices api with %i nsuids", len(nsuids))
 
     response = requests.get(
-        url=PRICE_API_URL,
+        url="https://api.ec.nintendo.com/v1/price",
         params={
             "country": country,
             "lang": "en",

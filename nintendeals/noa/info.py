@@ -1,17 +1,17 @@
 import logging
 import re
 from datetime import datetime
+from typing import Type, Union
 from urllib import parse
 
 import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
+from nintendeals.classes import N3dsGame, SwitchGame
 from nintendeals.classes.games import Game
-from nintendeals.constants import NA, PLATFORMS
+from nintendeals.constants import NA, N3DS, SWITCH
 from nintendeals.noa.external import algolia
-
-DETAIL_URL = "https://www.nintendo.com/games/detail/{slug}"
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,11 @@ def _itemprop(soup, prop, tag="dd"):
     return tag and _unquote(tag.text.strip())
 
 
-def _scrap(url: str) -> Game:
+def _scrap(
+    game_class: Type,
+    slug: str
+) -> Union[N3dsGame, SwitchGame]:
+    url = f"https://www.nintendo.com/games/detail/{slug}"
     response = requests.get(url, allow_redirects=True)
     soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -55,23 +59,33 @@ def _scrap(url: str) -> Game:
     lines = [line.strip().replace("\",", "") for line in str(script).split("\n") if ':' in line]
     data = dict(map(lambda line: line.split(': "'), lines))
 
-    platform = data["platform"]
-
-    game = Game(
+    game = game_class(
+        region=NA,
+        title=_unquote(data["title"]),
         nsuid=data["nsuid"],
         product_code=data["productCode"],
-        title=_unquote(data["title"]),
-        region=NA,
-        platform=PLATFORMS[platform],
     )
 
+    game.na_slug = slug
+
+    game.description = _itemprop(soup, "description", tag="div")
+    game.developer = _itemprop(soup, "manufacturer")
+    game.publisher = _unquote(data["publisher"])
+
     # Genres
-    game.genres = _unquote(data["genre"]).split(",")
-    game.genres.sort()
+    game.genres = list(sorted([
+        genre for genre in _unquote(data["genre"]).split(",")
+        if genre != "Undefined"
+    ]))
 
     # Languages
-    game.languages = _class(soup, "languages").split(",")
-    game.languages.sort()
+    game.languages = _class(soup, "languages")
+
+    if game.languages:
+        game.languages = game.languages.split(", ")
+        game.languages.sort()
+    else:
+        game.languages = []
 
     # Players
     try:
@@ -90,25 +104,25 @@ def _scrap(url: str) -> Game:
     game.size = _itemprop(soup, "romSize")
     if game.size:
         game.size, unit = game.size.split(" ")
-        game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
 
-    # Other properties
+        if unit.lower() == "blocks":
+            game.size = int(game.size) // 8
+        else:
+            game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
+
+    # Features
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None
-    game.description = _itemprop(soup, "description", tag="div")
-    game.developer = _itemprop(soup, "manufacturer")
-    game.dlc = _class(soup, "dlc", tag="section") is not None
+    game.dlc = True if _class(soup, "dlc", tag="section") is not None else None
     game.free_to_play = data["msrp"] == '0'
-    game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
-    game.online_play = _aria_label(soup, "online-play") is not None
-    game.publisher = _unquote(data["publisher"])
-    game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
-    game.na_slug = _unquote(data["slug"])
 
-    # Unknown
-    game.amiibo = None
-    game.iaps = None
-    game.local_multiplayer = None
-    game.voice_chat = None
+    if game.platform == N3DS:
+        game.street_pass = "StreetPass" in game.description
+        game.virtual_console = soup.find("img", attrs={"alt": "Virtual Console"}) is not None
+
+    if game.platform == SWITCH:
+        game.game_vouchers = True if _aria_label(soup, "Eligible for Game Vouchers") is not None else None
+        game.nso_required = _aria_label(soup, "online-play") is not None
+        game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
 
     return game
 
@@ -116,8 +130,8 @@ def _scrap(url: str) -> Game:
 @validate.nsuid
 def game_info(*, nsuid: str) -> Game:
     """
-        Given an `nsuid` valid for the American region, it will provide the
-    information of the game with that nsuid.
+        Given a valid nsuid for the NA region, it will retrieve the
+    information of the game with that nsuid from Nintendo of America.
 
     Game data
     ---------
@@ -126,22 +140,29 @@ def game_info(*, nsuid: str) -> Game:
         * product_code: str
         * platform: str
         * region: str = "NA"
+        * na_slug: str
 
-        * demo: bool
         * description: str
         * developer: str
-        * dlc: bool
-        * free_to_play: bool
         * genres: List[str]
         * languages: List[str]
-        * na_slug: str
-        * online_play: bool
-        * players: int
         * publisher: str
         * release_date: datetime
-        * save_data_cloud: bool
         * size: int
+
+        # Features
+        * demo: bool
+        * dlc: bool
+        * free_to_play: bool
+
+        # 3DS Features
+        * street_pass: bool
+        * virtual_console: bool
+
+        # Switch Features
         * game_vouchers: bool
+        * nso_required: bool
+        * save_data_cloud: bool
 
     Parameters
     ----------
@@ -150,8 +171,12 @@ def game_info(*, nsuid: str) -> Game:
 
     Returns
     -------
-    classes.nintendeals.games.Game:
-        Information provided by NoA of the game with the given nsuid.
+    nintendeals.classes.N3DSGame:
+        3DS game from Nintendo of America.
+    nintendeals.classes.SwitchGame:
+        Switch game from Nintendo of America.
+    None:
+        No game with the provided nsuid was found on Nintendo of America.
 
     Raises
     -------
@@ -159,8 +184,13 @@ def game_info(*, nsuid: str) -> Game:
         The nsuid was either none or has an invalid format.
     """
     slug = algolia.find_by_nsuid(nsuid)
-    url = DETAIL_URL.format(slug=slug)
 
-    log.info("Fetching info for %s from %s", nsuid, url)
+    log.info("Fetching info for %s", nsuid)
 
-    return _scrap(url)
+    if nsuid.startswith("5"):
+        return _scrap(N3dsGame, slug=slug)
+
+    if nsuid.startswith("7"):
+        return _scrap(SwitchGame, slug=slug)
+
+    return None

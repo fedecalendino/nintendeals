@@ -5,7 +5,7 @@ from pycountry import countries
 from nintendeals import exceptions
 from nintendeals.constants import REGIONS
 
-NSUID_REGEX = re.compile(r"\d00\d{11}")
+NSUID_REGEX = re.compile(r"[5-7]00\d{11}")
 
 
 def _validate_nsuid(nsuid_: str, nullable: bool = False):
@@ -109,7 +109,7 @@ def nsuids(nullable: bool = False):
     """
         Validates that all the nsuids in the parameter `nsuids` of the decorated
     function match the format of a valid nsuid.
-        A valid nsuid follows the "[0-9]00[0-9]{11}" regular expression.
+        A valid nsuid follows the "[5-7]00[0-9]{11}" regular expression.
 
     Parameters
     ----------
@@ -119,8 +119,9 @@ def nsuids(nullable: bool = False):
     Examples
     -------
     >>> nsuids=["70010000000450"]  # ✅️
+    >>> nsuids=["50010000000654"]  # ✅️
     >>> nsuids=["70010000000"]     # ❌️
-    >>> nsuids=[70010000000]       # ❌️
+    >>> nsuids=[50010000000]       # ❌️
 
     Raises
     -------
@@ -145,7 +146,7 @@ def nsuid(nullable: bool = False):
     """
         Validates that the parameter `nsuid` of the decorated function matches
     the format of a valid nsuid.
-        A valid nsuid follows the "[0-9]00[0-9]{11}" regular expression.
+        A valid nsuid follows the "[5-7]00[0-9]{11}" regular expression.
 
     Parameters
     ----------
@@ -155,8 +156,9 @@ def nsuid(nullable: bool = False):
     Examples
     -------
     >>> nsuids=["70010000000450"]  # ✅️
+    >>> nsuids=["50010000000654"]  # ✅️
     >>> nsuids=["70010000000"]     # ❌️
-    >>> nsuids=[70010000000]       # ❌️
+    >>> nsuids=[50010000000]       # ❌️
 
     Raises
     -------
