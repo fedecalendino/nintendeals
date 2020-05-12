@@ -69,8 +69,8 @@ def _scrap(
     game.slug = slug
 
     game.description = _itemprop(soup, "description", tag="div")
-    game.developer = _itemprop(soup, "manufacturer")
-    game.publisher = _unquote(data["publisher"])
+    game.developer = _itemprop(soup, "manufacturer") or None
+    game.publisher = _unquote(data["publisher"]) or None
 
     # Genres
     game.genres = list(sorted([
@@ -111,8 +111,10 @@ def _scrap(
             game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
 
     # Features
+    game.amiibo = None  # unsupported
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None
-    game.dlc = True if _class(soup, "dlc", tag="section") is not None else None
+    game.dlc = _class(soup, "dlc", tag="section") is not None
+    game.iaps = None  # unsupported
     game.free_to_play = data["msrp"] == '0'
 
     if game.platform == N3DS:
@@ -120,7 +122,8 @@ def _scrap(
         game.virtual_console = soup.find("img", attrs={"alt": "Virtual Console"}) is not None
 
     if game.platform == SWITCH:
-        game.game_vouchers = True if _aria_label(soup, "Eligible for Game Vouchers") is not None else None
+        game.local_multiplayer = None  # unsupported
+        game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
         game.nso_required = _aria_label(soup, "online-play") is not None
         game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
 
@@ -143,23 +146,27 @@ def game_info(*, nsuid: str) -> Game:
         * slug: str
 
         * description: str
-        * developer: str
+        * developer: str (* may be None)
         * genres: List[str]
         * languages: List[str]
-        * publisher: str
+        * players: int (* may be 0)
+        * publisher: str (* may be None)
         * release_date: datetime
         * size: int
 
         # Features
+        * amiibo: bool (* unsupported)
         * demo: bool
         * dlc: bool
         * free_to_play: bool
+        * iaps: bool (* unsupported)
 
         # 3DS Features
         * street_pass: bool
         * virtual_console: bool
 
         # Switch Features
+        * local_multiplayer: bool  (* unsupported)
         * game_vouchers: bool
         * nso_required: bool
         * save_data_cloud: bool

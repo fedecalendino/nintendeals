@@ -42,8 +42,8 @@ class TestNoa(TestCase):
         self.assertEqual(1137, game.size)
 
         self.assertIsNone(game.amiibo)
-        self.assertTrue(game.demo)
-        self.assertIsNone(game.dlc)
+        self.assertEqual(True, game.demo)
+        self.assertNotEqual(True, game.dlc)
         self.assertFalse(game.free_to_play)
 
         self.assertFalse(game.street_pass)
@@ -86,7 +86,7 @@ class TestNoa(TestCase):
         self.assertTrue(game.dlc)
         self.assertFalse(game.free_to_play)
 
-        self.assertIsNone(game.game_vouchers)
+        self.assertNotEqual(True, game.game_vouchers)
         self.assertIsNone(game.local_multiplayer)
         self.assertTrue(game.nso_required)
         self.assertTrue(game.save_data_cloud)

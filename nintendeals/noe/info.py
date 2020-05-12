@@ -115,6 +115,7 @@ def _scrap_switch(nsuid: str) -> Game:
 
     # Switch Features
     game.local_multiplayer = "Local multiplayer" in features
+    game.game_vouchers = None  # unsupported
     game.nso_required = "Paid online membership service" in features
     game.save_data_cloud = "Save Data Cloud" in features
     game.voice_chat = "Voice Chat" in features
@@ -137,7 +138,7 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * region: str = "EU"
 
         * description: str
-        * developer: str
+        * developer: str (* may be None)
         * genres: List[str]
         * languages: List[str]
         * players: int
@@ -154,6 +155,7 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
 
         # Switch Features
         * local_multiplayer: bool
+        * game_vouchers: bool (* unsupported)
         * nso_required: bool
         * save_data_cloud: bool
         * voice_chat: bool
