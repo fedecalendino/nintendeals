@@ -29,11 +29,11 @@ def _fetch_prices(
 
     response = requests.get(
         url="https://api.ec.nintendo.com/v1/price",
-        params={
-            "country": country,
-            "lang": "en",
-            "ids": ",".join(nsuids)
-        }
+        params=dict(
+            country=country,
+            lang="en",
+            ids=",".join(nsuids),
+        )
     )
 
     response.raise_for_status()

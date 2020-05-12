@@ -4,7 +4,6 @@ from typing import List, Optional
 from nintendeals import validate
 from nintendeals.api.prices import get_price
 from nintendeals.classes.prices import Price
-from nintendeals.constants import NA, EU, JP
 
 
 class Game:
@@ -74,7 +73,7 @@ class Game:
         return get_price(country=country, game=self)
 
     @validate.country
-    def url(self, *, country: str, lang: str = "en") -> str:
+    def url(self, *, country: str, lang: str = "en") -> Optional[str]:
         """
             Given a valid `country` code and an optional language it will
         provide a url (using the game's nsuid) that will redirect to the
@@ -97,22 +96,6 @@ class Game:
         nintendeals.exceptions.InvalidAlpha2Code
             The `country` wasn't a valid alpha-2 code.
         """
-
-        if self.region == NA and self.slug:
-            return f"https://www.nintendo.com/{lang}_{country}/games/detail/{self.slug}/"
-
-        if self.region == EU and self.slug:
-            if country == "GB":
-                country = "CO.UK"
-
-            if country == "ZA":
-                country = "CO.ZA"
-
-            return f"https://www.nintendo.{country.lower()}/{lang}{self.slug}"
-
-        if self.region == JP:
-            return f"https://www.nintendo.co.jp/titles/{self.nsuid}"
-
         if not self.nsuid:
             return None
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Iterator, Union
 
 from nintendeals.classes import N3dsGame, SwitchGame
-from nintendeals.helpers import filter_by_date
+from nintendeals.helpers import search_filter
 from nintendeals.noe import list_3ds_games, list_switch_games
 
 log = logging.getLogger(__name__)
@@ -23,18 +23,11 @@ def _search_games(
         params = {"query": f"\"{title}\""}
 
     for game in listing(**params):
-        if title and title not in game.title:
-            continue
-
-        if not filter_by_date(
-            game.release_date,
-            released_at,
-            released_after,
-            released_before
+        if search_filter(
+                game, title,
+                released_at, released_after, released_before
         ):
-            continue
-
-        yield game
+            yield game
 
 
 def search_3ds_games(

@@ -29,12 +29,12 @@ class TestSwitchGames(TestCase):
         self.assertEqual(1, game.players)
 
         self.assertEqual(
-            "https://www.nintendo.com/en_US/games/detail/celeste-switch/",
+            "https://ec.nintendo.com/US/en/titles/70010000006442",
             game.url(country="US")
         )
 
         self.assertEqual(
-            "https://www.nintendo.com/fr_CA/games/detail/celeste-switch/",
+            "https://ec.nintendo.com/CA/fr/titles/70010000006442",
             game.url(country="CA", lang="fr")
         )
 
@@ -67,12 +67,12 @@ class TestSwitchGames(TestCase):
         self.assertEqual(1, game.players)
 
         self.assertEqual(
-            "https://www.nintendo.co.uk/en/Games/Nintendo-Switch-download-software/Celeste-1207064.html",
+            "https://ec.nintendo.com/GB/en/titles/70010000006441",
             game.url(country="GB")
         )
 
         self.assertEqual(
-            "https://www.nintendo.it/it/Games/Nintendo-Switch-download-software/Celeste-1207064.html",
+            "https://ec.nintendo.com/IT/it/titles/70010000006441",
             game.url(country="IT", lang="it")
         )
 
@@ -105,12 +105,7 @@ class TestSwitchGames(TestCase):
         self.assertEqual(1, game.players)
 
         self.assertEqual(
-            "https://www.nintendo.co.jp/titles/70010000010822",
-            game.url(country="JP")
-        )
-
-        self.assertEqual(
-            "https://www.nintendo.co.jp/titles/70010000010822",
+            "https://ec.nintendo.com/JP/ja/titles/70010000010822",
             game.url(country="JP", lang="ja")
         )
 
