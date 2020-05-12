@@ -66,7 +66,7 @@ def _scrap(
         product_code=data["productCode"],
     )
 
-    game.na_slug = slug
+    game.slug = slug
 
     game.description = _itemprop(soup, "description", tag="div")
     game.developer = _itemprop(soup, "manufacturer")
@@ -140,7 +140,7 @@ def game_info(*, nsuid: str) -> Game:
         * product_code: str
         * platform: str
         * region: str = "NA"
-        * na_slug: str
+        * slug: str
 
         * description: str
         * developer: str

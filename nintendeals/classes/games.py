@@ -26,8 +26,8 @@ class Game:
         self.nsuid: str = nsuid
         self.product_code: str = product_code
 
-        self.na_slug: str = None
-        self.eu_slug: str = None
+        self.slug: str = None
+        self.slug: str = None
 
         self.description: str = None
         self.developer: str = None
@@ -98,17 +98,17 @@ class Game:
             The `country` wasn't a valid alpha-2 code.
         """
 
-        if self.region == NA and self.na_slug:
-            return f"https://www.nintendo.com/{lang}_{country}/games/detail/{self.na_slug}/"
+        if self.region == NA and self.slug:
+            return f"https://www.nintendo.com/{lang}_{country}/games/detail/{self.slug}/"
 
-        if self.region == EU and self.eu_slug:
+        if self.region == EU and self.slug:
             if country == "GB":
                 country = "CO.UK"
 
             if country == "ZA":
                 country = "CO.ZA"
 
-            return f"https://www.nintendo.{country.lower()}/{lang}{self.eu_slug}"
+            return f"https://www.nintendo.{country.lower()}/{lang}{self.slug}"
 
         if self.region == JP:
             return f"https://www.nintendo.co.jp/titles/{self.nsuid}"

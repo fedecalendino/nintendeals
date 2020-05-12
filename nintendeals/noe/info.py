@@ -67,7 +67,7 @@ def _scrap_switch(nsuid: str) -> Game:
         product_code=data["productCode"],
     )
 
-    game.eu_slug = response.url.replace("https://www.nintendo.co.uk", "")
+    game.slug = response.url.replace("https://www.nintendo.co.uk", "")
 
     game.description = soup.find("div", class_="col-xs-12 content").text.strip()
     game.developer = _sibling(soup, "Developer")

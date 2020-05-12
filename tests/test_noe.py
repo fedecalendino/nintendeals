@@ -18,7 +18,7 @@ class TestNoe(TestCase):
         self.assertEqual("Super Smash Bros. for Nintendo 3DS", game.title)
         self.assertEqual(
             "/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html",
-            game.eu_slug
+            game.slug
         )
 
         self.assertEqual("50010000024975", game.nsuid)
@@ -56,7 +56,7 @@ class TestNoe(TestCase):
         self.assertEqual("Super Smash Bros. Ultimate", game.title)
         self.assertEqual(
             "/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html",
-            game.eu_slug
+            game.slug
         )
 
         self.assertEqual("70010000012331", game.nsuid)
@@ -105,7 +105,7 @@ class TestNoe(TestCase):
                 break
 
             self.assertIsNotNone(game.title)
-            self.assertIsNotNone(game.eu_slug)
+            self.assertIsNotNone(game.slug)
 
             self.assertEqual("EU", game.region)
             self.assertEqual("Nintendo 3DS", game.platform)
@@ -122,7 +122,7 @@ class TestNoe(TestCase):
                 break
 
             self.assertIsNotNone(game.title)
-            self.assertIsNotNone(game.eu_slug)
+            self.assertIsNotNone(game.slug)
 
             self.assertEqual("EU", game.region)
             self.assertEqual("Nintendo Switch", game.platform)
@@ -145,7 +145,7 @@ class TestNoe(TestCase):
         # MM, TFH
         for index, game in enumerate(search, start=1):
             self.assertIn("Zelda", game.title)
-            self.assertIsNotNone(game.eu_slug)
+            self.assertIsNotNone(game.slug)
 
             if game.nsuid:
                 self.assertTrue(game.nsuid.startswith("5001"))
@@ -167,7 +167,7 @@ class TestNoe(TestCase):
         self.assertEqual("70010000000023", game.nsuid)
         self.assertEqual(
             "/Games/Nintendo-Switch/The-Legend-of-Zelda-Breath-of-the-Wild-1173609.html",
-            game.eu_slug
+            game.slug
         )
 
         self.assertEqual("Nintendo", game.developer)

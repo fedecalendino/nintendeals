@@ -23,7 +23,7 @@ def _list_games(
             nsuid=data.get("nsuid"),
         )
 
-        game.na_slug = data["slug"]
+        game.slug = data["slug"]
         game.genres = list(sorted(data.get("categories", [])))
 
         try:
@@ -59,7 +59,7 @@ def list_3ds_games(**kwargs) -> Iterator[Game]:
         * product_code: str (Unavailable)
         * platform: str = "Nintendo 3DS"
         * region: str = "NA"
-        * na_slug: str
+        * slug: str
 
         * description: str
         * developer: str
@@ -95,7 +95,7 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
         * product_code: str (Unavailable)
         * platform: str = "Nintendo Switch"
         * region: str = "NA"
-        * na_slug: str
+        * slug: str
 
         * description: str
         * developer: str

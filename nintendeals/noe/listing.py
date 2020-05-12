@@ -66,7 +66,7 @@ def _list_games(
                 product_code=product_codes[0],
             )
 
-            game.eu_slug = data.get("url")
+            game.slug = data.get("url")
 
             game.developer = data.get("developer")
             game.publisher = data.get("publisher")

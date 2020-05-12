@@ -16,7 +16,7 @@ class TestNoa(TestCase):
         game: N3dsGame = noa.game_info(nsuid="50010000023235")
 
         self.assertEqual("Super Smash Bros.", game.title)
-        self.assertEqual("super-smash-bros-for-nintendo-3ds", game.na_slug)
+        self.assertEqual("super-smash-bros-for-nintendo-3ds", game.slug)
 
         self.assertEqual("50010000023235", game.nsuid)
         self.assertEqual("AXC", game.unique_id)
@@ -52,7 +52,7 @@ class TestNoa(TestCase):
         game: SwitchGame = noa.game_info(nsuid="70010000012332")
 
         self.assertEqual("Super Smash Bros.™ Ultimate", game.title)
-        self.assertEqual("super-smash-bros-ultimate-switch", game.na_slug)
+        self.assertEqual("super-smash-bros-ultimate-switch", game.slug)
 
         self.assertEqual("70010000012332", game.nsuid)
         self.assertEqual("AAAB", game.unique_id)
@@ -96,7 +96,7 @@ class TestNoa(TestCase):
                 break
 
             self.assertIsNotNone(game.title)
-            self.assertIsNotNone(game.na_slug)
+            self.assertIsNotNone(game.slug)
             self.assertIsNotNone(game.description)
 
             self.assertEqual("NA", game.region)
@@ -114,7 +114,7 @@ class TestNoa(TestCase):
                 break
 
             self.assertIsNotNone(game.title)
-            self.assertIsNotNone(game.na_slug)
+            self.assertIsNotNone(game.slug)
             self.assertIsNotNone(game.description)
 
             self.assertEqual("NA", game.region)
@@ -138,7 +138,7 @@ class TestNoa(TestCase):
         # ALttP, MM, TFH
         for index, game in enumerate(search, start=1):
             self.assertIn("Zelda", game.title)
-            self.assertIsNotNone(game.na_slug)
+            self.assertIsNotNone(game.slug)
             self.assertIsNotNone(game.description)
 
             if game.nsuid:
@@ -159,7 +159,7 @@ class TestNoa(TestCase):
 
         self.assertEqual("The Legend of Zelda: Breath of the Wild", game.title)
         self.assertEqual("70010000000025", game.nsuid)
-        self.assertEqual("the-legend-of-zelda-breath-of-the-wild-switch", game.na_slug)
+        self.assertEqual("the-legend-of-zelda-breath-of-the-wild-switch", game.slug)
         self.assertIsNotNone(game.description)
 
         self.assertEqual("Nintendo", game.developer)
