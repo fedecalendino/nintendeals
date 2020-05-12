@@ -24,7 +24,7 @@ def _list_games(
         )
 
         game.na_slug = data["slug"]
-        game.genres = data.get("categories", [])
+        game.genres = list(sorted(data.get("categories", [])))
 
         try:
             release_date = data["releaseDateMask"].split("T")[0]
@@ -42,7 +42,7 @@ def _list_games(
         game.publisher = data.get("publishers", [None])[0]
         game.developer = data.get("developers", [None])[0]
 
-        game.virtual_console = data.get("virtualConsole", "na") != "na"
+        game.virtual_console = True if data.get("virtualConsole", "na") != "na" else None
 
         yield game
 

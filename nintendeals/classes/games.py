@@ -9,6 +9,8 @@ from nintendeals.constants import NA, EU, JP
 
 class Game:
 
+    platform = None
+
     @validate.title
     @validate.region
     @validate.nsuid(nullable=True)

@@ -82,7 +82,7 @@ def _scrap(
     game.languages = _class(soup, "languages")
 
     if game.languages:
-        game.languages = game.languages.split(",")
+        game.languages = game.languages.split(", ")
         game.languages.sort()
     else:
         game.languages = []
@@ -112,7 +112,7 @@ def _scrap(
 
     # Features
     game.demo = _aria_label(soup, "Download game demo opens in another window.") is not None
-    game.dlc = _class(soup, "dlc", tag="section") is not None
+    game.dlc = True if _class(soup, "dlc", tag="section") is not None else None
     game.free_to_play = data["msrp"] == '0'
 
     if game.platform == N3DS:
@@ -120,7 +120,7 @@ def _scrap(
         game.virtual_console = soup.find("img", attrs={"alt": "Virtual Console"}) is not None
 
     if game.platform == SWITCH:
-        game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
+        game.game_vouchers = True if _aria_label(soup, "Eligible for Game Vouchers") is not None else None
         game.nso_required = _aria_label(soup, "online-play") is not None
         game.save_data_cloud = _aria_label(soup, "save-data-cloud") is not None
 
