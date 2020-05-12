@@ -57,10 +57,12 @@ def _list_games(
                 if "-" not in pc
             ] or [None]
 
+            nsuids = list(reversed(sorted(data.get("nsuid_txt", [None]))))
+
             game = game_class(
                 region=EU,
                 title=data["title_extras_txt"][0],
-                nsuid=data.get("nsuid_txt", [None])[0],
+                nsuid=nsuids[0],
                 product_code=product_codes[0],
             )
 

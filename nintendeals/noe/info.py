@@ -80,7 +80,7 @@ def _scrap_switch(nsuid: str) -> Game:
 
     # Languages
     game.languages = list(sorted(
-        _sibling(soup, string="Languages").split(",")
+        _sibling(soup, string="Languages").split(", ")
     ))
 
     # Players

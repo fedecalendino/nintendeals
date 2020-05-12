@@ -23,6 +23,9 @@ def _search_games(
         params = {"query": title}
 
     for game in listing(**params):
+        if title and title not in game.title:
+            continue
+
         if not filter_by_date(
             game.release_date,
             released_at,
