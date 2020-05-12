@@ -1,7 +1,7 @@
+from unittest import TestCase
+
 from nintendeals import noa, noe, noj
 from nintendeals.classes import N3dsGame
-
-from unittest import TestCase
 
 
 class TestSwitchGames(TestCase):

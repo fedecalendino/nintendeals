@@ -1,7 +1,8 @@
+from datetime import datetime
+from unittest import TestCase
+
 from nintendeals import noa
 from nintendeals.classes import N3dsGame, SwitchGame
-from unittest import TestCase
-from datetime import datetime
 
 LIST_LIMIT = 20
 
