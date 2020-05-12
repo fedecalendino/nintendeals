@@ -153,7 +153,7 @@ class TestNoe(TestCase):
             if game.unique_id:
                 self.assertTrue(len(game.unique_id) == 3)
 
-        self.assertEqual(3, index)
+        self.assertEqual(2, index)
 
     def test_search_switch_games(self):
         search = noe.search_switch_games(
