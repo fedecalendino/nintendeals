@@ -156,7 +156,6 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     game.free_to_play = extra.get("dprice") == 0.0
     game.iaps = data.get("in_app_purchase", False)
 
-    # Switch Features
     game.game_vouchers = len(data.get("included_pretickets", [])) > 0
     game.local_multiplayer = data["player_number"].get("local_min", 0) > 0
     game.nso_required = "Nintendo Switch Online" in features
@@ -173,26 +172,24 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
 
     Game data
     ---------
+        * platform: str ["Nintendo 3DS", "Nintendo Switch"]
+        * region: str ["JP"]
         * title: str
         * nsuid: str
         * product_code: str
-        * platform: str
-        * region: str = "JP"
 
+        * demo: bool
         * description: str
         * developer: str
+        * dlc: bool
+        * free_to_play: bool
         * genres: List[str]
+        * iaps: bool
         * languages: List[str]
+        * local_multiplayer: bool
         * publisher: str
         * release_date: datetime
         * size: int
-
-        # Common Features
-        * demo: bool
-        * dlc: bool
-        * free_to_play: bool
-        * iaps: bool
-        * local_multiplayer: bool
 
         # Switch Features
         * save_data_cloud: bool

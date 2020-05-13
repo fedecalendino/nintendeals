@@ -58,17 +58,15 @@ def list_3ds_games() -> Iterator[N3dsGame]:
 
     Game data
     ---------
+        * platform: str ["Nintendo 3DS"]
+        * region: str ["JP"]
         * title: str
         * nsuid: str
         * product_code: str
-        * region: str = "JP"
-        * platform: str = "Nintendo 3DS"
 
         * developer: str
-        * release_date: datetime (may be None)
-
-        # Features
         * free_to_play: bool
+        * release_date: datetime (optional)
 
     Yields
     -------
@@ -87,17 +85,15 @@ def list_switch_games() -> Iterator[SwitchGame]:
 
     Game data
     ---------
+        * platform: str ["Nintendo Switch"]
+        * region: str ["JP"]
         * title: str
         * nsuid: str
         * product_code: str
-        * region: str = "JP"
-        * platform: str = "Nintendo Switch"
 
         * developer: str
-        * release_date: datetime (may be None)
-
-        # Features
         * free_to_play: bool
+        * release_date: datetime (optional)
 
     Yields
     -------

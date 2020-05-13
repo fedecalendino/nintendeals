@@ -5,7 +5,7 @@ from typing import Iterator, Type, Union
 
 from nintendeals.classes import N3dsGame, SwitchGame
 from nintendeals.classes.games import Game
-from nintendeals.constants import NA
+from nintendeals.constants import NA, N3DS
 from nintendeals.noa.external import algolia
 
 log = logging.getLogger(__name__)
@@ -42,7 +42,8 @@ def _list_games(
         game.publisher = data.get("publishers", [None])[0]
         game.developer = data.get("developers", [None])[0]
 
-        game.virtual_console = True if data.get("virtualConsole", "na") != "na" else None
+        if game.platform == N3DS:
+            game.virtual_console = data.get("virtualConsole", "na") != "na"
 
         yield game
 
@@ -54,23 +55,20 @@ def list_3ds_games(**kwargs) -> Iterator[Game]:
 
     Game data
     ---------
+        * platform: str ["Nintendo 3DS"]
+        * region: str ["NA"]
         * title: str
-        * nsuid: str (may be None)
-        * product_code: str (Unavailable)
-        * platform: str = "Nintendo 3DS"
-        * region: str = "NA"
+        * nsuid: str (optional)
+        * product_code: str (unsupported)
+
         * slug: str
 
         * description: str
         * developer: str
+        * free_to_play: bool
         * genres: List[str]
         * publisher: str
         * release_date: datetime
-
-        # Features
-        * free_to_play: bool
-
-        # 3DS Features
         * virtual_console: bool
 
     Yields
@@ -90,21 +88,20 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
 
     Game data
     ---------
+        * platform: str ["Nintendo Switch"]
+        * region: str ["NA"]
         * title: str
-        * nsuid: str (may be None)
-        * product_code: str (Unavailable)
-        * platform: str = "Nintendo Switch"
-        * region: str = "NA"
+        * nsuid: str (optional)
+        * product_code: str (unsupported)
+
         * slug: str
 
         * description: str
         * developer: str
+        * free_to_play: bool
         * genres: List[str]
         * publisher: str
         * release_date: datetime
-
-        # Common Features
-        * free_to_play: bool
 
     Yields
     -------

@@ -131,31 +131,31 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
 
     Game data
     ---------
+        * platform: str ["Nintendo 3DS", "Nintendo Switch"]
+        * region: str ["EU"]
         * title: str
-        * nsuid: str (may be None)
-        * product_code: str (may be None)
-        * platform: str
-        * region: str = "EU"
+        * nsuid: str (optional)
+        * product_code: str (optional)
 
+        * slug: str
+
+        * amiibo: bool
+        * demo: bool
         * description: str
-        * developer: str (* may be None)
+        * developer: str (optional)
+        * dlc: bool
+        * free_to_play: bool
         * genres: List[str]
+        * iaps: bool
         * languages: List[str]
         * players: int
         * publisher: str
-        * size: int
         * release_date: datetime
-
-        # Common Features
-        * amiibo: bool
-        * demo: bool
-        * dlc: bool
-        * free_to_play: bool
-        * iaps: bool
+        * size: int
 
         # Switch Features
         * local_multiplayer: bool
-        * game_vouchers: bool (* unsupported)
+        * game_vouchers: bool (unsupported)
         * nso_required: bool
         * save_data_cloud: bool
         * voice_chat: bool

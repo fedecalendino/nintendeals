@@ -138,35 +138,34 @@ def game_info(*, nsuid: str) -> Game:
 
     Game data
     ---------
+        * platform: str ["Nintendo 3DS", "Nintendo Switch"]
+        * region: str ["NA"]
         * title: str
         * nsuid: str
         * product_code: str
-        * platform: str
-        * region: str = "NA"
+
         * slug: str
 
-        * description: str
-        * developer: str (* may be None)
-        * genres: List[str]
-        * languages: List[str]
-        * players: int (* may be 0)
-        * publisher: str (* may be None)
-        * release_date: datetime
-        * size: int
-
-        # Features
-        * amiibo: bool (* unsupported)
+        * amiibo: bool (unsupported)
         * demo: bool
+        * description: str
+        * developer: str (optional)
         * dlc: bool
         * free_to_play: bool
-        * iaps: bool (* unsupported)
+        * genres: List[str]
+        * iaps: bool (unsupported)
+        * languages: List[str]
+        * players: int
+        * publisher: str (optional)
+        * release_date: datetime
+        * size: int
 
         # 3DS Features
         * street_pass: bool
         * virtual_console: bool
 
         # Switch Features
-        * local_multiplayer: bool  (* unsupported)
+        * local_multiplayer: bool (unsupported)
         * game_vouchers: bool
         * nso_required: bool
         * save_data_cloud: bool

@@ -68,14 +68,15 @@ def _list_games(
 
             game.slug = data.get("url")
 
+            game.description = data.get("excerpt")
             game.developer = data.get("developer")
             game.publisher = data.get("publisher")
             game.genres = data.get("pretty_game_categories_txt", [])
             game.players = data.get("players_to")
-            game.languages = list(map(
+            game.languages = list(sorted(map(
                 lambda lang: lang.title(),
-                data.get("language_availability", [])
-            ))
+                data.get("language_availability", [""])[0].split(",")
+            )))
 
             try:
                 game.release_date = datetime.strptime(
@@ -121,28 +122,27 @@ def list_3ds_games(**kwargs) -> Iterator[N3dsGame]:
 
     Game data
     ---------
+        * platform: str ["Nintendo 3DS"]
+        * region: str ["EU"]
         * title: str
-        * nsuid: str (may be None)
-        * product_code: str (may be None)
-        * region: str = "EU"
-        * platform: str = "Nintendo 3DS"
+        * nsuid: str (optional)
+        * product_code: str (optional)
 
+        * slug: str
+
+        * amiibo: bool
+        * demo: bool
+        * description: str
         * developer: str
+        * dlc: bool
+        * download_play: bool
+        * free_to_play: bool
         * genres: List[str]
         * languages: List[str]
+        * motion_control: bool
         * players: int
         * publisher: str
         * release_date: datetime
-
-        # Features
-        * amiibo: bool
-        * demo: bool
-        * dlc: bool
-        * free_to_play: bool
-
-        # 3DS Features
-        * download_play: bool
-        * motion_control: bool
         * spot_pass: bool
         * street_pass: bool
         * virtual_console: bool
@@ -168,29 +168,27 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
 
     Game data
     ---------
+        * platform: str ["Nintendo Switch"]
+        * region: str ["EU"]
         * title: str
-        * nsuid: str (may be None)
-        * product_code: str (may be None)
-        * region: str = "EU"
-        * platform: str = "Nintendo Switch"
+        * nsuid: str (optional)
+        * product_code: str (optional)
 
+        * slug: str
+
+        * amiibo: bool
+        * demo: bool
         * developer: str
+        * dlc: bool
+        * free_to_play: bool
+        * game_vouchers: bool
         * genres: List[str]
         * languages: List[str]
+        * local_multiplayer: bool
+        * nso_required: bool
         * players: int
         * publisher: str
         * release_date: datetime
-
-        # Features
-        * amiibo: bool
-        * demo: bool
-        * dlc: bool
-        * free_to_play: bool
-
-        # Switch Features
-        * game_vouchers: bool
-        * local_multiplayer: bool
-        * nso_required: bool
         * save_data_cloud: bool
         * voice_chat: bool
 
