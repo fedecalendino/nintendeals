@@ -100,15 +100,20 @@ def _scrap(
     except ValueError:
         pass
 
-    # Game size (in MBs)
-    game.size = _itemprop(soup, "romSize")
-    if game.size:
-        game.size, unit = game.size.split(" ")
+    # Game size
+    rom_size = _itemprop(soup, "romSize")
+
+    if rom_size:
+        value, unit = rom_size.split(" ")
 
         if unit.lower() == "blocks":
-            game.size = int(game.size) // 8
+            value = int(value) // 8
         else:
-            game.size = round(float(game.size) * (1024 if unit == "GB" else 1))
+            value = round(float(value) * (1024 if unit == "GB" else 1))
+    else:
+        value = None
+
+    game.megabytes = value
 
     # Features
     game.amiibo = None  # unsupported
@@ -155,10 +160,10 @@ def game_info(*, nsuid: str) -> Game:
         * genres: List[str]
         * iaps: bool (unsupported)
         * languages: List[str]
+        * megabytes: int
         * players: int
         * publisher: str (optional)
         * release_date: datetime
-        * size: int
 
         # 3DS Features
         * street_pass: bool

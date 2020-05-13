@@ -142,7 +142,7 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
         pass
 
     # Game size (in MBs)
-    game.size = round(data.get("total_rom_size", 0) / 1024 / 1024)
+    game.megabytes = round(data.get("total_rom_size", 0) / 1024 / 1024)
 
     # Other properties
     features = list(map(
@@ -187,9 +187,9 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * iaps: bool
         * languages: List[str]
         * local_multiplayer: bool
+        * megabytes: int
         * publisher: str
         * release_date: datetime
-        * size: int
 
         # Switch Features
         * save_data_cloud: bool

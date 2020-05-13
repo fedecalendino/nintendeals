@@ -41,7 +41,7 @@ class TestNoe(TestCase):
 
         self.assertEqual(["Action", "Fighting"], game.genres)
         self.assertEqual(4, game.players)
-        self.assertEqual(1371, game.size)
+        self.assertEqual(1371, game.megabytes)
 
         self.assertTrue(game.amiibo)
         self.assertTrue(game.demo)
@@ -88,7 +88,7 @@ class TestNoe(TestCase):
         )
 
         self.assertEqual(8, game.players)
-        self.assertEqual(15869, game.size)
+        self.assertEqual(15869, game.megabytes)
 
         self.assertTrue(game.amiibo)
         self.assertFalse(game.demo)

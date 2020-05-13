@@ -87,10 +87,14 @@ def _list_games(
                 game.release_date = None
 
             if "datasize_readable_txt" in data:
-                size, unit = data.get("datasize_readable_txt", [""])[0].split()
+                value, unit = data.get("datasize_readable_txt", [""])[0].split()
 
                 if unit.lower() == "blocks":
-                    game.size = int(size) // 8
+                    value = int(value) // 8
+            else:
+                value = None
+
+            game.megabytes = value
 
             # Features
             game.amiibo = data.get("near_field_comm_b", False)
@@ -139,6 +143,7 @@ def list_3ds_games(**kwargs) -> Iterator[N3dsGame]:
         * free_to_play: bool
         * genres: List[str]
         * languages: List[str]
+        * megabytes: int
         * motion_control: bool
         * players: int
         * publisher: str

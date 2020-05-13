@@ -98,10 +98,14 @@ def _scrap_switch(nsuid: str) -> Game:
         pass
 
     # Game size (in MBs)
-    game.size = _sibling(soup, "Download size")
-    if game.size:
-        game.size, unit = game.size.split(" ")
-        game.size = round(float(game.size))
+    rom_size = _sibling(soup, "Download size")
+    if rom_size:
+        value, unit = rom_size.split(" ")
+        value = round(float(value))
+    else:
+        value = None
+
+    game.megabytes = value
 
     # Other properties
     features = _sibling(soup, string="Features")
@@ -148,10 +152,10 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * genres: List[str]
         * iaps: bool
         * languages: List[str]
+        * megabytes: int
         * players: int
         * publisher: str
         * release_date: datetime
-        * size: int
 
         # Switch Features
         * local_multiplayer: bool

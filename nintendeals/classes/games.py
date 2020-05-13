@@ -26,16 +26,15 @@ class Game:
         self.product_code: str = product_code
 
         self.slug: str = None
-        self.slug: str = None
 
         self.description: str = None
         self.developer: str = None
         self.genres: List[str] = []
         self.languages: List[str] = []
+        self.megabytes: int = None
         self.players: int = 0
         self.publisher: str = None
         self.release_date: datetime = None
-        self.size: int = None
 
         # Features
         self.amiibo: bool = None
