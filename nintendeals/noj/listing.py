@@ -46,6 +46,8 @@ def _list_games(
         except (ValueError, TypeError):
             game.release_date = None
 
+        game.banner_img = data.get("ScreenshotImgURL")
+
         games.append(game)
 
     return games
@@ -67,6 +69,8 @@ def list_3ds_games() -> Iterator[N3dsGame]:
         * developer: str
         * free_to_play: bool
         * release_date: datetime (optional)
+
+        * banner_img: str
 
     Yields
     -------
@@ -94,6 +98,8 @@ def list_switch_games() -> Iterator[SwitchGame]:
         * developer: str
         * free_to_play: bool
         * release_date: datetime (optional)
+
+        * banner_img: str
 
     Yields
     -------

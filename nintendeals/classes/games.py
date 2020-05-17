@@ -36,6 +36,10 @@ class Game:
         self.publisher: str = None
         self.release_date: datetime = None
 
+        # Images
+        self.banner_img: str = None
+        self.cover_img: str = None
+
         # Features
         self.amiibo: bool = None
         self.demo: bool = None

@@ -149,6 +149,8 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
         lambda feature: feature["name"], data.get("features", [])
     ))
 
+    game.banner_img = data.get("hero_banner_url")
+
     # Features
     game.amiibo = extra.get("amiibo", "0") == "1"
     game.demo = len(data.get("demos", [])) > 0
@@ -190,6 +192,8 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * megabytes: int
         * publisher: str
         * release_date: datetime
+
+        * banner_img: str
 
         # Switch Features
         * save_data_cloud: bool

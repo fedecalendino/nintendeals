@@ -96,6 +96,12 @@ def _list_games(
 
             game.megabytes = value
 
+            banner_img = data.get("wishlist_email_banner640w_image_url_s")
+            game.banner_img = ("https:" + banner_img) if banner_img else None
+
+            cover_img = data.get("image_url_sq_s")
+            game.cover_img = ("https:" + cover_img) if cover_img else None
+
             # Features
             game.amiibo = data.get("near_field_comm_b", False)
             game.demo = data.get("demo_availability", False)
@@ -152,6 +158,9 @@ def list_3ds_games(**kwargs) -> Iterator[N3dsGame]:
         * street_pass: bool
         * virtual_console: bool
 
+        * banner_img: str
+        * cover_img: str
+
     Yields
     -------
     nintendeals.classes.N3dsGame:
@@ -196,6 +205,9 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
         * release_date: datetime
         * save_data_cloud: bool
         * voice_chat: bool
+
+        * banner_img: str
+        * cover_img: str
 
     Yields
     -------

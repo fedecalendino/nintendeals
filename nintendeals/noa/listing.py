@@ -8,6 +8,8 @@ from nintendeals.classes.games import Game
 from nintendeals.constants import NA, N3DS
 from nintendeals.noa.external import algolia
 
+BASE = "https://www.nintendo.com"
+
 log = logging.getLogger(__name__)
 
 
@@ -42,6 +44,9 @@ def _list_games(
         game.publisher = data.get("publishers", [None])[0]
         game.developer = data.get("developers", [None])[0]
 
+        box_art = data.get("boxArt")
+        game.cover_img = (BASE + box_art) if box_art else None
+
         if game.platform == N3DS:
             game.virtual_console = data.get("virtualConsole", "na") != "na"
 
@@ -70,6 +75,8 @@ def list_3ds_games(**kwargs) -> Iterator[Game]:
         * publisher: str
         * release_date: datetime
         * virtual_console: bool
+
+        * cover_img: str
 
     Yields
     -------
@@ -102,6 +109,8 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
         * genres: List[str]
         * publisher: str
         * release_date: datetime
+
+        * box_art: str
 
     Yields
     -------

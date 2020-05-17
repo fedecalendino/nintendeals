@@ -107,6 +107,12 @@ def _scrap_switch(nsuid: str) -> Game:
 
     game.megabytes = value
 
+    overlay_art = soup.find("vc-price-box-overlay").attrs.get(":purchase-img-src")
+    game.banner_img = "https:" + overlay_art.replace("'", "")
+
+    packshot_art = soup.find("vc-price-box-standard").attrs.get(":packshot-src")
+    game.cover_img = "https:" + packshot_art.replace("'", "")
+
     # Other properties
     features = _sibling(soup, string="Features")
 
@@ -156,6 +162,9 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * players: int
         * publisher: str
         * release_date: datetime
+
+        * banner_img: str
+        * cover_img: str
 
         # Switch Features
         * local_multiplayer: bool

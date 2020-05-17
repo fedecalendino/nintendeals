@@ -13,6 +13,8 @@ from nintendeals.classes.games import Game
 from nintendeals.constants import NA, N3DS, SWITCH
 from nintendeals.noa.external import algolia
 
+BASE = "https://www.nintendo.com"
+
 log = logging.getLogger(__name__)
 
 
@@ -122,6 +124,9 @@ def _scrap(
     game.iaps = None  # unsupported
     game.free_to_play = data["msrp"] == '0'
 
+    banner_art = soup.find(class_="hero-landscape hero-only")
+    game.banner_img = BASE + banner_art.attrs.get("src") if banner_art else None
+
     if game.platform == N3DS:
         game.street_pass = "StreetPass" in game.description
         game.virtual_console = soup.find("img", attrs={"alt": "Virtual Console"}) is not None
@@ -174,6 +179,8 @@ def game_info(*, nsuid: str) -> Game:
         * game_vouchers: bool
         * nso_required: bool
         * save_data_cloud: bool
+
+        * banner_img: str
 
     Parameters
     ----------
