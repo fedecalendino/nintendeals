@@ -78,7 +78,7 @@ class TestNoa(TestCase):
             ],
             game.languages
         )
-        self.assertEqual(0, game.players)
+        self.assertEqual(8, game.players)
         self.assertEqual(13926, game.megabytes)
 
         self.assertIsNone(game.amiibo)
@@ -86,7 +86,7 @@ class TestNoa(TestCase):
         self.assertTrue(game.dlc)
         self.assertFalse(game.free_to_play)
 
-        self.assertNotEqual(True, game.game_vouchers)
+        self.assertEqual(True, game.game_vouchers)
         self.assertIsNone(game.local_multiplayer)
         self.assertTrue(game.nso_required)
         self.assertTrue(game.save_data_cloud)
