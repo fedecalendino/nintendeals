@@ -26,23 +26,23 @@ def _list_games(
         )
 
         game.slug = data["slug"]
-        game.genres = list(sorted(data.get("categories", [])))
+        game.genres = list(sorted(data.get("genres", [])))
 
         try:
-            release_date = data["releaseDateMask"].split("T")[0]
+            release_date = data["releaseDateDisplay"].split("T")[0]
             game.release_date = datetime.strptime(release_date, '%Y-%m-%d')
         except ValueError:
             pass
 
         try:
-            game.players = int(re.sub(r"[^\d]*", "", data["players"]))
+            game.players = int(re.sub(r"[^\d]*", "", data["numOfPlayers"]))
         except ValueError:
             game.players = 0
 
         game.description = data.get("description")
         game.free_to_play = data.get("msrp") == 0.0
-        game.publisher = data.get("publishers", [None])[0]
-        game.developer = data.get("developers", [None])[0]
+        game.publisher = (data.get("publishers") or [None])[0]
+        game.developer = (data.get("developers") or [None])[0]
 
         box_art = data.get("boxArt")
         game.cover_img = (BASE + box_art) if box_art else None

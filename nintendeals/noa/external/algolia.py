@@ -6,9 +6,9 @@ from algoliasearch.search_client import SearchClient
 from nintendeals.constants import SWITCH, N3DS
 
 APP_ID = "U3B6GR4UA3"
-API_KEY = "9a20c93440cf63cf1a7008d75f7438bf"
+API_KEY = "c4da8be7fd29f0f5bfa42920b0a99dc7"
 
-INDEX_NAME = "noa_aem_game_en_us_title_asc"
+INDEX_NAME = "ncom_game_en_us"
 INDEX = None
 
 
@@ -103,4 +103,4 @@ def find_by_nsuid(nsuid: str) -> str:
         restrictSearchableAttributes=['nsuid'],
     )
 
-    return hits[0]["slug"]
+    return (hits or [{}])[0].get("slug")
