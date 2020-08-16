@@ -66,7 +66,7 @@ class TestNoj(TestCase):
         )
 
         self.assertEqual(8, game.players)
-        self.assertEqual(16141, game.megabytes)
+        self.assertEqual(16410, game.megabytes)
 
         self.assertTrue(game.amiibo)
         self.assertFalse(game.demo)

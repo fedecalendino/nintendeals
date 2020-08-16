@@ -79,14 +79,13 @@ class TestNoa(TestCase):
             game.languages
         )
         self.assertEqual(8, game.players)
-        self.assertEqual(13926, game.megabytes)
+        self.assertEqual(16179, game.megabytes)
 
         self.assertIsNone(game.amiibo)
         self.assertFalse(game.demo)
         self.assertTrue(game.dlc)
         self.assertFalse(game.free_to_play)
 
-        self.assertEqual(True, game.game_vouchers)
         self.assertIsNone(game.local_multiplayer)
         self.assertTrue(game.nso_required)
         self.assertTrue(game.save_data_cloud)
@@ -158,7 +157,7 @@ class TestNoa(TestCase):
 
         game = next(search)
 
-        self.assertEqual("The Legend of Zelda: Breath of the Wild", game.title)
+        self.assertEqual("The Legend of Zelda™: Breath of the Wild", game.title)
         self.assertEqual("70010000000025", game.nsuid)
         self.assertEqual("the-legend-of-zelda-breath-of-the-wild-switch", game.slug)
         self.assertIsNotNone(game.description)

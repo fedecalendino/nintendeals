@@ -88,7 +88,7 @@ class TestNoe(TestCase):
         )
 
         self.assertEqual(8, game.players)
-        self.assertEqual(15869, game.megabytes)
+        self.assertEqual(16358, game.megabytes)
 
         self.assertTrue(game.amiibo)
         self.assertFalse(game.demo)
