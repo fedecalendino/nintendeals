@@ -27,6 +27,7 @@ class TestNoa(TestCase):
 
         self.assertEqual("NA", game.region)
         self.assertEqual("Nintendo 3DS", game.platform)
+        self.assertEqual("ESRB: Everyone 10+", game.rating)
 
         self.assertEqual(2014, game.release_date.year)
         self.assertEqual(10, game.release_date.month)
@@ -60,6 +61,7 @@ class TestNoa(TestCase):
 
         self.assertEqual("NA", game.region)
         self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual("ESRB: Everyone 10+", game.rating)
 
         self.assertEqual(2018, game.release_date.year)
         self.assertEqual(12, game.release_date.month)
@@ -102,6 +104,9 @@ class TestNoa(TestCase):
             self.assertEqual("NA", game.region)
             self.assertEqual("Nintendo 3DS", game.platform)
 
+            if game.rating:
+                self.assertIn("ESRB", game.rating)
+
             if game.nsuid:
                 self.assertTrue(game.nsuid.startswith("5001"))
 
@@ -119,6 +124,9 @@ class TestNoa(TestCase):
 
             self.assertEqual("NA", game.region)
             self.assertEqual("Nintendo Switch", game.platform)
+
+            if game.rating:
+                self.assertIn("ESRB", game.rating)
 
             if game.nsuid:
                 self.assertTrue(game.nsuid.startswith("7001"))

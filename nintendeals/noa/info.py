@@ -74,6 +74,11 @@ def _scrap(
     game.developer = _itemprop(soup, "manufacturer") or None
     game.publisher = _unquote(data["publisher"]) or None
 
+    rating = data.get("esrbRating")
+
+    if rating:
+        game.rating = f"ESRB: {rating}"
+
     # Genres
     game.genres = list(sorted([
         genre for genre in _unquote(data["genre"]).split(",")
@@ -168,6 +173,7 @@ def game_info(*, nsuid: str) -> Game:
         * megabytes: int
         * players: int
         * publisher: str (optional)
+        * rating: str (ESRB)
         * release_date: datetime
 
         # 3DS Features

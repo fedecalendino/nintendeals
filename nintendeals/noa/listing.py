@@ -44,6 +44,11 @@ def _list_games(
         game.publisher = (data.get("publishers") or [None])[0]
         game.developer = (data.get("developers") or [None])[0]
 
+        rating = data.get("esrbRating")
+
+        if rating:
+            game.rating = f"ESRB: {rating}"
+
         box_art = data.get("boxArt")
         game.cover_img = (BASE + box_art) if box_art else None
 
@@ -73,6 +78,7 @@ def list_3ds_games(**kwargs) -> Iterator[Game]:
         * free_to_play: bool
         * genres: List[str]
         * publisher: str
+        * rating: str (ESRB)
         * release_date: datetime
         * virtual_console: bool
 

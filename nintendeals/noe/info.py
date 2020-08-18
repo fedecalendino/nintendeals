@@ -73,6 +73,11 @@ def _scrap_switch(nsuid: str) -> Game:
     game.developer = _sibling(soup, "Developer")
     game.publisher = _sibling(soup, "Publisher")
 
+    rating = soup.find("div", class_="age-rating")
+
+    if rating:
+        game.rating = f"PEGI: {rating.text.strip()}"
+
     # Genres
     game.genres = list(sorted(map(
         lambda g: g.strip(), _sibling(soup, string="Categories").split(",")
@@ -161,6 +166,7 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * megabytes: int
         * players: int
         * publisher: str
+        * rating: str (PEGI)
         * release_date: datetime
 
         * banner_img: str

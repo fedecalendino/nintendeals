@@ -23,6 +23,7 @@ class TestNoj(TestCase):
 
         self.assertEqual("JP", game.region)
         self.assertEqual("Nintendo 3DS", game.platform)
+        self.assertEqual("CERO: A", game.rating)
 
         self.assertEqual(2014, game.release_date.year)
         self.assertEqual(9, game.release_date.month)
@@ -47,6 +48,7 @@ class TestNoj(TestCase):
 
         self.assertEqual("JP", game.region)
         self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual("CERO: A", game.rating)
 
         self.assertEqual("任天堂", game.developer)
         self.assertEqual("任天堂", game.publisher)

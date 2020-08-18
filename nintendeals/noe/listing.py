@@ -78,6 +78,11 @@ def _list_games(
                 data.get("language_availability", [""])[0].split(",")
             )))
 
+            rating = data.get("age_rating_sorting_i")
+
+            if rating:
+                game.rating = f"PEGI: {rating}"
+
             try:
                 game.release_date = datetime.strptime(
                     data["dates_released_dts"][0].split("T")[0],
@@ -153,6 +158,7 @@ def list_3ds_games(**kwargs) -> Iterator[N3dsGame]:
         * motion_control: bool
         * players: int
         * publisher: str
+        * rating: str (PEGI)
         * release_date: datetime
         * spot_pass: bool
         * street_pass: bool
@@ -202,6 +208,7 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
         * nso_required: bool
         * players: int
         * publisher: str
+        * rating: str (PEGI)
         * release_date: datetime
         * save_data_cloud: bool
         * voice_chat: bool

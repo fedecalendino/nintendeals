@@ -12,6 +12,15 @@ from nintendeals.constants import JP
 
 log = logging.getLogger(__name__)
 
+RATINGS = {
+    "0": None,
+    "1": "A",
+    "2": "B",
+    "3": "C",
+    "4": "D",
+    "5": "Z",
+}
+
 
 def _get_extra_info(*, nsuid: str) -> json:
     response = requests.get(
@@ -47,6 +56,11 @@ def _scrap_3ds(nsuid: str) -> N3dsGame:
 
     game.developer = extra.get("maker")
     game.description = extra.get("text")
+
+    rating = RATINGS.get(extra.get("cero", ["0"])[0])
+
+    if rating:
+        game.rating = f"CERO: {rating}"
 
     # Genres
     game.genres = list(sorted(extra.get("genre", [])))
@@ -115,6 +129,12 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     game.developer = extra["maker"]
     game.description = data["description"]
     game.publisher = data["publisher"]["name"]
+
+    rating = data.get("rating_info")
+
+    if rating:
+        rating = rating["rating"]["name"]
+        game.rating = f"CERO: {rating}"
 
     # Genres
     game.genres = list(sorted(
@@ -191,6 +211,7 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * local_multiplayer: bool
         * megabytes: int
         * publisher: str
+        * rating: str (CERO)
         * release_date: datetime
 
         * banner_img: str

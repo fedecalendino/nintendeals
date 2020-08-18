@@ -153,15 +153,17 @@ print(game.title)
 print(game.unique_id)
 print(game.release_date)
 print(game.players)
+print(game.rating)
 print(game.dlc)
 ```
 
 ```text
-The Legend of Zelda™: Breath of the Wild
-AAAA
-2017-03-03 00:00:00
-1
-True
+>> The Legend of Zelda™: Breath of the Wild
+>> AAAA
+>> 2017-03-03 00:00:00
+>> 1
+>> ESRB: Everyone 10+
+>> True
 ```
 
 ```python
@@ -172,6 +174,7 @@ print(game.title)
 print(game.unique_id)
 print(game.release_date)
 print(game.players)
+print(game.rating)
 print(game.dlc)
 ```
 
@@ -180,6 +183,7 @@ print(game.dlc)
 >> AAAA
 >> 2017-03-03 00:00:00
 >> 1
+>> PEGI: 12
 >> True
 ```
 

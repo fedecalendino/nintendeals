@@ -34,6 +34,7 @@ class Game:
         self.megabytes: int = None
         self.players: int = 0
         self.publisher: str = None
+        self.rating: str = None
         self.release_date: datetime = None
 
         # Images

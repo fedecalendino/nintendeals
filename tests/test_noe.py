@@ -25,19 +25,15 @@ class TestNoe(TestCase):
         self.assertEqual("50010000024975", game.nsuid)
         self.assertEqual("AXC", game.unique_id)
 
-        self.assertEqual("Nintendo", game.publisher)
-
         self.assertEqual("EU", game.region)
         self.assertEqual("Nintendo 3DS", game.platform)
+        self.assertEqual("PEGI: 12", game.rating)
+
+        self.assertEqual("Nintendo", game.publisher)
 
         self.assertEqual(2014, game.release_date.year)
         self.assertEqual(10, game.release_date.month)
         self.assertEqual(3, game.release_date.day)
-
-        # self.assertIn(
-        #   "Super Smash Bros. for Nintendo 3DS is truly a clash for the ages!",
-        #   game.description,
-        # )
 
         self.assertEqual(["Action", "Fighting"], game.genres)
         self.assertEqual(4, game.players)
@@ -65,6 +61,7 @@ class TestNoe(TestCase):
 
         self.assertEqual("EU", game.region)
         self.assertEqual("Nintendo Switch", game.platform)
+        self.assertEqual("PEGI: 12", game.rating)
 
         self.assertEqual("Nintendo / Sora Ltd. / BANDAI NAMCO Studios Inc.", game.developer)
         self.assertEqual("Nintendo", game.publisher)
@@ -111,6 +108,9 @@ class TestNoe(TestCase):
             self.assertEqual("EU", game.region)
             self.assertEqual("Nintendo 3DS", game.platform)
 
+            if game.rating:
+                self.assertIn("PEGI", game.rating)
+
             if game.nsuid:
                 self.assertTrue(game.nsuid.startswith("5001"))
 
@@ -127,6 +127,9 @@ class TestNoe(TestCase):
 
             self.assertEqual("EU", game.region)
             self.assertEqual("Nintendo Switch", game.platform)
+
+            if game.rating:
+                self.assertIn("PEGI", game.rating)
 
             if game.nsuid:
                 self.assertTrue(game.nsuid.startswith("7001"))
