@@ -40,7 +40,6 @@ class TestNoa(TestCase):
 
         self.assertEqual(["Action"], game.genres)
         self.assertEqual(4, game.players)
-        self.assertEqual(1137, game.megabytes)
 
         self.assertIsNone(game.amiibo)
         self.assertEqual(True, game.demo)
@@ -81,7 +80,6 @@ class TestNoa(TestCase):
             game.languages
         )
         self.assertEqual(8, game.players)
-        self.assertEqual(16179, game.megabytes)
 
         self.assertIsNone(game.amiibo)
         self.assertFalse(game.demo)
