@@ -99,7 +99,7 @@ def _scrap_switch(nsuid: str) -> Game:
     try:
         release_date = data["releaseDate"]
         game.release_date = datetime.strptime(release_date, '%d/%m/%Y')
-    except ValueError:
+    except (KeyError, ValueError):
         pass
 
     # Game size (in MBs)

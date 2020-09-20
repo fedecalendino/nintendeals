@@ -31,13 +31,13 @@ def _list_games(
         try:
             release_date = data["releaseDateDisplay"].split("T")[0]
             game.release_date = datetime.strptime(release_date, '%Y-%m-%d')
-        except ValueError:
+        except (KeyError, ValueError):
             pass
 
         try:
             game.players = int(re.sub(r"[^\d]*", "", data["numOfPlayers"]))
-        except ValueError:
-            game.players = 0
+        except (KeyError, ValueError):
+            game.players = None
 
         game.description = data.get("description")
         game.free_to_play = data.get("msrp") == 0.0
@@ -113,6 +113,7 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
         * developer: str
         * free_to_play: bool
         * genres: List[str]
+        * players: int (optional)
         * publisher: str
         * release_date: datetime
 

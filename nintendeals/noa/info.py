@@ -104,7 +104,7 @@ def _scrap(
     try:
         release_date = _itemprop(soup, "releaseDate")
         game.release_date = datetime.strptime(release_date, '%b %d, %Y')
-    except ValueError:
+    except (KeyError, ValueError):
         pass
 
     # Game size

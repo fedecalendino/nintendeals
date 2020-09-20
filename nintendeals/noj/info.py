@@ -70,7 +70,7 @@ def _scrap_3ds(nsuid: str) -> N3dsGame:
         game.players = max((
             int(p) for p in extra.get("player", [])
         ))
-    except ValueError:
+    except (KeyError, ValueError):
         game.players = 0
 
     # Release date
@@ -79,7 +79,7 @@ def _scrap_3ds(nsuid: str) -> N3dsGame:
             extra["sdate"],
             '%Y.%m.%d'
         )
-    except ValueError:
+    except (KeyError, ValueError):
         pass
 
     # Features
@@ -149,7 +149,7 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
     # Players
     try:
         game.players = max(data.get("player_number", {}).values())
-    except ValueError:
+    except (KeyError, ValueError):
         game.players = 0
 
     # Release date
@@ -158,7 +158,7 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
             data.get("release_date_on_eshop", ""),
             '%Y-%m-%d'
         )
-    except ValueError:
+    except (KeyError, ValueError):
         pass
 
     # Game size (in MBs)
