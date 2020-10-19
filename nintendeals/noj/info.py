@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
-from nintendeals.classes import N3dsGame, SwitchGame
+from nintendeals.classes import SwitchGame
 from nintendeals.constants import JP
 
 log = logging.getLogger(__name__)
@@ -37,56 +37,6 @@ def _get_extra_info(*, nsuid: str) -> json:
         return None
 
     return items[-1]
-
-
-def _scrap_3ds(nsuid: str) -> N3dsGame:
-    extra = _get_extra_info(nsuid=nsuid)
-
-    if not extra:
-        return None
-
-    product_code = f"{extra['hard'][2:]}{extra['icode']}"
-
-    game = N3dsGame(
-        title=extra["title"],
-        region=JP,
-        nsuid=nsuid,
-        product_code=product_code,
-    )
-
-    game.developer = extra.get("maker")
-    game.description = extra.get("text")
-
-    rating = RATINGS.get(extra.get("cero", ["0"])[0])
-
-    if rating:
-        game.rating = f"CERO: {rating}"
-
-    # Genres
-    game.genres = list(sorted(extra.get("genre", [])))
-
-    # Players
-    try:
-        game.players = max((
-            int(p) for p in extra.get("player", [])
-        ))
-    except (KeyError, ValueError):
-        game.players = 0
-
-    # Release date
-    try:
-        game.release_date = datetime.strptime(
-            extra["sdate"],
-            '%Y.%m.%d'
-        )
-    except (KeyError, ValueError):
-        pass
-
-    # Features
-    game.amiibo = extra.get("amiibo", "0") == "1"
-    game.free_to_play = extra.get("dprice") == 0.0
-
-    return game
 
 
 def _scrap_switch(nsuid: str) -> SwitchGame:
@@ -187,14 +137,14 @@ def _scrap_switch(nsuid: str) -> SwitchGame:
 
 
 @validate.nsuid
-def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
+def game_info(*, nsuid: str) -> Union[SwitchGame, Type[None]]:
     """
         Given a valid nsuid for the JP region, it will retrieve the
     information of the game with that nsuid from Nintendo of Japan.
 
     Game data
     ---------
-        * platform: str ["Nintendo 3DS", "Nintendo Switch"]
+        * platform: str ["Nintendo Switch"]
         * region: str ["JP"]
         * title: str
         * nsuid: str
@@ -227,8 +177,6 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
 
     Returns
     -------
-    nintendeals.classes.N3DSGame:
-        3DS game from Nintendo of Japan.
     nintendeals.classes.SwitchGame:
         Switch game from Nintendo of Japan.
     None:
@@ -239,10 +187,6 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
     nintendeals.exceptions.InvalidNsuidFormat
         The nsuid was either none or has an invalid format.
     """
-    if nsuid.startswith("5"):
-        log.info("Fetching info for %s", nsuid)
-        return _scrap_3ds(nsuid=nsuid)
-
     if nsuid.startswith("7"):
         log.info("Fetching info for %s", nsuid)
         return _scrap_switch(nsuid=nsuid)

@@ -3,7 +3,7 @@ from typing import Iterator, Dict
 
 from algoliasearch.search_client import SearchClient
 
-from nintendeals.constants import SWITCH, N3DS
+from nintendeals.constants import SWITCH
 
 APP_ID = "U3B6GR4UA3"
 API_KEY = "c4da8be7fd29f0f5bfa42920b0a99dc7"
@@ -14,7 +14,6 @@ INDEX = None
 
 PLATFORM_CODES = {
     SWITCH: "7001",
-    N3DS: "5001",
 }
 
 log = logging.getLogger(__name__)

@@ -1,5 +1,4 @@
 SWITCH = "Nintendo Switch"
-N3DS = "Nintendo 3DS"
 
 NA = "NA"
 EU = "EU"

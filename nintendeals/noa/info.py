@@ -1,16 +1,16 @@
 import logging
 import re
 from datetime import datetime
-from typing import Type, Union
+from typing import Type
 from urllib import parse
 
 import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
-from nintendeals.classes import N3dsGame, SwitchGame
+from nintendeals.classes import SwitchGame
 from nintendeals.classes.games import Game
-from nintendeals.constants import NA, N3DS, SWITCH
+from nintendeals.constants import NA, SWITCH
 from nintendeals.noa.external import algolia
 
 BASE = "https://www.nintendo.com"
@@ -47,7 +47,7 @@ def _itemprop(soup, prop, tag="dd"):
 def _scrap(
     game_class: Type,
     slug: str
-) -> Union[N3dsGame, SwitchGame]:
+) -> SwitchGame:
     url = f"https://www.nintendo.com/games/detail/{slug}"
     response = requests.get(url, allow_redirects=True)
     soup = BeautifulSoup(response.text, features="html.parser")
@@ -132,10 +132,6 @@ def _scrap(
     banner_art = soup.find(class_="hero-landscape hero-only")
     game.banner_img = BASE + banner_art.attrs.get("src") if banner_art else None
 
-    if game.platform == N3DS:
-        game.street_pass = "StreetPass" in game.description
-        game.virtual_console = soup.find("img", attrs={"alt": "Virtual Console"}) is not None
-
     if game.platform == SWITCH:
         game.local_multiplayer = None  # unsupported
         game.game_vouchers = _aria_label(soup, "Eligible for Game Vouchers") is not None
@@ -153,7 +149,7 @@ def game_info(*, nsuid: str) -> Game:
 
     Game data
     ---------
-        * platform: str ["Nintendo 3DS", "Nintendo Switch"]
+        * platform: str ["Nintendo Switch"]
         * region: str ["NA"]
         * title: str
         * nsuid: str
@@ -176,10 +172,6 @@ def game_info(*, nsuid: str) -> Game:
         * rating: str (ESRB)
         * release_date: datetime
 
-        # 3DS Features
-        * street_pass: bool
-        * virtual_console: bool
-
         # Switch Features
         * local_multiplayer: bool (unsupported)
         * game_vouchers: bool
@@ -195,8 +187,6 @@ def game_info(*, nsuid: str) -> Game:
 
     Returns
     -------
-    nintendeals.classes.N3DSGame:
-        3DS game from Nintendo of America.
     nintendeals.classes.SwitchGame:
         Switch game from Nintendo of America.
     None:
@@ -210,9 +200,6 @@ def game_info(*, nsuid: str) -> Game:
     slug = algolia.find_by_nsuid(nsuid)
 
     log.info("Fetching info for %s", nsuid)
-
-    if nsuid.startswith("5"):
-        return _scrap(N3dsGame, slug=slug)
 
     if nsuid.startswith("7"):
         return _scrap(SwitchGame, slug=slug)

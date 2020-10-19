@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
 from functools import lru_cache
-from typing import Iterator, List, Union, Type
+from typing import Iterator, List, Type
 
 import requests
 import xmltodict
 
-from nintendeals.classes import N3dsGame, SwitchGame
+from nintendeals.classes import SwitchGame
 from nintendeals.constants import JP
 
 log = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 def _list_games(
     game_class: Type,
     filename: str
-) -> List[Union[N3dsGame, SwitchGame]]:
+) -> List[SwitchGame]:
     url = f"https://www.nintendo.co.jp/data/software/xml/{filename}.xml"
     response = requests.get(url)
 
@@ -51,35 +51,6 @@ def _list_games(
         games.append(game)
 
     return games
-
-
-def list_3ds_games() -> Iterator[N3dsGame]:
-    """
-        List all the 3DS games in Nintendo of Japan. The following subset
-    of data will be available for each game.
-
-    Game data
-    ---------
-        * platform: str ["Nintendo 3DS"]
-        * region: str ["JP"]
-        * title: str
-        * nsuid: str
-        * product_code: str
-
-        * developer: str
-        * free_to_play: bool
-        * release_date: datetime (optional)
-
-        * banner_img: str
-
-    Yields
-    -------
-    nintendeals.classes.N3dsGame:
-        3DS game from Nintendo of Japan.
-    """
-    log.info("Fetching list of Nintendo 3DS games")
-
-    yield from _list_games(N3dsGame, filename="3ds_pkg_dl")
 
 
 def list_switch_games() -> Iterator[SwitchGame]:

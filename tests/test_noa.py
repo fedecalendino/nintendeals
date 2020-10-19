@@ -2,7 +2,7 @@ from datetime import datetime
 from unittest import TestCase
 
 from nintendeals import noa
-from nintendeals.classes import N3dsGame, SwitchGame
+from nintendeals.classes import SwitchGame
 
 LIST_LIMIT = 20
 
@@ -12,42 +12,6 @@ class TestNoa(TestCase):
     def test_game_info_non_existant(self):
         game = noa.game_info(nsuid="60010000000000")
         self.assertIsNone(game)
-
-    def test_game_info_n3ds(self):
-        game: N3dsGame = noa.game_info(nsuid="50010000023235")
-
-        self.assertEqual("Super Smash Bros.", game.title)
-        self.assertEqual("super-smash-bros-for-nintendo-3ds", game.slug)
-
-        self.assertEqual("50010000023235", game.nsuid)
-        self.assertEqual("AXC", game.unique_id)
-
-        self.assertEqual("Sora Ltd.", game.developer)
-        self.assertEqual("Nintendo", game.publisher)
-
-        self.assertEqual("NA", game.region)
-        self.assertEqual("Nintendo 3DS", game.platform)
-        self.assertEqual("ESRB: Everyone 10+", game.rating)
-
-        self.assertEqual(2014, game.release_date.year)
-        self.assertEqual(10, game.release_date.month)
-        self.assertEqual(3, game.release_date.day)
-
-        self.assertIn(
-            "Super Smash Bros. for Nintendo 3DS is the first portable entry",
-            game.description,
-        )
-
-        self.assertEqual(["Action"], game.genres)
-        self.assertEqual(4, game.players)
-
-        self.assertIsNone(game.amiibo)
-        self.assertEqual(True, game.demo)
-        self.assertNotEqual(True, game.dlc)
-        self.assertFalse(game.free_to_play)
-
-        self.assertFalse(game.street_pass)
-        self.assertFalse(game.virtual_console)
 
     def test_game_info_switch(self):
         game: SwitchGame = noa.game_info(nsuid="70010000012332")
@@ -90,27 +54,6 @@ class TestNoa(TestCase):
         self.assertTrue(game.nso_required)
         self.assertTrue(game.save_data_cloud)
 
-    def test_list_n3ds_games(self):
-        for index, game in enumerate(noa.list_3ds_games()):
-            if index > LIST_LIMIT:
-                break
-
-            self.assertIsNotNone(game.title)
-            self.assertIsNotNone(game.slug)
-            self.assertIsNotNone(game.description)
-
-            self.assertEqual("NA", game.region)
-            self.assertEqual("Nintendo 3DS", game.platform)
-
-            if game.rating:
-                self.assertIn("ESRB", game.rating)
-
-            if game.nsuid:
-                self.assertTrue(game.nsuid.startswith("5001"))
-
-            if game.unique_id:
-                self.assertTrue(len(game.unique_id) == 3)
-
     def test_list_switch_games(self):
         for index, game in enumerate(noa.list_switch_games()):
             if index > LIST_LIMIT:
@@ -131,29 +74,6 @@ class TestNoa(TestCase):
 
             if game.unique_id:
                 self.assertTrue(len(game.unique_id) == 4)
-
-    def test_search_n3ds_games(self):
-        search = noa.search_3ds_games(
-            title="Zelda",
-            released_after=datetime(2015, 1, 1),
-            released_before=datetime(2017, 12, 31)
-        )
-
-        index = 0
-
-        # ALttP, MM, TFH
-        for index, game in enumerate(search, start=1):
-            self.assertIn("Zelda", game.title)
-            self.assertIsNotNone(game.slug)
-            self.assertIsNotNone(game.description)
-
-            if game.nsuid:
-                self.assertTrue(game.nsuid.startswith("5001"))
-
-            if game.unique_id:
-                self.assertTrue(len(game.unique_id) == 3)
-
-        self.assertEqual(3, index)
 
     def test_search_switch_games(self):
         search = noa.search_switch_games(

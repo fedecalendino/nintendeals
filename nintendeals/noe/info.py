@@ -6,10 +6,9 @@ import requests
 from bs4 import BeautifulSoup
 
 from nintendeals import validate
-from nintendeals.classes import N3dsGame, SwitchGame
+from nintendeals.classes import SwitchGame
 from nintendeals.classes.games import Game
 from nintendeals.constants import EU
-from nintendeals.noe.listing import list_3ds_games
 
 log = logging.getLogger(__name__)
 
@@ -139,14 +138,14 @@ def _scrap_switch(nsuid: str) -> Game:
 
 
 @validate.nsuid
-def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
+def game_info(*, nsuid: str) -> Union[SwitchGame, Type[None]]:
     """
         Given a valid nsuid for the EU region, it will retrieve the
     information of the game with that nsuid from Nintendo of Europe.
 
     Game data
     ---------
-        * platform: str ["Nintendo 3DS", "Nintendo Switch"]
+        * platform: str ["Nintendo Switch"]
         * region: str ["EU"]
         * title: str
         * nsuid: str (optional)
@@ -179,13 +178,6 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
         * save_data_cloud: bool
         * voice_chat: bool
 
-        # 3DS Features
-        * download_play: bool
-        * motion_control: bool
-        * spot_pass: bool
-        * street_pass: bool
-        * virtual_console: bool
-
     Parameters
     ----------
     nsuid: str
@@ -193,8 +185,6 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
 
     Returns
     -------
-    nintendeals.classes.N3DSGame:
-        3DS game from Nintendo of Europe.
     nintendeals.classes.SwitchGame:
         Switch game from Nintendo of Europe.
     None:
@@ -205,10 +195,6 @@ def game_info(*, nsuid: str) -> Union[N3dsGame, SwitchGame, Type[None]]:
     nintendeals.exceptions.InvalidNsuidFormat
         The nsuid was either none or has an invalid format.
     """
-    if nsuid.startswith("5"):
-        log.info("Fetching info for %s", nsuid)
-        games = list(list_3ds_games(nsuid=nsuid))
-        return games[0] if games else None
 
     if nsuid.startswith("7"):
         log.info("Fetching info for %s", nsuid)

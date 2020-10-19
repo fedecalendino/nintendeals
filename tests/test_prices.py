@@ -12,16 +12,6 @@ class TestPrices(TestCase):
 
     def test_prices(self):
         data = {
-            "50010000000541": 19.99,  # Ocarina of Time (3DS/Select)
-            "50010000006866":  5.99,  # Link's Awakening DX (3DS/VC)
-            "50010000007271":  4.99,  # The Legend of Zelda (3DS/VC)
-            "50010000007276":  4.99,  # The Adventure of Link (3DS/VC)
-            "50010000014332":  5.99,  # Oracle of Ages (3DS/VC)
-            "50010000014333":  5.99,  # Oracle of Seasons (3DS/VC)
-            "50010000017216": 19.99,  # A Link Between Worlds (3DS/Select)
-            "50010000027796": 19.99,  # Majora's Mask (3DS/Select)
-            "50010000036995": 39.99,  # Tri Force Heroes (3DS)
-            "50010000039719":  7.99,  # A Link to the Past (3DS/VC)
             "70010000000025": 59.99,  # Breath of the Wild (Switch)
             "70010000020033": 59.99,  # Link's Awakening (Switch)
         }
@@ -62,6 +52,7 @@ class TestPrices(TestCase):
         ]
 
         found = prices._fetch_prices(nsuids=data, country="US")
+
         for nsuid, price in found.items():
             self.assertIn(nsuid, data)
             self.assertIsNone(price)
