@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest import SkipTest
 from unittest import TestCase
 
 from nintendeals import noj
@@ -13,6 +14,7 @@ class TestNoj(TestCase):
         game = noj.game_info(nsuid="60010000000000")
         self.assertIsNone(game)
 
+    @SkipTest
     def test_game_info_switch(self):
         game: SwitchGame = noj.game_info(nsuid="70010000012085")
 
@@ -52,7 +54,6 @@ class TestNoj(TestCase):
         self.assertTrue(game.local_multiplayer)
         self.assertTrue(game.nso_required)
         self.assertTrue(game.save_data_cloud)
-
 
     def test_list_switch_games(self):
         for index, game in enumerate(noj.list_switch_games()):

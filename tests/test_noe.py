@@ -18,7 +18,7 @@ class TestNoe(TestCase):
 
         self.assertEqual("Super Smash Bros. Ultimate", game.title)
         self.assertEqual(
-            "/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html",
+            "/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html?nsuid=70010000012331",
             game.slug
         )
 
@@ -77,7 +77,7 @@ class TestNoe(TestCase):
                 self.assertIn("PEGI", game.rating)
 
             if game.nsuid:
-                self.assertTrue(game.nsuid.startswith("7001"))
+                self.assertTrue(game.nsuid.startswith("700"))
 
             if game.unique_id:
                 self.assertTrue(len(game.unique_id) == 4)

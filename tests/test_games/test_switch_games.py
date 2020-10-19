@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 
 from nintendeals import noa, noe, noj
 from nintendeals.classes import SwitchGame
@@ -82,6 +82,7 @@ class TestSwitchGames(TestCase):
         self.assertFalse(game.nso_required)
         self.assertTrue(game.save_data_cloud)
 
+    @SkipTest
     def test_noj(self):
         game: SwitchGame = noj.game_info(nsuid="70010000010822")
 
