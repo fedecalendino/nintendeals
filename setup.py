@@ -9,7 +9,7 @@ with open(path.join(this_directory, "readme.md"), encoding="utf-8") as f:
 
 setup(
     name="nintendeals",
-    version="1.6.1",
+    version="2.0.0",
     url="https://github.com/fedecalendino/nintendeals",
     license="MIT",
     description="Scraping tools for Nintendo games and prices on NA, EU and JP.",
@@ -20,12 +20,17 @@ setup(
     packages=[
         "nintendeals",
         "nintendeals.api",
-        "nintendeals.classes",
-        "nintendeals.classes.platforms",
+        "nintendeals.commons",
+        "nintendeals.commons.classes",
         "nintendeals.noa",
-        "nintendeals.noa.external",
+        "nintendeals.noa.api",
+        "nintendeals.noa.scrapers",
         "nintendeals.noe",
+        "nintendeals.noe.api",
+        "nintendeals.noe.scrapers",
         "nintendeals.noj",
+        "nintendeals.noj.api",
+        "nintendeals.noj.scrapers",
     ],
     install_requires=[
         "algoliasearch",

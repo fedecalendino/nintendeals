@@ -3,7 +3,7 @@ import re
 from pycountry import countries
 
 from nintendeals import exceptions
-from nintendeals.constants import REGIONS
+
 
 NSUID_REGEX = re.compile(r"[2-7]00\d{11}")
 
@@ -50,32 +50,6 @@ def country(func):
 
         if not country_:
             raise exceptions.InvalidAlpha2Code(code_)
-
-        return func(*args, **kwargs)
-    return wrapper
-
-
-def region(func):
-    """
-        Validates that the parameter `region` of the decorated function is
-    a valid Nintendo region.
-
-    Examples
-    -------
-    >>> region="NA"    # ✅️
-    >>> region="LA"    # ❌️
-    >>> region="ASIA"  # ❌️
-
-    Raises
-    -------
-    nintendeals.exceptions.InvalidRegion
-        The `region` wasn't valid.
-    """
-    def wrapper(*args, **kwargs):
-        region_ = kwargs.get("region")
-
-        if region_ not in REGIONS:
-            raise exceptions.InvalidRegion(region_)
 
         return func(*args, **kwargs)
     return wrapper

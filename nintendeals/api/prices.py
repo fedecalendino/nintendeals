@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from typing import Dict, Iterator, List, Optional, Tuple
 
@@ -6,9 +5,7 @@ import requests
 from dateutil.parser import parse as date_parser
 
 from nintendeals import validate
-from nintendeals.classes.prices import Price
-
-log = logging.getLogger(__name__)
+from nintendeals.commons import Price
 
 
 def _parse_date(string: str) -> datetime:
@@ -24,8 +21,6 @@ def _fetch_prices(
 ) -> Dict[str, Price]:
     if not 51 > len(nsuids) > 0:
         raise ValueError("The amount of nsuids must between 1 and 50.")
-
-    log.info("Calling prices api with %i nsuids", len(nsuids))
 
     response = requests.get(
         url="https://api.ec.nintendo.com/v1/price",
@@ -70,7 +65,6 @@ def _fetch_prices(
 
         prices[price.nsuid] = price
 
-    log.info("Found %i prices and %i sales", total, sales)
     return prices
 
 
@@ -89,24 +83,22 @@ def get_prices(
     ----------
     country: str
         Valid alpha-2 code of the country.
-    games: List[nintendeals.classes.games.Game]
+    games: List[nintendeals.commons.Game]
         Games to get their pricing.
 
     Yields
     -------
-    Tuple[str, nintendeals.classes.prices.Price]
+    Tuple[str, nintendeals.commons.Price]
         Dictionary containing the nsuids as keys and each pricing as value.
 
     Raises
     -------
-    nintendeals.exceptions.InvalidAlpha2Code
+    nintendeals.commons.InvalidAlpha2Code
         The `country` wasn't a valid alpha-2 code.
-    nintendeals.exceptions.InvalidNsuidFormat
+    nintendeals.commons.InvalidNsuidFormat
         Any of the `games` had an nsuid that is either none or
     has an invalid format.
     """
-    log.info("Fetching prices for %i games in %s", len(games), country)
-
     prices = {}
     chunk = []
 
@@ -143,22 +135,20 @@ def get_price(
     ----------
     country: str
         Valid alpha-2 code of the country.
-    game: nintendeals.classes.games.Game
+    game: nintendeals.commons.Game
         Game to get its pricing.
 
     Returns
     -------
-    nintendeals.classes.prices.Price
+    nintendeals.commons.Price
         Pricing of the game in the indicated country.
 
     Raises
     -------
-    nintendeals.exceptions.InvalidAlpha2Code
+    nintendeals.commons.InvalidAlpha2Code
         The `country` wasn't a valid alpha-2 code.
-    nintendeals.exceptions.InvalidNsuidFormat
+    nintendeals.commons.InvalidNsuidFormat
         The nsuid was either none or has an invalid format.
     """
-    log.info("Fetching price for %s games in %s", game.title, country)
-
     fetched = _fetch_prices(country=country, nsuids=[game.nsuid])
     return fetched.get(game.nsuid)

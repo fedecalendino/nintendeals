@@ -1,56 +1,57 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from nintendeals import validate
 from nintendeals.api.prices import get_price
-from nintendeals.classes.prices import Price
+from nintendeals.commons import (
+    Price,
+    Features,
+    Platforms,
+    Ratings,
+    Regions,
+)
 
 
 class Game:
 
-    platform = None
-
     @validate.title
-    @validate.region
     @validate.nsuid(nullable=True)
     def __init__(
         self,
-        region: str,
+        *,
+        platform: Platforms,
+        region: Regions,
         title: str,
         nsuid: str = None,
         product_code: str = None,
     ):
-        self.region: str = region
+        self.platform: Platforms = platform
+        self.region: Regions = region
         self.title: str = title
         self.nsuid: str = nsuid
         self.product_code: str = product_code
 
-        self.slug: str = None
-
         self.description: str = None
         self.developer: str = None
-        self.genres: List[str] = []
-        self.languages: List[str] = []
-        self.megabytes: int = None
-        self.players: int = 0
         self.publisher: str = None
-        self.rating: str = None
+        self.slug: str = None
+
+        self.players: int = 0
+
         self.release_date: datetime = None
 
-        # Images
-        self.banner_img: str = None
-        self.cover_img: str = None
+        self.genres: List[str] = []
+        self.languages: List[str] = []
 
-        # Features
-        self.amiibo: bool = None
-        self.demo: bool = None
-        self.dlc: bool = None
-        self.free_to_play: bool = None
-        self.iaps: bool = None
+        self.features: Dict[Features, Any] = {}
+        self.rating: Tuple[Ratings, Any] = (None, None)
 
     @property
     def unique_id(self) -> Optional[str]:
-        raise NotImplementedError()
+        if not self.product_code:
+            return None
+
+        return self.product_code[-5:-1]  # Switch code
 
     @validate.country
     def price(self, *, country: str) -> Price:
@@ -66,12 +67,12 @@ class Game:
 
         Returns
         -------
-        nintendeals.classes.prices.Price
+        nintendeals.commons.Price
             Pricing of this game in the given country.
 
         Raises
         -------
-        nintendeals.exceptions.InvalidAlpha2Code
+        nintendeals.commons.InvalidAlpha2Code
             The `country` wasn't a valid alpha-2 code.
         """
         return get_price(country=country, game=self)
@@ -97,7 +98,7 @@ class Game:
 
         Raises
         -------
-        nintendeals.exceptions.InvalidAlpha2Code
+        nintendeals.commons.InvalidAlpha2Code
             The `country` wasn't a valid alpha-2 code.
         """
         if not self.nsuid:
