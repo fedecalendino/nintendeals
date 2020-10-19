@@ -2,12 +2,7 @@ from typing import Iterator, Optional
 
 from algoliasearch.search_client import SearchClient
 
-from nintendeals.constants import (
-    NINTENDO_3DS,
-    NINTENDO_SWITCH,
-    NINTENDO_WII_U,
-)
-
+from nintendeals.commons.enumerates import Platforms
 
 APP_ID = "U3B6GR4UA3"
 API_KEY = "c4da8be7fd29f0f5bfa42920b0a99dc7"
@@ -17,15 +12,15 @@ INDEX = None
 
 
 PLATFORMS = {
-    NINTENDO_3DS: "Nintendo 3DS",
-    NINTENDO_SWITCH: "Nintendo Switch",
-    NINTENDO_WII_U: "Wii U",
+    Platforms.NINTENDO_3DS: "Nintendo 3DS",
+    Platforms.NINTENDO_SWITCH: "Nintendo Switch",
+    Platforms.NINTENDO_WII_U: "Wii U",
 }
 
 PLATFORM_CODES = {
-    NINTENDO_3DS: "5001",
-    NINTENDO_SWITCH: "7001",
-    NINTENDO_WII_U: "2001",
+    Platforms.NINTENDO_3DS: "5001",
+    Platforms.NINTENDO_SWITCH: "7001",
+    Platforms.NINTENDO_WII_U: "2001",
 }
 
 
@@ -40,7 +35,7 @@ def _search_index(query, **options):
     return response.get('hits', [])
 
 
-def _search_by_nsuid(platform: str) -> Iterator[dict]:
+def _search_by_nsuid(platform: Platforms) -> Iterator[dict]:
     empty_pages = 0
 
     platform_code = PLATFORM_CODES[platform]
@@ -71,7 +66,7 @@ def _search_by_nsuid(platform: str) -> Iterator[dict]:
         yield from games
 
 
-def _search_by_query(platform: str, query: str) -> Iterator[dict]:
+def _search_by_query(platform: Platforms, query: str) -> Iterator[dict]:
     hits_per_page = 50
 
     options = {
@@ -105,9 +100,9 @@ def find_by_nsuid(nsuid: str) -> Optional[str]:
     return (hits or [{}])[0].get("slug")
 
 
-def list_games(platform: str) -> Iterator[dict]:
+def list_games(platform: Platforms) -> Iterator[dict]:
     yield from _search_by_nsuid(platform)
 
 
-def search_games(platform: str, query: str) -> Iterator[dict]:
+def search_games(platform: Platforms, query: str) -> Iterator[dict]:
     yield from _search_by_query(platform, query)

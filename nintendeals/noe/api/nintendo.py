@@ -2,23 +2,21 @@ from typing import Iterator
 
 import requests
 
-from nintendeals.constants import (
-    NINTENDO_3DS,
-    NINTENDO_SWITCH,
-    NINTENDO_WII_U,
-)
+from nintendeals.commons.enumerates import Platforms
 
 
 SEARCH_URL = "https://search.nintendo-europe.com/en/select"
 
 SYSTEM_NAMES = {
-    NINTENDO_3DS: "3DS",
-    NINTENDO_SWITCH: "Switch",
-    NINTENDO_WII_U: "Wii U",
+    Platforms.NINTENDO_3DS: "3DS",
+    Platforms.NINTENDO_SWITCH: "Switch",
+    Platforms.NINTENDO_WII_U: "Wii U",
 }
 
 
-def search(platform: str, query: str = "*") -> Iterator[dict]:
+def search(platform: Platforms, query: str = "*") -> Iterator[dict]:
+    system_name = SYSTEM_NAMES[platform]
+
     rows = 200
     start = -rows
 
@@ -26,7 +24,7 @@ def search(platform: str, query: str = "*") -> Iterator[dict]:
         start += rows
 
         params = {
-            "fq": f'type:GAME AND system_names_txt:"{SYSTEM_NAMES[platform]}"',
+            "fq": f'type:GAME AND system_names_txt:"{system_name}"',
             "q": query,
             "rows": rows,
             "sort": "title asc",

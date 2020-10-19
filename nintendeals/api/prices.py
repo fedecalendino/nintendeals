@@ -4,21 +4,14 @@ from typing import Dict, Iterator, List, Optional, Tuple
 import requests
 from dateutil.parser import parse as date_parser
 
-from nintendeals import validate
-from nintendeals.commons import Price
+from nintendeals.commons.classes.prices import Price
 
 
 def _parse_date(string: str) -> datetime:
     return date_parser(string).replace(tzinfo=None)
 
 
-@validate.country
-@validate.nsuids
-def _fetch_prices(
-    *,
-    country: str,
-    nsuids: List[str]
-) -> Dict[str, Price]:
+def fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
     if not 51 > len(nsuids) > 0:
         raise ValueError("The amount of nsuids must between 1 and 50.")
 
@@ -68,37 +61,7 @@ def _fetch_prices(
     return prices
 
 
-@validate.country
-@validate.games
-def get_prices(
-    *,
-    country: str,
-    games: List["Game"]
-) -> Iterator[Tuple[str, Price]]:
-    """
-        Given a valid `country` code and a list of `games` (each with a nsuid)
-    it will retrieve the current pricing of those games for that country.
-
-    Parameters
-    ----------
-    country: str
-        Valid alpha-2 code of the country.
-    games: List[nintendeals.commons.Game]
-        Games to get their pricing.
-
-    Yields
-    -------
-    Tuple[str, nintendeals.commons.Price]
-        Dictionary containing the nsuids as keys and each pricing as value.
-
-    Raises
-    -------
-    nintendeals.commons.InvalidAlpha2Code
-        The `country` wasn't a valid alpha-2 code.
-    nintendeals.commons.InvalidNsuidFormat
-        Any of the `games` had an nsuid that is either none or
-    has an invalid format.
-    """
+def get_prices(country: str, games: List["Game"]) -> Iterator[Tuple[str, Price]]:
     prices = {}
     chunk = []
 
@@ -107,48 +70,19 @@ def get_prices(
 
         if len(chunk) == 50:
             nsuids = [game.nsuid for game in chunk]
-            fetched = _fetch_prices(country=country, nsuids=nsuids)
+            fetched = fetch_prices(country=country, nsuids=nsuids)
             prices.update(fetched)
 
             chunk = []
 
     if chunk:
         nsuids = [game.nsuid for game in chunk if game.nsuid]
-        fetched = _fetch_prices(country=country, nsuids=nsuids)
+        fetched = fetch_prices(country=country, nsuids=nsuids)
         prices.update(fetched)
 
     yield from prices.items()
 
 
-@validate.country
-@validate.game
-def get_price(
-    *,
-    country: str,
-    game: "Game"
-) -> Optional[Price]:
-    """
-        Given a valid `country` code and a `game` (with an nsuid) it will
-    retrieve the current pricing of that game for that country.
-
-    Parameters
-    ----------
-    country: str
-        Valid alpha-2 code of the country.
-    game: nintendeals.commons.Game
-        Game to get its pricing.
-
-    Returns
-    -------
-    nintendeals.commons.Price
-        Pricing of the game in the indicated country.
-
-    Raises
-    -------
-    nintendeals.commons.InvalidAlpha2Code
-        The `country` wasn't a valid alpha-2 code.
-    nintendeals.commons.InvalidNsuidFormat
-        The nsuid was either none or has an invalid format.
-    """
-    fetched = _fetch_prices(country=country, nsuids=[game.nsuid])
+def get_price(country: str, game: "Game") -> Optional[Price]:
+    fetched = fetch_prices(country=country, nsuids=[game.nsuid])
     return fetched.get(game.nsuid)
