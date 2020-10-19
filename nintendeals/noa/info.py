@@ -11,7 +11,7 @@ from nintendeals import validate
 from nintendeals.classes import SwitchGame
 from nintendeals.classes.games import Game
 from nintendeals.constants import NA, SWITCH
-from nintendeals.noa.external import algolia
+from nintendeals.noa.api import algolia
 
 BASE = "https://www.nintendo.com"
 

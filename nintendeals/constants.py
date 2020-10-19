@@ -1,3 +1,7 @@
+NINTENDO_3DS = "Nintendo 3DS"
+NINTENDO_SWITCH = "Nintendo Switch"
+NINTENDO_WII_U = "Nintendo Wii U"
+
 SWITCH = "Nintendo Switch"
 
 NA = "NA"
@@ -9,4 +13,3 @@ REGIONS = {
     EU: "Europe",
     JP: "Japan",
 }
-

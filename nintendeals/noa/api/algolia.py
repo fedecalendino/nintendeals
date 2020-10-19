@@ -1,9 +1,13 @@
-import logging
-from typing import Iterator, Dict
+from typing import Iterator, Optional
 
 from algoliasearch.search_client import SearchClient
 
-from nintendeals.constants import SWITCH
+from nintendeals.constants import (
+    NINTENDO_3DS,
+    NINTENDO_SWITCH,
+    NINTENDO_WII_U,
+)
+
 
 APP_ID = "U3B6GR4UA3"
 API_KEY = "c4da8be7fd29f0f5bfa42920b0a99dc7"
@@ -12,11 +16,17 @@ INDEX_NAME = "ncom_game_en_us"
 INDEX = None
 
 
-PLATFORM_CODES = {
-    SWITCH: "7001",
+PLATFORMS = {
+    NINTENDO_3DS: "Nintendo 3DS",
+    NINTENDO_SWITCH: "Nintendo Switch",
+    NINTENDO_WII_U: "Wii U",
 }
 
-log = logging.getLogger(__name__)
+PLATFORM_CODES = {
+    NINTENDO_3DS: "5001",
+    NINTENDO_SWITCH: "7001",
+    NINTENDO_WII_U: "2001",
+}
 
 
 def _search_index(query, **options):
@@ -26,13 +36,11 @@ def _search_index(query, **options):
         client = SearchClient.create(APP_ID, API_KEY)
         INDEX = client.init_index(INDEX_NAME)
 
-    log.info("Searching index for %s", query)
-
     response = INDEX.search(query, request_options=options)
     return response.get('hits', [])
 
 
-def _search_by_nsuid(platform: str) -> Iterator[Dict]:
+def _search_by_nsuid(platform: str) -> Iterator[dict]:
     empty_pages = 0
 
     platform_code = PLATFORM_CODES[platform]
@@ -42,7 +50,7 @@ def _search_by_nsuid(platform: str) -> Iterator[Dict]:
         "queryType": "prefixAll",
         "restrictSearchableAttributes": ["nsuid"],
         "facetFilters": [
-            f"platform:{platform}"
+            f"platform:{PLATFORMS[platform]}"
         ],
         "hitsPerPage": 500,
     }
@@ -63,17 +71,18 @@ def _search_by_nsuid(platform: str) -> Iterator[Dict]:
         yield from games
 
 
-def _search_by_query(platform: str, query: str) -> Iterator[Dict]:
+def _search_by_query(platform: str, query: str) -> Iterator[dict]:
     hits_per_page = 50
 
     options = {
         "facetFilters": [
-            f"platform:{platform}"
+            f"platform:{PLATFORMS[platform]}"
         ],
         "hitsPerPage": hits_per_page,
     }
 
     page = -1
+
     while True:
         page += 1
         options["page"] = page
@@ -86,16 +95,7 @@ def _search_by_query(platform: str, query: str) -> Iterator[Dict]:
             break
 
 
-def search_games(platform: str, **kwargs) -> Iterator[Dict]:
-    query = kwargs.get("query")
-
-    if query:
-        yield from _search_by_query(platform, query)
-    else:
-        yield from _search_by_nsuid(platform)
-
-
-def find_by_nsuid(nsuid: str) -> str:
+def find_by_nsuid(nsuid: str) -> Optional[str]:
     hits = _search_index(
         nsuid,
         attributesToRetrieve=["title", "nsuid", "slug"],
@@ -103,3 +103,11 @@ def find_by_nsuid(nsuid: str) -> str:
     )
 
     return (hits or [{}])[0].get("slug")
+
+
+def list_games(platform: str) -> Iterator[dict]:
+    yield from _search_by_nsuid(platform)
+
+
+def search_games(platform: str, query: str) -> Iterator[dict]:
+    yield from _search_by_query(platform, query)

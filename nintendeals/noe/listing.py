@@ -2,125 +2,88 @@ import logging
 from datetime import datetime
 from typing import Iterator, Type
 
-import requests
-
 from nintendeals.classes import SwitchGame
 from nintendeals.constants import EU, SWITCH
+from nintendeals.noe.api.nintendo import search
 
 log = logging.getLogger(__name__)
 
 
 def _list_games(
     game_class: Type,
-    system_name: str,
+    platform: str,
     **kwargs
 ) -> Iterator[SwitchGame]:
-    query = kwargs.get("query", "*")
-    nsuid = kwargs.get("nsuid")
+    for data in search(platform):
+        product_codes = [
+            pc for pc in data.get("product_code_txt", [])
+            if "-" not in pc
+        ] or [None]
 
-    if not nsuid:
-        fq = f"type:GAME AND system_names_txt:\"{system_name}\""
-    else:
-        fq = f"type:GAME AND nsuid_txt:\"{nsuid}\""
+        nsuids = list(reversed(sorted(data.get("nsuid_txt", [None]))))
 
-    rows = 200
-    start = -rows
-
-    while True:
-        start += rows
-
-        params = {
-            "q": query,
-            "wt": "json",
-            "sort": "title asc",
-            "start": start,
-            "rows": rows,
-            "fq": fq
-        }
-
-        response = requests.get(
-            url='https://search.nintendo-europe.com/en/select',
-            params=params
+        game = game_class(
+            region=EU,
+            title=data["title_extras_txt"][0],
+            nsuid=nsuids[0],
+            product_code=product_codes[0],
         )
 
-        if response.status_code != 200:
-            break
+        game.slug = data.get("url")
 
-        json = response.json().get('response').get('docs', [])
+        game.description = data.get("excerpt")
+        game.developer = data.get("developer")
+        game.publisher = data.get("publisher")
+        game.genres = data.get("pretty_game_categories_txt", [])
+        game.players = data.get("players_to")
+        game.languages = list(sorted(map(
+            lambda lang: lang.title(),
+            data.get("language_availability", [""])[0].split(",")
+        )))
 
-        if not len(json):
-            break
+        rating = data.get("age_rating_sorting_i")
 
-        for data in json:
-            product_codes = [
-                pc for pc in data.get("product_code_txt", [])
-                if "-" not in pc
-            ] or [None]
+        if rating:
+            game.rating = f"PEGI: {rating}"
 
-            nsuids = list(reversed(sorted(data.get("nsuid_txt", [None]))))
-
-            game = game_class(
-                region=EU,
-                title=data["title_extras_txt"][0],
-                nsuid=nsuids[0],
-                product_code=product_codes[0],
+        try:
+            game.release_date = datetime.strptime(
+                data["dates_released_dts"][0].split("T")[0],
+                '%Y-%m-%d'
             )
+        except (ValueError, TypeError):
+            game.release_date = None
 
-            game.slug = data.get("url")
+        if "datasize_readable_txt" in data:
+            value, unit = data.get("datasize_readable_txt", [""])[0].split()
 
-            game.description = data.get("excerpt")
-            game.developer = data.get("developer")
-            game.publisher = data.get("publisher")
-            game.genres = data.get("pretty_game_categories_txt", [])
-            game.players = data.get("players_to")
-            game.languages = list(sorted(map(
-                lambda lang: lang.title(),
-                data.get("language_availability", [""])[0].split(",")
-            )))
+            if unit.lower() == "blocks":
+                value = int(value) // 8
+        else:
+            value = None
 
-            rating = data.get("age_rating_sorting_i")
+        game.megabytes = value
 
-            if rating:
-                game.rating = f"PEGI: {rating}"
+        banner_img = data.get("wishlist_email_banner640w_image_url_s")
+        game.banner_img = ("https:" + banner_img) if banner_img else None
 
-            try:
-                game.release_date = datetime.strptime(
-                    data["dates_released_dts"][0].split("T")[0],
-                    '%Y-%m-%d'
-                )
-            except (ValueError, TypeError):
-                game.release_date = None
+        cover_img = data.get("image_url_sq_s")
+        game.cover_img = ("https:" + cover_img) if cover_img else None
 
-            if "datasize_readable_txt" in data:
-                value, unit = data.get("datasize_readable_txt", [""])[0].split()
+        # Features
+        game.amiibo = data.get("near_field_comm_b", False)
+        game.demo = data.get("demo_availability", False)
+        game.dlc = data.get("dlc_shown_b", False)
+        game.free_to_play = data.get("price_regular_f") == 0.0
 
-                if unit.lower() == "blocks":
-                    value = int(value) // 8
-            else:
-                value = None
+        if game.platform == SWITCH:
+            game.local_multiplayer = data.get("local_play", False)
+            game.nso_required = data.get("paid_subscription_required_b", False)
+            game.save_data_cloud = data.get("cloud_saves_b", False)
+            game.game_vouchers = data.get("switch_game_voucher_b", False)
+            game.voice_chat = data.get("voice_chat_b", False)
 
-            game.megabytes = value
-
-            banner_img = data.get("wishlist_email_banner640w_image_url_s")
-            game.banner_img = ("https:" + banner_img) if banner_img else None
-
-            cover_img = data.get("image_url_sq_s")
-            game.cover_img = ("https:" + cover_img) if cover_img else None
-
-            # Features
-            game.amiibo = data.get("near_field_comm_b", False)
-            game.demo = data.get("demo_availability", False)
-            game.dlc = data.get("dlc_shown_b", False)
-            game.free_to_play = data.get("price_regular_f") == 0.0
-
-            if game.platform == SWITCH:
-                game.local_multiplayer = data.get("local_play", False)
-                game.nso_required = data.get("paid_subscription_required_b", False)
-                game.save_data_cloud = data.get("cloud_saves_b", False)
-                game.game_vouchers = data.get("switch_game_voucher_b", False)
-                game.voice_chat = data.get("voice_chat_b", False)
-
-            yield game
+        yield game
 
 
 def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
@@ -167,6 +130,6 @@ def list_switch_games(**kwargs) -> Iterator[SwitchGame]:
 
     yield from _list_games(
         game_class=SwitchGame,
-        system_name="Switch",
+        platform="Switch",
         **kwargs
     )

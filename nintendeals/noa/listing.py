@@ -5,7 +5,7 @@ from typing import Iterator, Type
 
 from nintendeals.classes import SwitchGame
 from nintendeals.constants import NA
-from nintendeals.noa.external import algolia
+from nintendeals.noa.api import algolia
 
 BASE = "https://www.nintendo.com"
 
@@ -17,7 +17,7 @@ def _list_games(
     **kwargs
 ) -> Iterator[SwitchGame]:
 
-    for data in algolia.search_games(platform=game_class.platform, **kwargs):
+    for data in algolia.list_games(platform=game_class.platform):
         game = game_class(
             region=NA,
             title=data["title"],

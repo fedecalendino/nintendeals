@@ -5,7 +5,7 @@ from pycountry import countries
 from nintendeals import exceptions
 from nintendeals.constants import REGIONS
 
-NSUID_REGEX = re.compile(r"[5-7]00\d{11}")
+NSUID_REGEX = re.compile(r"[2-7]00\d{11}")
 
 
 def _validate_nsuid(nsuid_: str, nullable: bool = False):
