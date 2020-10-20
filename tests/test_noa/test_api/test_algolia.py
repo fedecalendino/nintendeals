@@ -2,9 +2,8 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals.noa.api import algolia
 from nintendeals.commons.enumerates import Platforms
-
+from nintendeals.noa.api import algolia
 
 LIMIT = 20
 

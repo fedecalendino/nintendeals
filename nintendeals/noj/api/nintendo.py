@@ -1,41 +1,55 @@
 from typing import Iterator, Optional
 
 import requests
-import xmltodict
 
 from nintendeals.commons.enumerates import Platforms
 
-MISSING_URL = "https://www.nintendo.co.jp/missing.html"
-SEARCH_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
-SOFTWARE_URL = "https://www.nintendo.co.jp/data/software/xml/{filename}.xml"
 
-FILENAMES = {
-    Platforms.NINTENDO_WII_U: "wiiu_pkg_dl",
-    Platforms.NINTENDO_3DS: "3ds_pkg_dl",
-    Platforms.NINTENDO_SWITCH: "switch",
+SEARCH_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
+
+HARDNAMES = {
+    Platforms.NINTENDO_WII_U: "4_WUP",
+    Platforms.NINTENDO_3DS: "2_CTR",
+    Platforms.NINTENDO_SWITCH: "1_HAC",
 }
 
 
-def software(platform: Platforms) -> Iterator[dict]:
-    response = requests.get(
-        url=SOFTWARE_URL.format(filename=FILENAMES[platform])
-    )
+def _search(query: str = "", platform: Platforms = None) -> Iterator[dict]:
+    params = {
+        "q": query,
+        "limit": 300,
+        "page": 0,
+        "opt_hard": HARDNAMES.get(platform)
+    }
 
-    if response.status_code != 200:
-        return
+    while True:
+        params["page"] += 1
+        response = requests.get(
+            url=SEARCH_URL,
+            params=params
+        )
 
-    if response.url == MISSING_URL:
-        return
+        if response.status_code != 200:
+            break
 
-    yield from xmltodict.parse(response.text)['TitleInfoList']['TitleInfo']
+        items = response.json()["result"]["items"]
+
+        if not items:
+            break
+
+        yield from items
 
 
-def search(nsuid: str) -> Optional[dict]:
-    response = requests.get(url=SEARCH_URL, params={"q": nsuid})
-
-    if response.status_code != 200:
+def search_by_nsuid(nsuid: str) -> Optional[dict]:
+    try:
+        return next(_search(query=nsuid))
+    except StopIteration:
         return None
 
-    items = response.json()["result"]["items"]
 
-    return items[-1] if items else None
+def search_by_platform(platform: Platforms) -> Iterator[dict]:
+    yield from _search(platform=platform)
+
+
+def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
+    yield from _search(query=query, platform=platform)

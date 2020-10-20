@@ -2,9 +2,8 @@ from unittest import TestCase
 
 import ddt
 
-from nintendeals.noe.api import nintendo
 from nintendeals.commons.enumerates import Platforms
-
+from nintendeals.noe.api import nintendo
 
 LIMIT = 20
 

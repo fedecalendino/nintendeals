@@ -3,8 +3,6 @@ from unittest import TestCase
 import ddt
 
 from nintendeals.noj.api import nintendo
-from nintendeals.commons.enumerates import Platforms
-
 
 LIMIT = 100
 

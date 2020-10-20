@@ -1,9 +1,8 @@
-from typing import Iterator
+from typing import Iterator, Optional
 
 import requests
 
 from nintendeals.commons.enumerates import Platforms
-
 
 SEARCH_URL = "https://search.nintendo-europe.com/en/select"
 
@@ -14,24 +13,31 @@ SYSTEM_NAMES = {
 }
 
 
-def search(platform: Platforms, query: str = "*") -> Iterator[dict]:
-    system_name = SYSTEM_NAMES[platform]
-
+def _search(
+        query: str = "*",
+        nsuid: str = None,
+        platform: Platforms = None
+) -> Iterator[dict]:
     rows = 200
-    start = -rows
+
+    params = {
+        "fq": "type:GAME",
+        "q": query,
+        "rows": rows,
+        "sort": "title asc",
+        "start": -rows,
+        "wt": "json",
+    }
+
+    if platform:
+        system_name = SYSTEM_NAMES[platform]
+        params["fq"] += f' AND system_names_txt:"{system_name}"'
+
+    if nsuid:
+        params["fq"] += f' AND nsuid_txt:"{nsuid}"'
 
     while True:
-        start += rows
-
-        params = {
-            "fq": f'type:GAME AND system_names_txt:"{system_name}"',
-            "q": query,
-            "rows": rows,
-            "sort": "title asc",
-            "start": start,
-            "wt": "json",
-        }
-
+        params["start"] += rows
         response = requests.get(url=SEARCH_URL, params=params)
 
         if response.status_code != 200:
@@ -43,3 +49,18 @@ def search(platform: Platforms, query: str = "*") -> Iterator[dict]:
             break
 
         yield from data
+
+
+def search_by_nsuid(nsuid: str) -> Optional[dict]:
+    try:
+        return next(_search(nsuid=nsuid))
+    except StopIteration:
+        return None
+
+
+def search_by_platform(platform: Platforms) -> Iterator[dict]:
+    yield from _search(platform=platform)
+
+
+def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
+    yield from _search(query=query, platform=platform)

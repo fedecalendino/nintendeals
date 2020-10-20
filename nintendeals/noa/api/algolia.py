@@ -35,7 +35,12 @@ def _search_index(query, **options):
     return response.get('hits', [])
 
 
-def _search_by_nsuid(platform: Platforms) -> Iterator[dict]:
+def search_by_nsuid(nsuid: str) -> Optional[dict]:
+    hits = _search_index(nsuid, restrictSearchableAttributes=['nsuid'])
+    return (hits or [{}])[0]
+
+
+def search_by_platform(platform: Platforms) -> Iterator[dict]:
     empty_pages = 0
 
     platform_code = PLATFORM_CODES[platform]
@@ -66,15 +71,17 @@ def _search_by_nsuid(platform: Platforms) -> Iterator[dict]:
         yield from games
 
 
-def _search_by_query(platform: Platforms, query: str) -> Iterator[dict]:
+def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
     hits_per_page = 50
 
     options = {
-        "facetFilters": [
-            f"platform:{PLATFORMS[platform]}"
-        ],
         "hitsPerPage": hits_per_page,
     }
+
+    if platform:
+        options["facetFilters"] = [
+            f"platform:{PLATFORMS[platform]}"
+        ]
 
     page = -1
 
@@ -88,21 +95,3 @@ def _search_by_query(platform: Platforms, query: str) -> Iterator[dict]:
 
         if len(games) < hits_per_page:
             break
-
-
-def find_by_nsuid(nsuid: str) -> Optional[str]:
-    hits = _search_index(
-        nsuid,
-        attributesToRetrieve=["title", "nsuid", "slug"],
-        restrictSearchableAttributes=['nsuid'],
-    )
-
-    return (hits or [{}])[0].get("slug")
-
-
-def list_games(platform: Platforms) -> Iterator[dict]:
-    yield from _search_by_nsuid(platform)
-
-
-def search_games(platform: Platforms, query: str) -> Iterator[dict]:
-    yield from _search_by_query(platform, query)
