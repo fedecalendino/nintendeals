@@ -34,8 +34,8 @@ class Game:
 
         self.release_date: Optional[datetime] = None
 
-        self.developers: List[str] = []
         self.categories: List[str] = []
+        self.developers: List[str] = []
         self.languages: List[str] = []
         self.publishers: List[str] = []
 

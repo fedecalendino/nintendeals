@@ -2,11 +2,14 @@ from enum import Enum
 
 
 class Features(str, Enum):
-    GAME_VOUCHERS = "Game Vouchers"
-    LOCAL_MULTIPLAYER = "Local Multiplayer"
+    AMIIBO = "Amiibo Supported"
+    DEMO = "Demo Available"
+    DLC = "DLC Available"
+    LOCAL_MULTIPLAYER = "Local Multiplayer Supported"
+    GAME_VOUCHERS = "Game Vouchers Qualified"
     NSO_REQUIRED = "Nintendo Switch Online Required"
-    SAVE_DATA_CLOUD = "Save Data Cloud"
-    VOICE_CHAT = "Voice Chat"
+    SAVE_DATA_CLOUD = "Save Data Cloud Supported"
+    VOICE_CHAT = "Voice Chat Supported"
 
     def __str__(self):
         return str(self.value)
