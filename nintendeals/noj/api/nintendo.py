@@ -10,9 +10,9 @@ SEARCH_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
 SOFTWARE_URL = "https://www.nintendo.co.jp/data/software/xml/{filename}.xml"
 
 FILENAMES = {
+    Platforms.NINTENDO_WII_U: "wiiu_pkg_dl",
     Platforms.NINTENDO_3DS: "3ds_pkg_dl",
     Platforms.NINTENDO_SWITCH: "switch",
-    Platforms.NINTENDO_WII_U: "wiiu_pkg_dl",
 }
 
 

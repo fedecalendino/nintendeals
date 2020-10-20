@@ -8,9 +8,9 @@ from nintendeals.commons.enumerates import Platforms
 SEARCH_URL = "https://search.nintendo-europe.com/en/select"
 
 SYSTEM_NAMES = {
+    Platforms.NINTENDO_WII_U: "Wii U",
     Platforms.NINTENDO_3DS: "3DS",
     Platforms.NINTENDO_SWITCH: "Switch",
-    Platforms.NINTENDO_WII_U: "Wii U",
 }
 
 
@@ -37,9 +37,9 @@ def search(platform: Platforms, query: str = "*") -> Iterator[dict]:
         if response.status_code != 200:
             break
 
-        json = response.json()['response'].get('docs', [])
+        data = response.json()['response'].get('docs', [])
 
-        if not len(json):
+        if not len(data):
             break
 
-        yield from json
+        yield from data

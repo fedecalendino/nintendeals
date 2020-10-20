@@ -12,15 +12,15 @@ INDEX = None
 
 
 PLATFORMS = {
+    Platforms.NINTENDO_WII_U: "Wii U",
     Platforms.NINTENDO_3DS: "Nintendo 3DS",
     Platforms.NINTENDO_SWITCH: "Nintendo Switch",
-    Platforms.NINTENDO_WII_U: "Wii U",
 }
 
 PLATFORM_CODES = {
+    Platforms.NINTENDO_WII_U: "2001",
     Platforms.NINTENDO_3DS: "5001",
     Platforms.NINTENDO_SWITCH: "7001",
-    Platforms.NINTENDO_WII_U: "2001",
 }
 
 

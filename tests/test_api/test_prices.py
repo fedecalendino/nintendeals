@@ -1,11 +1,8 @@
 from unittest import TestCase
 
-import ddt
-
 from nintendeals.api import prices
 
 
-@ddt.ddt
 class TestPrices(TestCase):
 
     def test_fetch_prices(self):
