@@ -17,7 +17,7 @@ HARDNAMES = {
 def _search(query: str = "", platform: Platforms = None) -> Iterator[dict]:
     params = {
         "q": query,
-        "limit": 300,
+        "limit": 150,
         "page": 0,
         "opt_hard": HARDNAMES.get(platform)
     }

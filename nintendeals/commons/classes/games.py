@@ -28,16 +28,18 @@ class Game:
         self.product_code: str = product_code
 
         self.description: str = None
-        self.developer: str = None
-        self.publisher: str = None
         self.slug: str = None
 
         self.players: int = 0
 
+        self.free_to_play: bool = False
+
         self.release_date: datetime = None
 
-        self.genres: List[str] = []
+        self.developers: List[str] = []
+        self.categories: List[str] = []
         self.languages: List[str] = []
+        self.publishers: List[str] = []
 
         self.rating: Tuple[Ratings, Any] = (None, None)
 

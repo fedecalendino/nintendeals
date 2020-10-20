@@ -17,8 +17,9 @@ class TestAlgolia(TestCase):
         ("70010000020033", "the-legend-of-zelda-links-awakening-switch"),
     )
     @ddt.unpack
-    def test_find_by_nsuid(self, nsuid, slug):
-        self.assertEqual(slug, algolia.find_by_nsuid(nsuid))
+    def test_search_by_nsuid(self, nsuid, slug):
+        result = algolia.search_by_nsuid(nsuid)
+        self.assertEqual(slug, result["slug"])
 
     @ddt.data(
         (Platforms.NINTENDO_WII_U, "2001", "Wii U"),
@@ -26,8 +27,11 @@ class TestAlgolia(TestCase):
         (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
     )
     @ddt.unpack
-    def test_search_games(self, platform, nsuid_prefix, playable_on):
-        result = algolia.search_games(platform, query="Zelda")
+    def test_search_by_query(self, platform, nsuid_prefix, playable_on):
+        result = algolia.search_by_query(
+            query="Zelda",
+            platform=platform
+        )
 
         for index, data in enumerate(result):
             if index > LIMIT:
@@ -47,8 +51,8 @@ class TestAlgolia(TestCase):
         (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
     )
     @ddt.unpack
-    def test_list_games(self, platform, nsuid_prefix, playable_on):
-        result = algolia.list_games(platform)
+    def test_search_by_platform(self, platform, nsuid_prefix, playable_on):
+        result = algolia.search_by_platform(platform)
 
         for index, data in enumerate(result):
             if index > LIMIT:

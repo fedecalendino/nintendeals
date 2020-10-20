@@ -17,8 +17,10 @@ class TestNintendo(TestCase):
         (Platforms.NINTENDO_SWITCH, "7001", "HAC"),
     )
     @ddt.unpack
-    def test_search(self, platform, nsuid_prefix, playable_on):
-        for index, data in enumerate(nintendo.search(platform)):
+    def test_search_by_platform(self, platform, nsuid_prefix, playable_on):
+        result = nintendo.search_by_platform(platform)
+
+        for index, data in enumerate(result):
             if index > LIMIT:
                 break
 
