@@ -25,21 +25,21 @@ class Game:
         self.nsuid: str = nsuid
         self.product_code: str = product_code
 
-        self.description: str = None
-        self.slug: str = None
+        self.description: Optional[str] = None
+        self.slug: Optional[str] = None
 
         self.players: int = 0
 
-        self.free_to_play: bool = False
+        self.free_to_play: Optional[bool] = None
 
-        self.release_date: datetime = None
+        self.release_date: Optional[datetime] = None
 
         self.developers: List[str] = []
         self.categories: List[str] = []
         self.languages: List[str] = []
         self.publishers: List[str] = []
 
-        self.rating: Tuple[Ratings, Any] = (None, None)
+        self.rating: Optional[Tuple[Ratings, Any]] = None
 
         self.features: Dict[Features, Any] = {}
 
