@@ -31,19 +31,12 @@ def fetch_prices(
 
     response.raise_for_status()
 
-    total = 0
-    sales = 0
-    prices = {}
-
     for data in response.json().get('prices', []):
         nsuid = str(data["title_id"])
         regular_price = data.get("regular_price")
 
         if not regular_price:
-            prices[nsuid] = None
             continue
-
-        total += 1
 
         price = Price(
             nsuid=nsuid,
@@ -58,7 +51,5 @@ def fetch_prices(
             price.sale_value = float(discount_price["raw_value"])
             price.sale_start = _parse_date(discount_price['start_datetime'])
             price.sale_end = _parse_date(discount_price['end_datetime'])
-
-            sales += 1
 
         yield price.nsuid, price
