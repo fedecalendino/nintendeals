@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Iterable, Iterator, Tuple
 
 import requests
 from dateutil.parser import parse as date_parser
@@ -11,7 +11,12 @@ def _parse_date(string: str) -> datetime:
     return date_parser(string).replace(tzinfo=None)
 
 
-def fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
+def fetch_prices(
+        country: str,
+        nsuids: Iterable[str]
+) -> Iterator[Tuple[str, Price]]:
+    nsuids = set(nsuids)
+
     if not 51 > len(nsuids) > 0:
         raise ValueError("The amount of nsuids must between 1 and 50.")
 
@@ -56,33 +61,4 @@ def fetch_prices(country: str, nsuids: List[str]) -> Dict[str, Price]:
 
             sales += 1
 
-        prices[price.nsuid] = price
-
-    return prices
-
-
-def get_prices(country: str, games: List["Game"]) -> Iterator[Tuple[str, Price]]:
-    prices = {}
-    chunk = []
-
-    for game in games:
-        chunk.append(game)
-
-        if len(chunk) == 50:
-            nsuids = [game.nsuid for game in chunk]
-            fetched = fetch_prices(country=country, nsuids=nsuids)
-            prices.update(fetched)
-
-            chunk = []
-
-    if chunk:
-        nsuids = [game.nsuid for game in chunk if game.nsuid]
-        fetched = fetch_prices(country=country, nsuids=nsuids)
-        prices.update(fetched)
-
-    yield from prices.items()
-
-
-def get_price(country: str, game: "Game") -> Optional[Price]:
-    fetched = fetch_prices(country=country, nsuids=[game.nsuid])
-    return fetched.get(game.nsuid)
+        yield price.nsuid, price
