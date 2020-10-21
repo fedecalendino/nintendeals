@@ -2,11 +2,14 @@ import requests
 from bs4 import BeautifulSoup
 
 
-URL = "https://www.nintendo.com/games/detail/{slug}"
+ESHOP_URL = "https://www.nintendo.com/games/detail/{slug}"
 
 
 def scrap(slug):
-    response = requests.get(URL.format(slug=slug), allow_redirects=True)
+    response = requests.get(
+        url=ESHOP_URL.format(slug=slug),
+        allow_redirects=True
+    )
 
     soup = BeautifulSoup(response.text, features="html.parser")
     div = soup.find("div", class_="game-details")
@@ -24,9 +27,20 @@ def scrap(slug):
 
         data[key] = value
 
+    languages = soup.find("dd", class_="languages")
+
+    if languages:
+        languages = languages.text.strip().split(", ")
+    else:
+        languages = ["English"]
+
+    save_data_cloud = soup.find("a", attrs={"aria-label": "save-data-cloud"}) is not None
+
     return {
-        "nsuid": data["nsuid"],
-        "product_code": data["productCode"],
+        "nsuid": data.get("nsuid"),
+        "product_code": data.get("productCode"),
         "slug": data["slug"].replace("\\u002D", "-"),
         "title": data["title"],
+        "languages": languages,
+        "save_data_cloud": save_data_cloud,
     }

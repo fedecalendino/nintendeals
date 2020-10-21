@@ -59,7 +59,7 @@ def build_game(data: Dict) -> Game:
     # Categories
     game.categories = data.get("genre", [])
 
-    # # Developer
+    # Developer
     developer = data.get("maker")
     game.developers = [developer] if developer else []
 
