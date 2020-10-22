@@ -1,3 +1,4 @@
+from itertools import zip_longest
 from typing import Iterator, Optional
 
 import requests
@@ -11,6 +12,9 @@ SYSTEM_NAMES = {
     Platforms.NINTENDO_SWITCH: "Switch",
     Platforms.NINTENDO_WIIU: "Wii U",
 }
+
+PRODUCT_CODE_PREFIXES = "CTR", "KTR", "HAC", "WUP"
+NSUIDS_PREFIXES = "200", "500", "700"
 
 
 def _search(
@@ -43,12 +47,26 @@ def _search(
         if response.status_code != 200:
             break
 
-        data = response.json()['response'].get('docs', [])
+        json = response.json()['response'].get('docs', [])
 
-        if not len(data):
+        if not len(json):
             break
 
-        yield from data
+        for data in json:
+            nsuids = data.get("nsuid_txt", [])
+            product_codes = data["product_code_txt"] = [
+                pc.replace("-", "")
+                    for pc in data.get("product_code_txt", [])
+                        if pc[:3] in PRODUCT_CODE_PREFIXES
+            ]
+
+            if not any((nsuids, product_codes)):
+                continue
+
+            data["nsuid_txt"] = nsuids[0] if nsuids else 0
+            data["product_code_txt"] = product_codes[0] if product_codes else 0
+
+            yield data
 
 
 def search_by_nsuid(nsuid: str) -> Optional[dict]:
@@ -63,4 +81,4 @@ def search_by_platform(platform: Platforms) -> Iterator[dict]:
 
 
 def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
-    yield from _search(query=query, platform=platform)
+    yield from _search(nsuid=query, platform=platform)

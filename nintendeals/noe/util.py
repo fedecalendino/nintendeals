@@ -4,21 +4,32 @@ from typing import Dict
 from nintendeals.commons.classes.games import Game
 from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
 
+
+NSUIDS = {
+    "500": Platforms.NINTENDO_3DS,
+    "700": Platforms.NINTENDO_SWITCH,
+    "200": Platforms.NINTENDO_WIIU,
+}
+
 PLATFORMS = {
-    "Wii U": Platforms.NINTENDO_WIIU,
-    "Nintendo 3DS": Platforms.NINTENDO_3DS,
-    "New Nintendo 3DS": Platforms.NINTENDO_3DS,
-    "Nintendo Switch": Platforms.NINTENDO_SWITCH,
+    "CTR": Platforms.NINTENDO_3DS,
+    "KTR": Platforms.NINTENDO_3DS,
+    "HAC": Platforms.NINTENDO_SWITCH,
+    "WUP": Platforms.NINTENDO_WIIU,
 }
 
 
 def build_game(data: Dict) -> Game:
-    nsuid = data.get("nsuid_txt", [None])[0]
-    product_code = data.get("product_code_txt", [None])[0]
-    system_name = [sm for sm in data["system_names_txt"] if sm in PLATFORMS][0]
+    nsuid = data.get("nsuid_txt")
+    product_code = data.get("product_code_txt")
+
+    if nsuid:
+        platform = NSUIDS[nsuid[:3]]
+    else:
+        platform = PLATFORMS[product_code[:3]]
 
     game = Game(
-        platform=PLATFORMS[system_name],
+        platform=platform,
         region=Regions.EU,
         title=data["title"],
         nsuid=nsuid,
@@ -48,7 +59,7 @@ def build_game(data: Dict) -> Game:
 
     # Languages
     languages = data.get("language_availability")
-    game.languages = languages[0].split(",") if languages else []
+    game.languages = list(map(str.title, languages[0].split(","))) if languages else []
 
     # Publisher
     publisher = data.get("publisher")
