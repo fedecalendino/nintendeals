@@ -7,7 +7,7 @@ from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
 
 
 PLATFORMS = {
-    "Wii U": Platforms.NINTENDO_WII_U,
+    "Wii U": Platforms.NINTENDO_WIIU,
     "Nintendo 3DS": Platforms.NINTENDO_3DS,
     "Nintendo Switch": Platforms.NINTENDO_SWITCH,
 }

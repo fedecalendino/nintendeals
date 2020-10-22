@@ -7,9 +7,9 @@ from nintendeals.commons.enumerates import Platforms
 SEARCH_URL = "https://search.nintendo-europe.com/en/select"
 
 SYSTEM_NAMES = {
-    Platforms.NINTENDO_WII_U: "Wii U",
     Platforms.NINTENDO_3DS: "3DS",
     Platforms.NINTENDO_SWITCH: "Switch",
+    Platforms.NINTENDO_WIIU: "Wii U",
 }
 
 

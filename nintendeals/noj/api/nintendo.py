@@ -8,9 +8,9 @@ from nintendeals.commons.enumerates import Platforms
 SEARCH_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
 
 HARDNAMES = {
-    Platforms.NINTENDO_WII_U: "4_WUP",
     Platforms.NINTENDO_3DS: "2_CTR",
     Platforms.NINTENDO_SWITCH: "1_HAC",
+    Platforms.NINTENDO_WIIU: "4_WUP",
 }
 
 

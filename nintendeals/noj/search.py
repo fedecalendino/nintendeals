@@ -11,5 +11,13 @@ def search_games(query: str, platform: Platforms) -> Iterator[Game]:
         yield build_game(data)
 
 
+def search_3ds_games(query: str) -> Iterator[Game]:
+    yield from search_games(query, Platforms.NINTENDO_3DS)
+
+
 def search_switch_games(query: str) -> Iterator[Game]:
     yield from search_games(query, Platforms.NINTENDO_SWITCH)
+
+
+def search_wiiu_games(query: str) -> Iterator[Game]:
+    yield from search_games(query, Platforms.NINTENDO_WIIU)

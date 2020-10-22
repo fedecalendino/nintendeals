@@ -11,5 +11,13 @@ def list_games(platform: Platforms) -> Iterator[Game]:
         yield build_game(data)
 
 
+def list_3ds_games() -> Iterator[Game]:
+    yield from list_games(Platforms.NINTENDO_3DS)
+
+
 def list_switch_games() -> Iterator[Game]:
     yield from list_games(Platforms.NINTENDO_SWITCH)
+
+
+def list_wiiu_games() -> Iterator[Game]:
+    yield from list_games(Platforms.NINTENDO_WIIU)

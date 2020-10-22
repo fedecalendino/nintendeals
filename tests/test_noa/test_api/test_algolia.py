@@ -22,7 +22,7 @@ class TestAlgolia(TestCase):
         self.assertEqual(slug, result["slug"])
 
     @ddt.data(
-        (Platforms.NINTENDO_WII_U, "2001", "Wii U"),
+        (Platforms.NINTENDO_WIIU, "2001", "Wii U"),
         (Platforms.NINTENDO_3DS, "5001", "Nintendo 3DS"),
         (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
     )
@@ -46,7 +46,7 @@ class TestAlgolia(TestCase):
                 self.assertIn(nsuid_prefix, nsuid)
 
     @ddt.data(
-        (Platforms.NINTENDO_WII_U, "2001", "Wii U"),
+        (Platforms.NINTENDO_WIIU, "2001", "Wii U"),
         (Platforms.NINTENDO_3DS, "5001", "Nintendo 3DS"),
         (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
     )
