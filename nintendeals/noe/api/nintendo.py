@@ -81,4 +81,4 @@ def search_by_platform(platform: Platforms) -> Iterator[dict]:
 
 
 def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
-    yield from _search(nsuid=query, platform=platform)
+    yield from _search(query=query, platform=platform)
