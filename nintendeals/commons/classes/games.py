@@ -48,7 +48,10 @@ class Game:
         if not self.product_code:
             return None
 
-        return self.product_code[-5:-1]
+        if self.region == Regions.JP:
+            return self.product_code[3:-1]
+        else:
+            return self.product_code[4:-1]
 
     # def price(self, country: str) -> Price:
     #     return get_price(country=country, game=self)
