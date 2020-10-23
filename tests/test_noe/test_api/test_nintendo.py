@@ -12,9 +12,9 @@ LIMIT = 20
 class TestNintendo(TestCase):
 
     @ddt.data(
-        (Platforms.NINTENDO_WIIU, "2001", "WUP"),
-        (Platforms.NINTENDO_3DS, "5001", "CTR"),
-        (Platforms.NINTENDO_SWITCH, "7001", "HAC"),
+        (Platforms.NINTENDO_WIIU, "200", "WUP"),
+        (Platforms.NINTENDO_3DS, "500", "CTR"),
+        (Platforms.NINTENDO_SWITCH, "700", "HAC"),
     )
     @ddt.unpack
     def test_search_by_platform(self, platform, nsuid_prefix, playable_on):
@@ -24,11 +24,11 @@ class TestNintendo(TestCase):
             if index > LIMIT:
                 break
 
-            nsuids = data.get("nsuid_txt", [])
+            nsuid = data.get("nsuid_txt", "")
             playable_ons = data.get("playable_on_txt", [])
 
-            if nsuids:
-                self.assertIn(nsuid_prefix, " ".join(nsuids))
+            if nsuid:
+                self.assertTrue(nsuid.startswith(nsuid_prefix))
 
             if playable_ons:
                 self.assertIn(playable_on, " ".join(playable_ons))
