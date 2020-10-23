@@ -18,7 +18,7 @@ def build_game(data: Dict) -> Game:
 
     game = Game(
         platform=PLATFORMS[data["platform"]],
-        region=Regions.JP,
+        region=Regions.NA,
         title=data["title"],
         nsuid=data.get("nsuid"),
         product_code=extra.get("product_code"),
