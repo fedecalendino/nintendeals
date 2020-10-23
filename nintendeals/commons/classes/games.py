@@ -1,12 +1,14 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
+from nintendeals.commons.classes.prices import Price
 from nintendeals.commons.enumerates import (
     Features,
     Platforms,
     Ratings,
     Regions,
 )
+from nintendeals.api.prices import get_price
 
 
 class Game:
@@ -53,8 +55,8 @@ class Game:
         else:
             return self.product_code[4:-1]
 
-    # def price(self, country: str) -> Price:
-    #     return get_price(country=country, game=self)
+    def price(self, country: str) -> Price:
+        return get_price(country=country, game=self)
 
     def url(self, country: str, lang: str = "en") -> Optional[str]:
         if not self.nsuid:

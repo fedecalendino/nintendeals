@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Iterable, Iterator, Tuple
+from typing import Iterable, Iterator, Optional, Tuple
 
 import requests
 from dateutil.parser import parse as date_parser
@@ -12,8 +12,8 @@ def _parse_date(string: str) -> datetime:
 
 
 def fetch_prices(
-        country: str,
-        nsuids: Iterable[str]
+    country: str,
+    nsuids: Iterable[str]
 ) -> Iterator[Tuple[str, Price]]:
     nsuids = set(nsuids)
 
@@ -53,3 +53,44 @@ def fetch_prices(
             price.sale_end = _parse_date(discount_price['end_datetime'])
 
         yield price.nsuid, price
+
+
+def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Price]]:
+    prices = {}
+    chunk = []
+
+    for game in games:
+        chunk.append(game)
+
+        if len(chunk) == 50:
+            fetched = {
+                nsuid: price for nsuid, price in
+                fetch_prices(
+                    country=country,
+                    nsuids=[game.nsuid for game in chunk]
+                )
+            }
+            prices.update(fetched)
+
+            chunk = []
+
+    if chunk:
+        fetched = {
+            nsuid: price for nsuid, price in
+            fetch_prices(
+                country=country,
+                nsuids=[game.nsuid for game in chunk]
+            )
+        }
+        prices.update(fetched)
+
+    yield from prices.items()
+
+
+def get_price(game: "Game", country: str) -> Optional[Price]:
+    fetched = {
+        nsuid: price
+        for nsuid, price in fetch_prices(country=country, nsuids=[game.nsuid])
+    }
+
+    return fetched.get(game.nsuid)
