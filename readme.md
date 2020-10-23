@@ -55,7 +55,7 @@ Taking Splatoon 2 as an example, we have these 3 product codes for it (one per r
 * "HAC**AAB6**A" (JP)
 
 The difference with the nsuid is that (as you can see bolded) the product code has a constant between all regions, 
-and this is what I decided to call [unique_id](https://github.com/fedecalendino/nintendeals/blob/master/nintendeals/classes/games.py#L55) 
+and this is what I decided to call [unique_id](https://github.com/fedecalendino/nintendeals/blob/master/nintendeals/commons/classes/games.py#L49) 
 and it is what we can you to join a game across all regions.
 
 You can also see this code in the front of your Nintendo Switch [cartridge](https://media.karousell.com/media/photos/products/2019/08/17/splatoon_2_cartridge_only_1566040350_4f38e061_progressive.jpg).
@@ -108,34 +108,15 @@ Built on top of the listing services, these provide a simple way to search for g
 ```python
 from nintendeals import noa
 
-for game in noa.search_switch_games(title="Zelda"):
+for game in noa.search_switch_games(query="Zelda"):
     print(game.title, "/", game.nsuid)
 ```
 
 ```text
->>> The Legend of Zelda: Breath of the Wild / 70010000000025
->>> The Legend of Zelda: Breath of the Wild - Master Edition / None
->>> The Legend of Zelda: Breath of the Wild - Special Edition / None
->>> The Legend of Zelda: Breath of the Wild Explorer's Edition / None
->>> The Legend of Zelda: Breath of the Wild: Starter Pack / None
->>> The Legend of Zelda: Link's Awakening / 70010000020033
->>> The Legend of Zelda: Link's Awakening: Dreamer Edition / None
->>> Cadence of Hyrule - Crypt of the NecroDancer Featuring the Legend of Zelda / 70010000021364
-```
-
-```python
-from datetime import datetime
-from nintendeals import noe
-
-for game in noe.search_switch_games(
-    title="Hollow Knight",
-    released_before=datetime(2018, 12, 31)
-):
-    print(game.title, "/", game.nsuid)
-```
-
-```text
->> Hollow Knight / 70010000003207
+>> The Legend of Zelda™: Link’s Awakening / 70010000020033
+>> The Legend of Zelda™: Link's Awakening: Dreamer Edition / None
+>> Cadence of Hyrule: Crypt of the NecroDancer Featuring The Legend of Zelda / 70010000021364
+>> The Legend of Zelda™: Breath of the Wild / 70010000000025
 ```
 
 
@@ -154,7 +135,7 @@ print(game.unique_id)
 print(game.release_date)
 print(game.players)
 print(game.rating)
-print(game.dlc)
+print(game.features)
 ```
 
 ```text
@@ -162,8 +143,13 @@ print(game.dlc)
 >> AAAA
 >> 2017-03-03 00:00:00
 >> 1
->> ESRB: Everyone 10+
->> True
+>> (<Ratings.ESRB: 'ESRB'>, 'Everyone 10+')
+>> {
+>>   <Features.DEMO: 'Demo Available'>: False, 
+>>   <Features.DLC: 'DLC Available'>: False, 
+>>   <Features.NSO_REQUIRED: 'Nintendo Switch Online Required'>: True, 
+>>   <Features.SAVE_DATA_CLOUD: 'Save Data Cloud Supported'>: True
+>> }
 ```
 
 ```python
@@ -179,15 +165,27 @@ print(game.dlc)
 ```
 
 ```text
+
+
+
+
 >> The Legend of Zelda: Breath of the Wild
 >> AAAA
 >> 2017-03-03 00:00:00
 >> 1
->> PEGI: 12
->> True
+>> (<Ratings.PEGI: 'PEGI'>, 12)
+>> {
+>>   <Features.AMIIBO: 'Amiibo Supported'>: True, 
+>>   <Features.DEMO: 'Demo Available'>: False, 
+>>   <Features.DLC: 'DLC Available'>: False, 
+>>   <Features.LOCAL_MULTIPLAYER: 'Local Multiplayer Supported'>: False, 
+>>   <Features.NSO_REQUIRED: 'Nintendo Switch Online Required'>: False, 
+>>   <Features.SAVE_DATA_CLOUD: 'Save Data Cloud Supported'>: True, 
+>>   <Features.GAME_VOUCHERS: 'Game Vouchers Qualified'>: False, 
+>>   <Features.VOICE_CHAT: 'Voice Chat Supported'>: False
+>> }
 ```
 
-> Keep in mind that each call to these services will trigger a call to a nintendo eshop website.
 
 ### Pricing
 
@@ -204,7 +202,7 @@ game = noe.game_info(country="70010000007705")
 print(game.title)
 print()
 
-price = prices.get_price(country="CZ", game=game)  # Czech Republic
+price = prices.get_price(game=game, country="CZ")  # Czech Republic
 print(price.currency)
 print(price.value)
 print(price.sale_discount, "%")
@@ -239,8 +237,9 @@ print(botw.title)
 celeste = noa.game_info(nsuid="70010000006442")
 print(celeste.title)
 
-prices = prices.get_prices(country="US", games=[botw, celeste])
+print()
 
+prices = prices.get_prices(country="US", games=[botw, celeste])
 for nsuid, price in prices:
     print(nsuid)
     print(price.value)
@@ -260,10 +259,3 @@ None
 19.99
 4.99
 ```
-
-
-## To Do list
-
-* Improve exception management for unexisting games or prices
-* Improve performance
-* Lazy attributes on Game class to reduce scraping.
