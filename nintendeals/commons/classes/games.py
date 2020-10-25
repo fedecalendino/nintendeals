@@ -7,8 +7,10 @@ from nintendeals.commons.enumerates import (
     Platforms,
     Ratings,
     Regions,
+    eShops,
 )
 from nintendeals.api.prices import get_price
+from nintendeals.commons.helpers import eShopURL
 
 
 class Game:
@@ -58,11 +60,8 @@ class Game:
     def price(self, country: str) -> Price:
         return get_price(country=country, game=self)
 
-    def url(self, country: str, lang: str = "en") -> Optional[str]:
-        if not self.nsuid:
-            return None
-
-        return f"https://ec.nintendo.com/{country}/{lang}/titles/{self.nsuid}"
+    def url(self, website: eShops) -> Optional[str]:
+        return eShopURL.get(self, website)
 
     def __repr__(self):
         return self.title

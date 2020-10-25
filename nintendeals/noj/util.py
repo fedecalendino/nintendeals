@@ -40,7 +40,7 @@ def build_game(data: Dict) -> Game:
     )
 
     game.description = data.get("text")
-    game.slug = None
+    game.slug = data.get("icode")
     game.free_to_play = data.get("price") == 0.0
 
     # Players
