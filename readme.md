@@ -40,22 +40,26 @@ NoJ:
 
 An nsuid is a 14 digit long string which Nintendo uses to identify games on each region. 
 Taking Breath of the Wild as an example, we have these 3 nsuids for it (one per region):
-    
-* "70010000000025" (NA)
-* "70010000000023" (EU)
-* "70010000000026" (JP)
+
+```    
+  * 70010000000025 (NA)
+  * 70010000000023 (EU)
+  * 70010000000026 (JP)
+```
     
 ### Product Code
 
 The product code is another type of ID that Nintendo uses, it usually is a 8/9 character long string.
 Taking Splatoon 2 as an example, we have these 3 product codes for it (one per region):
 
-* "HACP**AAB6**B" (NA)
-* "HACP**AAB6**C" (EU)
-* "HAC**AAB6**A" (JP)
+```
+  * HACPAAB6B (NA)
+  * HACPAAB6C (EU)
+  *  HACAAB6A (JP)
+```
 
-The difference with the nsuid is that (as you can see bolded) the product code has a constant between all regions, 
-and this is what I decided to call [unique_id](https://github.com/fedecalendino/nintendeals/blob/master/nintendeals/commons/classes/games.py#L49) 
+The difference with the nsuid is that the product code has a constant between all regions (`AAB6` in this example), 
+and this is what I decided to call [unique_id](https://github.com/fedecalendino/nintendeals/blob/master/nintendeals/commons/classes/games.py#L56) 
 and it is what we can you to join a game across all regions.
 
 You can also see this code in the front of your Nintendo Switch [cartridge](https://media.karousell.com/media/photos/products/2019/08/17/splatoon_2_cartridge_only_1566040350_4f38e061_progressive.jpg).
@@ -129,61 +133,88 @@ Coming back to the nsuid of Breath of the Wild as an example:
 ```python
 from nintendeals import noa
 
-game = noa.game_info(nsuid="70010000000025")
+game = noa.game_info("70010000000025")
 print(game.title)
-print(game.unique_id)
+print(game.product_code, game.unique_id)
 print(game.release_date)
 print(game.players)
-print(game.rating)
-print(game.features)
+print(str(game.rating[0]), game.rating[1])
+print(game.eshop.fr_CA)
+
+for feature, value in game.features.items():
+    print(" *", str(feature), ":", value)
 ```
 
 ```text
 >> The Legend of Zelda™: Breath of the Wild
->> AAAA
+>> HACPAAAAA AAAA
 >> 2017-03-03 00:00:00
 >> 1
->> (<Ratings.ESRB: 'ESRB'>, 'Everyone 10+')
->> {
->>   <Features.DEMO: 'Demo Available'>: False, 
->>   <Features.DLC: 'DLC Available'>: False, 
->>   <Features.NSO_REQUIRED: 'Nintendo Switch Online Required'>: True, 
->>   <Features.SAVE_DATA_CLOUD: 'Save Data Cloud Supported'>: True
->> }
+>> ESRB Everyone 10+
+>> https://www.nintendo.com/fr_CA/games/detail/the-legend-of-zelda-breath-of-the-wild-switch
+>>  * Demo Available : False
+>>  * DLC Available : False
+>>  * Nintendo Switch Online Required : True
+>>  * Save Data Cloud Supported : True
 ```
 
 ```python
 from nintendeals import noe
 
-game = noe.game_info(nsuid="70010000000023")
+game = noe.game_info("70010000000023")
 print(game.title)
-print(game.unique_id)
+print(game.product_code, game.unique_id)
 print(game.release_date)
 print(game.players)
-print(game.rating)
-print(game.dlc)
+print(str(game.rating[0]), game.rating[1])
+print(game.eshop.en_UK)
+
+for feature, value in game.features.items():
+    print(" *", str(feature), ":", value)
 ```
 
 ```text
-
-
-
-
 >> The Legend of Zelda: Breath of the Wild
->> AAAA
+>> HACPAAAAA AAAA
 >> 2017-03-03 00:00:00
 >> 1
->> (<Ratings.PEGI: 'PEGI'>, 12)
->> {
->>   <Features.AMIIBO: 'Amiibo Supported'>: True, 
->>   <Features.DEMO: 'Demo Available'>: False, 
->>   <Features.DLC: 'DLC Available'>: False, 
->>   <Features.LOCAL_MULTIPLAYER: 'Local Multiplayer Supported'>: False, 
->>   <Features.NSO_REQUIRED: 'Nintendo Switch Online Required'>: False, 
->>   <Features.SAVE_DATA_CLOUD: 'Save Data Cloud Supported'>: True, 
->>   <Features.GAME_VOUCHERS: 'Game Vouchers Qualified'>: False, 
->>   <Features.VOICE_CHAT: 'Voice Chat Supported'>: False
->> }
+>> PEGI 12
+>> https://www.nintendo.co.uk/Games/Nintendo-Switch/The-Legend-of-Zelda-Breath-of-the-Wild-1173609.html
+>>  * Amiibo Supported : True
+>>  * Demo Available : False
+>>  * DLC Available : False
+>>  * Local Multiplayer Supported : False
+>>  * Nintendo Switch Online Required : False
+>>  * Save Data Cloud Supported : True
+>>  * Game Vouchers Qualified : False
+>>  * Voice Chat Supported : False
+```
+
+```python
+from nintendeals import noj
+
+game = noj.game_info("70010000000026")
+print(game.title)
+print(game.product_code, game.unique_id)
+print(game.release_date)
+print(game.players)
+print(str(game.rating[0]), game.rating[1])
+print(game.eshop.jp_JP)
+
+for feature, value in game.features.items():
+    print(" *", str(feature), ":", value)
+```
+
+```text
+>> ゼルダの伝説　ブレス オブ ザ ワイルド
+>> HACAAAAA AAAA
+>> 2017-03-03 00:00:00
+>> 1
+>> CERO B
+>> https://store-jp.nintendo.com/list/software/70010000000026.html
+>>  * Amiibo Supported : True
+>>  * DLC Available : True
+>>  * Nintendo Switch Online Required : False
 ```
 
 
@@ -198,11 +229,11 @@ the American region will be able to fetch you the prices of Canada, Mexico and U
 from nintendeals import noe
 from nintendeals.api import prices
 
-game = noe.game_info(country="70010000007705")
+game = noe.game_info("70010000007705")
 print(game.title)
 print()
 
-price = prices.get_price(game=game, country="CZ")  # Czech Republic
+price = prices.get_price(game, country="CZ")  # Czech Republic
 print(price.currency)
 print(price.value)
 print(price.sale_discount, "%")
@@ -232,14 +263,14 @@ but it expects a list of games instead of only one:
 from nintendeals import noa
 from nintendeals.api import prices
 
-botw = noa.game_info(nsuid="70010000000025")
+botw = noa.game_info("70010000000025")
 print(botw.title)
-celeste = noa.game_info(nsuid="70010000006442")
+celeste = noa.game_info("70010000006442")
 print(celeste.title)
 
 print()
 
-prices = prices.get_prices(country="US", games=[botw, celeste])
+prices = prices.get_prices([botw, celeste], country="US")
 for nsuid, price in prices:
     print(nsuid)
     print(price.value)
