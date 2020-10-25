@@ -60,9 +60,11 @@ def build_game(data: Dict) -> Game:
 
     game.features = {
         Features.DEMO: "Demo available" in filters,
-        Features.DLC: "DLC Available" in filters,
-        Features.NSO_REQUIRED: "Nintendo Switch Online compatible" in filters,
-        Features.SAVE_DATA_CLOUD: extra.get("save_data_cloud")
     }
+
+    if game.platform == Platforms.NINTENDO_SWITCH:
+        game.features[Features.DLC] = "DLC available" in filters
+        game.features[Features.NSO_REQUIRED] = "Nintendo Switch Online compatible" in filters
+        game.features[Features.SAVE_DATA_CLOUD] = extra.get("save_data_cloud")
 
     return game

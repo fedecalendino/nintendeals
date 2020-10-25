@@ -35,6 +35,29 @@ def game_info_by_slug(slug: str) -> Optional[Game]:
 
 
 def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
+    """
+        Given a game's `nsuid` or url `slug` for the NA region, it will
+    retrieve its information from Nintendo of America.
+
+    Available Features
+    ------------------
+        * Nintendo 3DS: DEMO.
+        * Nintendo WIIU: DEMO.
+        * Nintendo Switch: DEMO, DLC, NSO_REQUIRED, SAVE_DATA_CLOUD.
+
+    Parameters
+    ----------
+    nsuid: str
+        Valid nsuid of a nintendo game.
+    slug: str
+        Valid slug from NA's eShop.
+
+    Returns
+    -------
+    nintendeals.classes.common.Game:
+        Information of the game.
+    """
+
     if nsuid:
         return game_info_by_nsuid(nsuid)
 
