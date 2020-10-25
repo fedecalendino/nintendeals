@@ -63,6 +63,9 @@ class eShops(str, Enum):
     Switzerland_IT = "it_CH"
     UnitedKingdom_EN = "en_UK"
 
+    Australia_EN = "en_AU"
+    NewZealand_EN = "en_NZ"
+
     Japan_JP = "jp_JP"
 
     def __str__(self):

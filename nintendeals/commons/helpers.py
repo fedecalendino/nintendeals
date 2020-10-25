@@ -24,19 +24,39 @@ EU = {
     eShops.UnitedKingdom_EN: "https://www.nintendo.co.uk{slug}",
 }
 
+EU_ALT = {
+    eShops.Australia_EN: "https://ec.nintendo.com/AU/en/titles/{nsuid}",
+    eShops.NewZealand_EN: "https://ec.nintendo.com/NZ/en/titles/{nsuid}",
+}
+
 
 class eShopURL:
 
     @staticmethod
     def na(game: "Game", website: eShops):
+        if website not in NA:
+            raise ValueError("Website unavailable for NA region")
+
         return NA[website].format(slug=game.slug)
 
     @staticmethod
     def eu(game: "Game", website: eShops):
-        return EU[website].format(slug=game.slug)
+        if website not in EU and website not in EU_ALT:
+            raise ValueError("Website unavailable for EU region")
+
+        if website in EU_ALT:
+            if game.platform != Platforms.NINTENDO_SWITCH:
+                raise ValueError("Only available for Nintendo Switch games")
+
+            return EU_ALT[website].format(nsuid=game.nsuid)
+        else:
+            return EU[website].format(slug=game.slug)
 
     @staticmethod
-    def jp(game: "Game", _: eShops):
+    def jp(game: "Game", website: eShops):
+        if website != eShops.Japan_JP:
+            raise ValueError("Website unavailable for JP region")
+
         if game.platform == Platforms.NINTENDO_SWITCH:
             url = "https://store-jp.nintendo.com/list/software/{nsuid}.html"
         else:
@@ -46,13 +66,8 @@ class eShopURL:
 
     @staticmethod
     def get(game: "Game", website: eShops):
-        if game.region == Regions.NA:
-            return eShopURL.na(game, website)
-
-        if game.region == Regions.EU:
-            return eShopURL.eu(game, website)
-
-        if game.region == Regions.JP:
-            return eShopURL.jp(game, website)
-
-        return None
+        return {
+            Regions.NA: eShopURL.na,
+            Regions.EU: eShopURL.eu,
+            Regions.JP: eShopURL.jp,
+        }.get(game.region)(game, website)
