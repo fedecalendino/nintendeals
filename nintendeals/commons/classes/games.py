@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from nintendeals.commons.classes.prices import Price
 from nintendeals.commons.enumerates import (
@@ -7,10 +7,16 @@ from nintendeals.commons.enumerates import (
     Platforms,
     Ratings,
     Regions,
-    eShops,
 )
 from nintendeals.api.prices import get_price
-from nintendeals.commons.helpers import eShopURL
+from nintendeals.commons.classes.eshops import NAeShop, EUeShop, JPeShop
+
+
+ESHOPS = {
+    Regions.NA: NAeShop,
+    Regions.EU: EUeShop,
+    Regions.JP: JPeShop,
+}
 
 
 class Game:
@@ -57,11 +63,12 @@ class Game:
         else:
             return self.product_code[4:-1]
 
+    @property
+    def eshop(self) -> Union[NAeShop, EUeShop, JPeShop]:
+        return ESHOPS[self.region](self)
+
     def price(self, country: str) -> Price:
         return get_price(country=country, game=self)
-
-    def url(self, website: eShops) -> Optional[str]:
-        return eShopURL.get(self, website)
 
     def __repr__(self):
         return self.title

@@ -40,33 +40,3 @@ class Regions(str, Enum):
 
     def __str__(self):
         return str(self.value)
-
-
-class eShops(str, Enum):
-    UnitedStates_EN = "en_US"
-    Canada_EN = "en_CA",
-    Canada_FR = "fr_CA",
-
-    Austria_DE = "de_AT"
-    Belgium_FR = "fr_BE"
-    Belgium_NL = "nl_BE"
-    France_FR = "fr_FR"
-    Germany_DE = "de_DE"
-    Italy_IT = "it_IT"
-    Netherlands_NL = "nl_NL"
-    Portugal_PT = "pt_PT"
-    Russia_RU = "ru_RU"
-    SouthAfrica_EN = "en_ZA"
-    Spain_ES = "es_ES"
-    Switzerland_DE = "de_CH"
-    Switzerland_FR = "fr_CH"
-    Switzerland_IT = "it_CH"
-    UnitedKingdom_EN = "en_UK"
-
-    Australia_EN = "en_AU"
-    NewZealand_EN = "en_NZ"
-
-    Japan_JP = "jp_JP"
-
-    def __str__(self):
-        return str(self.value)
