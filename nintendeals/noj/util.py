@@ -4,7 +4,6 @@ from typing import Dict
 from nintendeals.commons.classes.games import Game
 from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
 
-
 PLATFORMS = {
     "4_WUP": Platforms.NINTENDO_WIIU,
     "2_CTR": Platforms.NINTENDO_3DS,

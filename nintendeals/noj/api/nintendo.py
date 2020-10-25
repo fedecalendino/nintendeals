@@ -4,7 +4,6 @@ import requests
 
 from nintendeals.commons.enumerates import Platforms
 
-
 SEARCH_URL = "https://search.nintendo.jp/nintendo_soft/search.json"
 
 HARDNAMES = {

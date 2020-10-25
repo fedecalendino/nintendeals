@@ -1,4 +1,4 @@
-from nintendeals.commons.enumerates import Platforms, Regions
+from nintendeals.commons.enumerates import Platforms
 
 
 class NAeShop:

@@ -1,10 +1,9 @@
+import re
 from datetime import datetime
 from typing import Dict
-import re
 
 from nintendeals.commons.classes.games import Game
 from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
-
 
 PLATFORMS = {
     "Wii U": Platforms.NINTENDO_WIIU,

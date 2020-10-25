@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from nintendeals.api.prices import get_price
+from nintendeals.commons.classes.eshops import NAeShop, EUeShop, JPeShop
 from nintendeals.commons.classes.prices import Price
 from nintendeals.commons.enumerates import (
     Features,
@@ -8,9 +10,6 @@ from nintendeals.commons.enumerates import (
     Ratings,
     Regions,
 )
-from nintendeals.api.prices import get_price
-from nintendeals.commons.classes.eshops import NAeShop, EUeShop, JPeShop
-
 
 ESHOPS = {
     Regions.NA: NAeShop,

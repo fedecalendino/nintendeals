@@ -4,7 +4,6 @@ from typing import Dict
 from nintendeals.commons.classes.games import Game
 from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
 
-
 NSUIDS = {
     "500": Platforms.NINTENDO_3DS,
     "700": Platforms.NINTENDO_SWITCH,

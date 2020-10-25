@@ -1,4 +1,3 @@
-from itertools import zip_longest
 from typing import Iterator, Optional
 
 import requests
