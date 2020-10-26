@@ -14,8 +14,7 @@ def game_info(nsuid: str) -> Optional[Game]:
     ------------------
         * Nintendo 3DS: AMIIBO, DEMO, DLC.
         * Nintendo WIIU: AMIIBO, DEMO, DLC.
-        * Nintendo Switch: AMIIBO, DEMO, DLC, LOCAL_MULTIPLAYER, NSO_REQUIRED,
-            SAVE_DATA_CLOUD, VOICE_CHAT.
+        * Nintendo Switch: AMIIBO, DEMO, DLC, NSO_REQUIRED, SAVE_DATA_CLOUD, VOICE_CHAT.
 
     Parameters
     ----------

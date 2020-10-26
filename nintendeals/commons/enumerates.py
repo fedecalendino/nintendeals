@@ -5,7 +5,6 @@ class Features(str, Enum):
     AMIIBO = "Amiibo Supported"
     DEMO = "Demo Available"
     DLC = "DLC Available"
-    LOCAL_MULTIPLAYER = "Local Multiplayer Supported"
     NSO_REQUIRED = "Nintendo Switch Online Required"
     SAVE_DATA_CLOUD = "Save Data Cloud Supported"
     VOICE_CHAT = "Voice Chat Supported"

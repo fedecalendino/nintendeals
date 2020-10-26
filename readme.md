@@ -183,7 +183,6 @@ for feature, value in game.features.items():
 >>  * Amiibo Supported : True
 >>  * Demo Available : False
 >>  * DLC Available : False
->>  * Local Multiplayer Supported : False
 >>  * Nintendo Switch Online Required : False
 >>  * Save Data Cloud Supported : True
 >>  * Voice Chat Supported : False

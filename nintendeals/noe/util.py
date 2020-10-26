@@ -75,7 +75,6 @@ def build_game(data: Dict) -> Game:
     }
 
     if game.platform == Platforms.NINTENDO_SWITCH:
-        game.features[Features.LOCAL_MULTIPLAYER] = data.get("local_play", False)
         game.features[Features.NSO_REQUIRED] = data.get("paid_subscription_required_b", False)
         game.features[Features.SAVE_DATA_CLOUD] = data.get("cloud_saves_b", False)
         game.features[Features.VOICE_CHAT] = data.get("voice_chat_b", False)
