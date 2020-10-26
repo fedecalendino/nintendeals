@@ -139,7 +139,7 @@ print(game.product_code, game.unique_id)
 print(game.release_date)
 print(game.players)
 print(str(game.rating[0]), game.rating[1])
-print(game.eshop.fr_CA)
+print(game.eshop.ca_fr)
 
 for feature, value in game.features.items():
     print(" *", str(feature), ":", value)
@@ -167,7 +167,7 @@ print(game.product_code, game.unique_id)
 print(game.release_date)
 print(game.players)
 print(str(game.rating[0]), game.rating[1])
-print(game.eshop.en_UK)
+print(game.eshop.uk_en)
 
 for feature, value in game.features.items():
     print(" *", str(feature), ":", value)
@@ -197,7 +197,7 @@ print(game.product_code, game.unique_id)
 print(game.release_date)
 print(game.players)
 print(str(game.rating[0]), game.rating[1])
-print(game.eshop.jp_JP)
+print(game.eshop.jp_jp)
 
 for feature, value in game.features.items():
     print(" *", str(feature), ":", value)

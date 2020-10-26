@@ -9,7 +9,7 @@ class NAeShop:
         self.game = game
 
     @property
-    def en_CA(self) -> str:
+    def ca_en(self) -> str:
         return NAeShop.FORMAT.format(
             lang="en",
             country="CA",
@@ -17,7 +17,7 @@ class NAeShop:
         )
 
     @property
-    def fr_CA(self) -> str:
+    def ca_fr(self) -> str:
         return NAeShop.FORMAT.format(
             lang="fr",
             country="CA",
@@ -25,7 +25,7 @@ class NAeShop:
         )
 
     @property
-    def en_US(self) -> str:
+    def us_en(self) -> str:
         return NAeShop.FORMAT.format(
             lang="en",
             country="US",
@@ -44,14 +44,14 @@ class EUeShop:
         self.game = game
 
     @property
-    def de_AT(self) -> str:
+    def at_de(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="at",
             slug=self.game.slug
         )
 
     @property
-    def fr_BE(self) -> str:
+    def be_fr(self) -> str:
         return EUeShop.FORMAT_LANG.format(
             domain="be",
             lang="fr",
@@ -59,7 +59,7 @@ class EUeShop:
         )
 
     @property
-    def nl_BE(self) -> str:
+    def be_nl(self) -> str:
         return EUeShop.FORMAT_LANG.format(
             domain="be",
             lang="nl",
@@ -67,7 +67,7 @@ class EUeShop:
         )
 
     @property
-    def de_CH(self) -> str:
+    def ch_de(self) -> str:
         return EUeShop.FORMAT_LANG.format(
             domain="ch",
             lang="de",
@@ -75,7 +75,7 @@ class EUeShop:
         )
 
     @property
-    def fr_CH(self) -> str:
+    def ch_fr(self) -> str:
         return EUeShop.FORMAT_LANG.format(
             domain="ch",
             lang="fr",
@@ -83,7 +83,7 @@ class EUeShop:
         )
 
     @property
-    def it_CH(self) -> str:
+    def ch_it(self) -> str:
         return EUeShop.FORMAT_LANG.format(
             domain="ch",
             lang="it",
@@ -91,49 +91,49 @@ class EUeShop:
         )
 
     @property
-    def de_DE(self) -> str:
+    def de_de(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="de",
             slug=self.game.slug
         )
 
     @property
-    def es_ES(self) -> str:
+    def es_es(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="es",
             slug=self.game.slug
         )
 
     @property
-    def fr_FR(self) -> str:
+    def fr_fr(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="fr",
             slug=self.game.slug
         )
 
     @property
-    def it_IT(self) -> str:
+    def it_it(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="it",
             slug=self.game.slug
         )
 
     @property
-    def nl_NL(self) -> str:
+    def nl_nl(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="nl",
             slug=self.game.slug
         )
 
     @property
-    def pt_PT(self) -> str:
+    def pt_pt(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="pt",
             slug=self.game.slug
         )
 
     @property
-    def ru_RU(self) -> str:
+    def ru_ru(self) -> str:
         return EUeShop.FORMAT_LANG.format(
             domain="ru",
             lang="-",
@@ -141,21 +141,21 @@ class EUeShop:
         )
 
     @property
-    def en_UK(self) -> str:
+    def uk_en(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="co.uk",
             slug=self.game.slug
         )
 
     @property
-    def en_ZA(self) -> str:
+    def za_en(self) -> str:
         return EUeShop.FORMAT_NO_LANG.format(
             domain="co.za",
             slug=self.game.slug
         )
 
     @property
-    def en_AU(self) -> str:
+    def au_en(self) -> str:
         if self.game.platform != Platforms.NINTENDO_SWITCH:
             raise ValueError("Only available for Nintendo Switch games")
 
@@ -166,7 +166,7 @@ class EUeShop:
         )
 
     @property
-    def en_NZ(self) -> str:
+    def nz_en(self) -> str:
         if self.game.platform != Platforms.NINTENDO_SWITCH:
             raise ValueError("Only available for Nintendo Switch games")
 
@@ -186,7 +186,7 @@ class JPeShop:
         self.game = game
 
     @property
-    def jp_JP(self) -> str:
+    def jp_jp(self) -> str:
         if self.game.platform == Platforms.NINTENDO_3DS:
             return JPeShop.OLD_FORMAT.format(nsuid=self.game.nsuid)
 
