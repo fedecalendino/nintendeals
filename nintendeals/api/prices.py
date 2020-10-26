@@ -56,6 +56,22 @@ def fetch_prices(
 
 
 def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Price]]:
+    """
+    Given an iterable of `games` (each with a nsuid) and a valid `country` code
+    it will retrieve the current pricing of those games for that country.
+
+    Parameters
+    ----------
+    games: Iterable[nintendeals.commons.classes.games.Game]
+        Games to get their pricing.
+    country: str
+        Valid alpha-2 code of the country.
+
+    Yields
+    -------
+    Tuple[str, nintendeals.commons.classes.prices.Price]
+        Dictionary containing the nsuids as keys and each pricing as value.
+    """
     prices = {}
     chunk = []
 
@@ -88,6 +104,22 @@ def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Pri
 
 
 def get_price(game: "Game", country: str) -> Optional[Price]:
+    """
+    Given a `game` (with an nsuid) and a valid `country` code it will retrieve
+    the current pricing of that game for that country.
+
+    Parameters
+    ----------
+    game: nintendeals.commons.classes.games.Game
+        Game to get its pricing.
+    country: str
+        Valid alpha-2 code of the country.
+
+    Returns
+    -------
+    nintendeals.classes.commons.prices.Price
+        Pricing of the game in the indicated country.
+    """
     fetched = {
         nsuid: price
         for nsuid, price in fetch_prices(country=country, nsuids=[game.nsuid])
