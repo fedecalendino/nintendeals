@@ -7,11 +7,17 @@ from nintendeals.commons.enumerates import Features, Ratings, Regions, Platforms
 class TestGameInfo(TestCase):
 
     def test_game_info_non_existant(self):
-        game = noa.game_info("60010000000000")
+        game = noa.game_info(nsuid="60010000000000")
+        self.assertIsNone(game)
+
+        game = noa.game_info(slug="unknown")
+        self.assertIsNone(game)
+
+        game = noa.game_info()
         self.assertIsNone(game)
 
     def test_game_info_3ds(self):
-        game = noa.game_info("50010000023235")
+        game = noa.game_info(nsuid="50010000023235")
 
         self.assertEqual(game.platform, Platforms.NINTENDO_3DS)
         self.assertEqual(game.region, Regions.NA)
@@ -37,7 +43,7 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.eshop.ca_en, "https://www.nintendo.com/en_CA/games/detail/super-smash-bros-for-nintendo-3ds")
 
     def test_game_info_switch(self):
-        game = noa.game_info("70010000012332")
+        game = noa.game_info(slug="super-smash-bros-ultimate-switch")
 
         self.assertEqual(game.platform, Platforms.NINTENDO_SWITCH)
         self.assertEqual(game.region, Regions.NA)
@@ -66,7 +72,7 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.eshop.ca_fr, "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-ultimate-switch")
 
     def test_game_info_wiiu(self):
-        game = noa.game_info("20010000007686")
+        game = noa.game_info(nsuid="20010000007686")
 
         self.assertEqual(game.platform, Platforms.NINTENDO_WIIU)
         self.assertEqual(game.region, Regions.NA)

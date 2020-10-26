@@ -11,6 +11,9 @@ def scrap(slug):
         allow_redirects=True
     )
 
+    if response.status_code != 200:
+        return {}
+
     soup = BeautifulSoup(response.text, features="html.parser")
     div = soup.find("div", class_="game-details")
     script = div.find("script")
