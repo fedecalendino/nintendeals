@@ -70,7 +70,7 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.features.get(Features.DLC), True)
         self.assertEqual(game.features.get(Features.NSO_REQUIRED), True)
         self.assertEqual(game.features.get(Features.SAVE_DATA_CLOUD), True)
-        self.assertEqual(game.features.get(Features.VOICE_CHAT), False)
+        self.assertEqual(game.features.get(Features.VOICE_CHAT), True)
 
         self.assertEqual(game.eshop.ru_RU, "https://www.nintendo.ru/-/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html")
         self.assertEqual(game.eshop.en_UK, "https://www.nintendo.co.uk/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html")
