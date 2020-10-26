@@ -13,10 +13,10 @@ def search_games(query: str, platform: Platforms) -> Iterator[Game]:
 
 def search_3ds_games(query: str) -> Iterator[Game]:
     """
-        Search for Nintendo 3DS games in the NA region.
+    Search for Nintendo 3DS games in the NA region.
 
-        Note: game.product_code is unavailable with this method, to get it
-    use the method noa.game_info(nsuid).
+    Note: game.product_code is unavailable with this method, to get it use the
+    method noa.game_info(nsuid).
 
     Available Features
     ------------------
@@ -37,10 +37,10 @@ def search_3ds_games(query: str) -> Iterator[Game]:
 
 def search_switch_games(query: str) -> Iterator[Game]:
     """
-        Search for Nintendo Switch games in the NA region.
+    Search for Nintendo Switch games in the NA region.
 
-        Note: game.product_code is unavailable with this method, to get it
-    use the method noa.game_info(nsuid).
+    Note: game.product_code is unavailable with this method, to get it use the
+    method noa.game_info(nsuid).
 
     Available Features
     ------------------
@@ -64,10 +64,10 @@ def search_switch_games(query: str) -> Iterator[Game]:
 
 def search_wiiu_games(query: str) -> Iterator[Game]:
     """
-        Search for Nintendo WiiU games in the NA region.
+    Search for Nintendo WiiU games in the NA region.
 
-        Note: game.product_code is unavailable with this method, to get it
-    use the method noa.game_info(nsuid).
+    Note: game.product_code is unavailable with this method, to get it use the
+    method noa.game_info(nsuid).
 
     Available Features
     ------------------

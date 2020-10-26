@@ -36,8 +36,8 @@ def game_info_by_slug(slug: str) -> Optional[Game]:
 
 def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
     """
-        Given a game's `nsuid` or url `slug` for the NA region, it will
-    retrieve its information from Nintendo of America.
+    Given a game's `nsuid` or url `slug` for the NA region, it will retrieve
+    its information from Nintendo of America.
 
     Available Features
     ------------------

@@ -7,14 +7,19 @@ from nintendeals.noj.util import build_game
 
 def game_info(nsuid: str) -> Optional[Game]:
     """
-        Given a game's `nsuid` for the JP region, it will retrieve its
-    information from Nintendo of Japan.
+    Given a game's `nsuid` for the JP region, it will retrieve its information
+    from Nintendo of Japan.
 
     Available Features
     ------------------
-        * Nintendo 3DS: AMIIBO.
-        * Nintendo WIIU: AMIIBO.
-        * Nintendo Switch: AMIIBO, DLC, NSO_REQUIRED.
+        * Nintendo 3DS
+            - AMIIBO
+        * Nintendo WiiU
+            - AMIIBO
+        * Nintendo Switch
+            - AMIIBO
+            - DLC
+            - NSO_REQUIRED
 
     Parameters
     ----------
