@@ -5,6 +5,8 @@ import ddt
 from nintendeals import noa
 from nintendeals.api import prices
 
+from tests.util import spy
+
 
 @ddt.ddt
 class TestPrices(TestCase):
@@ -52,6 +54,26 @@ class TestPrices(TestCase):
             "The amount of nsuids must between 1 and 50.",
             str(context.exception)
         )
+
+    def test_get_prices_chunks(self):
+        nsuid = "70010000000025"
+        game = noa.game_info(nsuid=nsuid)
+
+        games = [game] * 222
+
+        with spy(prices, "fetch_prices") as spied:
+            found = list(prices.get_prices(games=games, country="US"))
+
+        self.assertEqual(1, len(found))
+
+        for nsuid, price in found:
+            self.assertEqual(game.nsuid, nsuid)
+
+            self.assertEqual("US", price.country)
+            self.assertEqual("USD", price.currency)
+            self.assertEqual(59.99, price.value)
+
+        self.assertEqual(5, spied.call_count)
 
     @ddt.data(("70010000000025", False), ("70010000000529", True))
     @ddt.unpack
