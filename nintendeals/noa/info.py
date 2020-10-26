@@ -57,7 +57,6 @@ def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
     nintendeals.classes.common.Game:
         Information of the game.
     """
-
     if nsuid:
         return game_info_by_nsuid(nsuid)
 

@@ -186,7 +186,6 @@ for feature, value in game.features.items():
 >>  * Local Multiplayer Supported : False
 >>  * Nintendo Switch Online Required : False
 >>  * Save Data Cloud Supported : True
->>  * Game Vouchers Qualified : False
 >>  * Voice Chat Supported : False
 ```
 

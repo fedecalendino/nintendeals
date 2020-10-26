@@ -71,12 +71,13 @@ def build_game(data: Dict) -> Game:
     game.features = {
         Features.AMIIBO: data.get("near_field_comm_b", False),
         Features.DEMO: data.get("demo_availability", False),
-        Features.DLC: data.get("dlc_shown_b", False),
-        Features.LOCAL_MULTIPLAYER: data.get("local_play", False),
-        Features.NSO_REQUIRED: data.get("paid_subscription_required_b", False),
-        Features.SAVE_DATA_CLOUD: data.get("cloud_saves_b", False),
-        Features.GAME_VOUCHERS: data.get("switch_game_voucher_b", False),
-        Features.VOICE_CHAT: data.get("voice_chat_b", False),
+        Features.DLC: data.get("add_on_content_b", False),
     }
+
+    if game.platform == Platforms.NINTENDO_SWITCH:
+        game.features[Features.LOCAL_MULTIPLAYER] = data.get("local_play", False)
+        game.features[Features.NSO_REQUIRED] = data.get("paid_subscription_required_b", False)
+        game.features[Features.SAVE_DATA_CLOUD] = data.get("cloud_saves_b", False)
+        game.features[Features.VOICE_CHAT] = data.get("voice_chat_b", False)
 
     return game
