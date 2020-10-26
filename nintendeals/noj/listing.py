@@ -13,7 +13,7 @@ def list_games(platform: Platforms) -> Iterator[Game]:
 
 def list_3ds_games() -> Iterator[Game]:
     """
-        Get a list of Nintendo 3DS games for the JP region.
+    Get a list of Nintendo 3DS games for the JP region.
 
     Available Features
     ------------------
@@ -31,7 +31,7 @@ def list_3ds_games() -> Iterator[Game]:
 
 def list_switch_games() -> Iterator[Game]:
     """
-        Get a list of Nintendo WiiU games for the JP region.
+    Get a list of Nintendo WiiU games for the JP region.
 
     Available Features
     ------------------
@@ -47,7 +47,7 @@ def list_switch_games() -> Iterator[Game]:
 
 def list_wiiu_games() -> Iterator[Game]:
     """
-        Get a list of Nintendo WiiU games for the JP region.
+    Get a list of Nintendo WiiU games for the JP region.
 
     Available Features
     ------------------

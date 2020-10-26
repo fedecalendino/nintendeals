@@ -12,12 +12,57 @@ def list_games(platform: Platforms) -> Iterator[Game]:
 
 
 def list_3ds_games() -> Iterator[Game]:
+    """
+    Get a list of Nintendo 3DS games for the EU region.
+
+    Available Features
+    ------------------
+        * AMIIBO
+        * DEMO
+        * DLC
+
+    Yields
+    -------
+    nintendeals.classes.common.Game:
+        Information of a game.
+    """
     yield from list_games(Platforms.NINTENDO_3DS)
 
 
 def list_switch_games() -> Iterator[Game]:
+    """
+    Get a list of Nintendo Switch games for the EU region.
+
+    Available Features
+    ------------------
+        * AMIIBO
+        * DEMO
+        * DLC
+        * NSO_REQUIRED
+        * SAVE_DATA_CLOUD
+        * VOICE_CHAT
+
+    Yields
+    -------
+    nintendeals.classes.common.Game:
+        Information of a game.
+    """
     yield from list_games(Platforms.NINTENDO_SWITCH)
 
 
 def list_wiiu_games() -> Iterator[Game]:
+    """
+    Get a list of Nintendo WiiU games for the EU region.
+
+    Available Features
+    ------------------
+        * AMIIBO
+        * DEMO
+        * DLC
+
+    Yields
+    -------
+    nintendeals.classes.common.Game:
+        Information of a game.
+    """
     yield from list_games(Platforms.NINTENDO_WIIU)
