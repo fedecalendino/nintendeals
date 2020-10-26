@@ -1,30 +1,30 @@
 from unittest import TestCase
 
-from nintendeals import noa
+from nintendeals import noe
 from nintendeals.commons.enumerates import Features, Ratings, Regions, Platforms
 
 
 class TestGameInfo(TestCase):
 
     def test_game_info_non_existant(self):
-        game = noa.game_info("60010000000000")
+        game = noe.game_info("60010000000000")
         self.assertIsNone(game)
 
     def test_game_info_3ds(self):
-        game = noa.game_info("50010000023235")
+        game = noe.game_info("50010000024975")
 
         self.assertEqual(game.platform, Platforms.NINTENDO_3DS)
-        self.assertEqual(game.region, Regions.NA)
-        self.assertEqual(game.title, "Super Smash Bros.")
-        self.assertEqual(game.nsuid, "50010000023235")
+        self.assertEqual(game.region, Regions.EU)
+        self.assertEqual(game.title, "Super Smash Bros. for Nintendo 3DS")
+        self.assertEqual(game.nsuid, "50010000024975")
         self.assertEqual(game.unique_id, "AXC")
 
-        self.assertEqual(game.slug, "super-smash-bros-for-nintendo-3ds")
+        self.assertEqual(game.slug, "/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
 
         self.assertEqual(game.players, 4)
         self.assertFalse(game.free_to_play)
 
-        self.assertEqual(game.rating, (Ratings.ESRB, "Everyone 10+"))
+        self.assertEqual(game.rating, (Ratings.PEGI, 12))
 
         self.assertEqual(game.release_date.year, 2014)
         self.assertEqual(game.release_date.month, 10)
@@ -32,27 +32,32 @@ class TestGameInfo(TestCase):
 
         self.assertIn("Nintendo", game.publishers)
 
+        self.assertEqual(game.features.get(Features.AMIIBO), True)
         self.assertEqual(game.features.get(Features.DEMO), True)
+        self.assertEqual(game.features.get(Features.DLC), True)
 
-        self.assertEqual(game.eshop.en_CA, "https://www.nintendo.com/en_CA/games/detail/super-smash-bros-for-nintendo-3ds")
-        self.assertEqual(game.eshop.fr_CA, "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-for-nintendo-3ds")
-        self.assertEqual(game.eshop.en_US, "https://www.nintendo.com/en_US/games/detail/super-smash-bros-for-nintendo-3ds")
+        self.assertEqual(game.eshop.de_AT, "https://www.nintendo.at/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
+        self.assertEqual(game.eshop.fr_BE, "https://www.nintendo.be/fr/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
+        self.assertEqual(game.eshop.nl_BE, "https://www.nintendo.be/nl/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
+        self.assertEqual(game.eshop.de_CH, "https://www.nintendo.ch/de/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
+        self.assertEqual(game.eshop.fr_CH, "https://www.nintendo.ch/fr/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
+        self.assertEqual(game.eshop.it_CH, "https://www.nintendo.ch/it/Games/Nintendo-3DS/Super-Smash-Bros-for-Nintendo-3DS-864329.html")
 
     def test_game_info_switch(self):
-        game = noa.game_info("70010000012332")
+        game = noe.game_info("70010000012331")
 
         self.assertEqual(game.platform, Platforms.NINTENDO_SWITCH)
-        self.assertEqual(game.region, Regions.NA)
-        self.assertEqual(game.title, "Super Smash Bros.™ Ultimate")
-        self.assertEqual(game.nsuid, "70010000012332")
+        self.assertEqual(game.region, Regions.EU)
+        self.assertEqual(game.title, "Super Smash Bros. Ultimate")
+        self.assertEqual(game.nsuid, "70010000012331")
         self.assertEqual(game.unique_id, "AAAB")
 
-        self.assertEqual(game.slug, "super-smash-bros-ultimate-switch")
+        self.assertEqual(game.slug, "/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html")
 
         self.assertEqual(game.players, 8)
         self.assertFalse(game.free_to_play)
 
-        self.assertEqual(game.rating, (Ratings.ESRB, "Everyone 10+"))
+        self.assertEqual(game.rating, (Ratings.PEGI, 12))
 
         self.assertEqual(game.release_date.year, 2018)
         self.assertEqual(game.release_date.month, 12)
@@ -60,39 +65,48 @@ class TestGameInfo(TestCase):
 
         self.assertIn("Nintendo", game.publishers)
 
+        self.assertEqual(game.features.get(Features.AMIIBO), True)
         self.assertEqual(game.features.get(Features.DEMO), False)
         self.assertEqual(game.features.get(Features.DLC), True)
         self.assertEqual(game.features.get(Features.NSO_REQUIRED), True)
         self.assertEqual(game.features.get(Features.SAVE_DATA_CLOUD), True)
+        self.assertEqual(game.features.get(Features.VOICE_CHAT), False)
 
-        self.assertEqual(game.eshop.en_CA, "https://www.nintendo.com/en_CA/games/detail/super-smash-bros-ultimate-switch")
-        self.assertEqual(game.eshop.fr_CA, "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-ultimate-switch")
-        self.assertEqual(game.eshop.en_US, "https://www.nintendo.com/en_US/games/detail/super-smash-bros-ultimate-switch")
+        self.assertEqual(game.eshop.ru_RU, "https://www.nintendo.ru/-/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html")
+        self.assertEqual(game.eshop.en_UK, "https://www.nintendo.co.uk/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html")
+        self.assertEqual(game.eshop.en_ZA, "https://www.nintendo.co.za/Games/Nintendo-Switch/Super-Smash-Bros-Ultimate-1395713.html")
+        self.assertEqual(game.eshop.en_AU, "https://ec.nintendo.com/AU/en/titles/70010000012331")
+        self.assertEqual(game.eshop.en_NZ, "https://ec.nintendo.com/NZ/en/titles/70010000012331")
 
     def test_game_info_wiiu(self):
-        game = noa.game_info("20010000007686")
+        game = noe.game_info("20010000010926")
 
         self.assertEqual(game.platform, Platforms.NINTENDO_WIIU)
-        self.assertEqual(game.region, Regions.NA)
-        self.assertEqual(game.title, "Super Smash Bros.")
-        self.assertEqual(game.nsuid, "20010000007686")
+        self.assertEqual(game.region, Regions.EU)
+        self.assertEqual(game.title, "Super Smash Bros. for Wii U")
+        self.assertEqual(game.nsuid, "20010000010926")
         self.assertEqual(game.unique_id, "AXF")
 
-        self.assertEqual(game.slug, "super-smash-bros-for-wii-u")
+        self.assertEqual(game.slug, "/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
 
         self.assertEqual(game.players, 8)
         self.assertFalse(game.free_to_play)
 
-        self.assertEqual(game.rating, (Ratings.ESRB, "Everyone 10+"))
+        self.assertEqual(game.rating, (Ratings.PEGI, 12))
 
         self.assertEqual(game.release_date.year, 2014)
         self.assertEqual(game.release_date.month, 11)
-        self.assertEqual(game.release_date.day, 21)
+        self.assertEqual(game.release_date.day, 28)
 
         self.assertIn("Nintendo", game.publishers)
 
+        self.assertEqual(game.features.get(Features.AMIIBO), True)
         self.assertEqual(game.features.get(Features.DEMO), False)
+        self.assertEqual(game.features.get(Features.DLC), True)
 
-        self.assertEqual(game.eshop.en_CA, "https://www.nintendo.com/en_CA/games/detail/super-smash-bros-for-wii-u")
-        self.assertEqual(game.eshop.fr_CA, "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-for-wii-u")
-        self.assertEqual(game.eshop.en_US, "https://www.nintendo.com/en_US/games/detail/super-smash-bros-for-wii-u")
+        self.assertEqual(game.eshop.de_DE, "https://www.nintendo.de/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
+        self.assertEqual(game.eshop.es_ES, "https://www.nintendo.es/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
+        self.assertEqual(game.eshop.fr_FR, "https://www.nintendo.fr/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
+        self.assertEqual(game.eshop.it_IT, "https://www.nintendo.it/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
+        self.assertEqual(game.eshop.nl_NL, "https://www.nintendo.nl/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
+        self.assertEqual(game.eshop.pt_PT, "https://www.nintendo.pt/Games/Wii-U/Super-Smash-Bros-for-Wii-U-864849.html")
