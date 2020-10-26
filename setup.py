@@ -27,10 +27,8 @@ setup(
         "nintendeals.noa.scrapers",
         "nintendeals.noe",
         "nintendeals.noe.api",
-        "nintendeals.noe.scrapers",
         "nintendeals.noj",
         "nintendeals.noj.api",
-        "nintendeals.noj.scrapers",
     ],
     install_requires=[
         "algoliasearch",
