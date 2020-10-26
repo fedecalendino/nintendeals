@@ -41,9 +41,15 @@ def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
 
     Available Features
     ------------------
-        * Nintendo 3DS: DEMO.
-        * Nintendo WIIU: DEMO.
-        * Nintendo Switch: DEMO, DLC, NSO_REQUIRED, SAVE_DATA_CLOUD.
+        * Nintendo 3DS
+            - DEMO
+        * Nintendo WiiU
+            - DEMO.
+        * Nintendo Switch
+            - DEMO
+            - DLC
+            - NSO_REQUIRED
+            - SAVE_DATA_CLOUD
 
     Parameters
     ----------
