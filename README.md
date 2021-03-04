@@ -3,9 +3,7 @@
 
 [![Version](https://img.shields.io/pypi/v/nintendeals?logo=pypi)](https://pypi.org/project/nintendeals)
 [![Build Status](https://img.shields.io/travis/fedecalendino/nintendeals/master?logo=travis)](https://travis-ci.com/fedecalendino/nintendeals)
-[![Quality Gate Status](https://img.shields.io/sonar/alert_status/fedecalendino_nintendeals?logo=sonarcloud&server=https://sonarcloud.io)](https://sonarcloud.io/dashboard?id=fedecalendino_nintendeals)
-[![CodeCoverage](https://img.shields.io/codecov/c/gh/fedecalendino/nintendeals?logo=codecov)](https://codecov.io/gh/fedecalendino/nintendeals)
-
+[![CodeCoverage](https://img.shields.io/sonar/coverage/fedecalendino_nintendeals?logo=sonarcloud&server=https://sonarcloud.io)](https://sonarcloud.io/dashboard?id=fedecalendino_nintendeals)
 
 -----
 

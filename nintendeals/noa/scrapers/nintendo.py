@@ -15,8 +15,8 @@ def scrap(slug):
         return {}
 
     soup = BeautifulSoup(response.text, features="html.parser")
-    div = soup.find("div", class_="game-details")
-    script = div.find("script")
+    div = soup.find("div", class_="game-details-container")
+    script = [script for script in list(div.find_all("script")) if "window.game = Object.freeze" in str(script)][0]
 
     data = {}
     separator = ': "'
@@ -37,7 +37,7 @@ def scrap(slug):
     else:
         languages = ["English"]
 
-    save_data_cloud = soup.find("a", attrs={"aria-label": "save-data-cloud"}) is not None
+    save_data_cloud = soup.find("styled-button", text="Save Data Cloud") is not None
 
     return {
         "nsuid": data.get("nsuid"),
