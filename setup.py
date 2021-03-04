@@ -4,12 +4,12 @@ from setuptools import setup
 
 this_directory = path.abspath(path.dirname(__file__))
 
-with open(path.join(this_directory, "readme.md"), encoding="utf-8") as f:
+with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
     name="nintendeals",
-    version="2.0.0",
+    version="2.0.1",
     url="https://github.com/fedecalendino/nintendeals",
     license="MIT",
     description="Scraping tools for Nintendo games and prices on NA, EU and JP.",
