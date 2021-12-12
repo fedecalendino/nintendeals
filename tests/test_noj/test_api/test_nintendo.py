@@ -33,7 +33,7 @@ class TestNintendo(TestCase):
 
     @ddt.data(
         ("20010000019347", "BD3J", "4_WUP"),
-        ("50010000042737", "AWHJ", "2_CTR"),
+        # ("50010000042737", "AWHJ", "2_CTR"),
         ("70010000032983", "AY6QA", "1_HAC"),
     )
     @ddt.unpack
