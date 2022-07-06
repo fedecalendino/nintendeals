@@ -41,15 +41,10 @@ def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
 
     Available Features
     ------------------
-        * Nintendo 3DS
-            - DEMO
-        * Nintendo WiiU
-            - DEMO.
-        * Nintendo Switch
-            - DEMO
-            - DLC
-            - NSO_REQUIRED
-            - SAVE_DATA_CLOUD
+        * DEMO
+        * DLC
+        * NSO_REQUIRED
+        * SAVE_DATA_CLOUD
 
     Parameters
     ----------
@@ -63,6 +58,7 @@ def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
     nintendeals.classes.common.Game:
         Information of the game.
     """
+
     if nsuid:
         return game_info_by_nsuid(nsuid)
 

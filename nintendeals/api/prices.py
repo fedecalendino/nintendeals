@@ -69,6 +69,7 @@ def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Pri
     Tuple[str, nintendeals.commons.classes.prices.Price]
         Dictionary containing the nsuids as keys and each pricing as value.
     """
+
     prices = {}
     chunk = []
 
@@ -79,7 +80,8 @@ def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Pri
             fetched = {
                 nsuid: price
                 for nsuid, price in fetch_prices(
-                    country=country, nsuids=[game.nsuid for game in chunk]
+                    country=country,
+                    nsuids=[game.nsuid for game in chunk],
                 )
             }
             prices.update(fetched)
@@ -90,7 +92,8 @@ def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Pri
         fetched = {
             nsuid: price
             for nsuid, price in fetch_prices(
-                country=country, nsuids=[game.nsuid for game in chunk]
+                country=country,
+                nsuids=[game.nsuid for game in chunk],
             )
         }
         prices.update(fetched)
@@ -115,9 +118,13 @@ def get_price(game: "Game", country: str) -> Optional[Price]:
     nintendeals.classes.commons.prices.Price
         Pricing of the game in the indicated country.
     """
+
     fetched = {
         nsuid: price
-        for nsuid, price in fetch_prices(country=country, nsuids=[game.nsuid])
+        for nsuid, price in fetch_prices(
+            country=country,
+            nsuids=[game.nsuid],
+        )
     }
 
     return fetched.get(game.nsuid)

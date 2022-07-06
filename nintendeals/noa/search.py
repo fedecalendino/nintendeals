@@ -11,30 +11,6 @@ def search_games(query: str, platform: Platforms) -> Iterator[Game]:
         yield build_game(data)
 
 
-def search_3ds_games(query: str) -> Iterator[Game]:
-    """
-    Search for Nintendo 3DS games in the NA region.
-
-    Note: game.product_code is unavailable with this method, to get it use the
-    method noa.game_info(nsuid).
-
-    Available Features
-    ------------------
-        * DEMO
-
-    Parameters
-    ----------
-    query: str
-        Text to search.
-
-    Yields
-    -------
-    nintendeals.classes.common.Game:
-        Information of a game.
-    """
-    yield from search_games(query, Platforms.NINTENDO_3DS)
-
-
 def search_switch_games(query: str) -> Iterator[Game]:
     """
     Search for Nintendo Switch games in the NA region.
@@ -47,7 +23,6 @@ def search_switch_games(query: str) -> Iterator[Game]:
         * DEMO
         * DLC
         * NSO_REQUIRED
-        * SAVE_DATA_CLOUD
 
     Parameters
     ----------
@@ -59,28 +34,5 @@ def search_switch_games(query: str) -> Iterator[Game]:
     nintendeals.classes.common.Game:
         Information of a game.
     """
+
     yield from search_games(query, Platforms.NINTENDO_SWITCH)
-
-
-def search_wiiu_games(query: str) -> Iterator[Game]:
-    """
-    Search for Nintendo WiiU games in the NA region.
-
-    Note: game.product_code is unavailable with this method, to get it use the
-    method noa.game_info(nsuid).
-
-    Available Features
-    ------------------
-        * DEMO
-
-    Parameters
-    ----------
-    query: str
-        Text to search.
-
-    Yields
-    -------
-    nintendeals.classes.common.Game:
-        Information of a game.
-    """
-    yield from search_games(query, Platforms.NINTENDO_WIIU)
