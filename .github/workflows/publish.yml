@@ -1,4 +1,4 @@
-name: Publish Package
+name: Publish package
 
 on:
   release:
@@ -11,33 +11,27 @@ jobs:
     timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools
-        pip install wheel
-        pip install twine
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.0.0
 
-    - name: Build
-      run: |
-        python setup.py sdist bdist_wheel
+      - name: Setup environment
+        run: poetry install
 
-    - name: Publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.TOKEN_PYPI }}
-      run: |
-        twine upload dist/*
+      - name: Build and publish package
+        run: poetry publish --build --username __token__ --password ${{ secrets.TOKEN_PYPI }}
 
-    - name: Notify
-      with:
-        slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        pypi_project_name: nintendeals
-      uses: fedecalendino/slack-release-notifier@v1.1.0
+      - name: Notify via Slack
+        with:
+          slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          pypi_project_name: nintendeals
+        uses: fedecalendino/slack-release-notifier@v1.1.0

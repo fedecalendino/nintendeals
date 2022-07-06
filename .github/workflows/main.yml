@@ -1,0 +1,71 @@
+name: Push to main branch
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"]
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+
+      - name: Setup environment
+        run: poetry install
+
+      - name: Run tests with Coverage
+        run: |
+          poetry run coverage run --source nintendeals -m unittest discover
+          poetry run coverage xml -o ./coverage.xml
+
+      - name: Fix coverage xml path
+        run: |
+          sed -i "s@${GITHUB_WORKSPACE}@/github/workspace/@g" ./coverage.xml
+
+      - name: SonarCloud scan
+        if: matrix.python-version == '3.8'
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          SONAR_TOKEN: ${{ secrets.TOKEN_SONAR }}
+        uses: sonarsource/sonarcloud-github-action@master
+
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+
+      - name: Setup environment
+        run: poetry install
+
+      - name: Build package
+        run: poetry build
