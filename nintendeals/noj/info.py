@@ -12,10 +12,6 @@ def game_info(nsuid: str) -> Optional[Game]:
 
     Available Features
     ------------------
-        * Nintendo 3DS
-            - AMIIBO
-        * Nintendo WiiU
-            - AMIIBO
         * Nintendo Switch
             - AMIIBO
             - DLC
@@ -31,6 +27,6 @@ def game_info(nsuid: str) -> Optional[Game]:
     nintendeals.classes.common.Game:
         Information of the game.
     """
-    data = nintendo.search_by_nsuid(nsuid)
 
+    data = nintendo.search_by_nsuid(nsuid)
     return build_game(data) if data else None

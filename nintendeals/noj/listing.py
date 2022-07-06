@@ -11,24 +11,6 @@ def list_games(platform: Platforms) -> Iterator[Game]:
         yield build_game(data)
 
 
-def list_3ds_games() -> Iterator[Game]:
-    """
-    Get a list of Nintendo 3DS games for the JP region.
-
-    Available Features
-    ------------------
-        * AMIIBO
-        * DLC
-        * NSO_REQUIRED
-
-    Yields
-    -------
-    nintendeals.classes.common.Game:
-        Information of a game.
-    """
-    yield from list_games(Platforms.NINTENDO_3DS)
-
-
 def list_switch_games() -> Iterator[Game]:
     """
     Get a list of Nintendo WiiU games for the JP region.
@@ -42,20 +24,5 @@ def list_switch_games() -> Iterator[Game]:
     nintendeals.classes.common.Game:
         Information of a game.
     """
+
     yield from list_games(Platforms.NINTENDO_SWITCH)
-
-
-def list_wiiu_games() -> Iterator[Game]:
-    """
-    Get a list of Nintendo WiiU games for the JP region.
-
-    Available Features
-    ------------------
-        * AMIIBO
-
-    Yields
-    -------
-    nintendeals.classes.common.Game:
-        Information of a game.
-    """
-    yield from list_games(Platforms.NINTENDO_WIIU)

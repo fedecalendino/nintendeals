@@ -5,9 +5,6 @@ from nintendeals.commons.classes.games import Game
 from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
 
 PLATFORMS = {
-    "4_WUP": Platforms.NINTENDO_WIIU,
-    "2_CTR": Platforms.NINTENDO_3DS,
-    "3_KTR": Platforms.NINTENDO_3DS,
     "1_HAC": Platforms.NINTENDO_SWITCH,
 }
 
@@ -73,10 +70,8 @@ def build_game(data: Dict) -> Game:
     # Features
     game.features = {
         Features.AMIIBO: data.get("amiibo", "0") == "1",
+        Features.DLC: len(data.get("cnsuid") or []) > 0,
+        Features.NSO_REQUIRED: (data.get("nso") or ["0"]) == ["1"],
     }
-
-    if game.platform == Platforms.NINTENDO_SWITCH:
-        game.features[Features.DLC] = len(data.get("cnsuid") or []) > 0
-        game.features[Features.NSO_REQUIRED] = (data.get("nso") or ["0"]) == ["1"]
 
     return game

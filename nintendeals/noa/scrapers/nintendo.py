@@ -3,7 +3,6 @@ import json
 import requests
 from bs4 import BeautifulSoup
 
-
 ESHOP_URL = "https://www.nintendo.com/store/products/{slug}/"
 
 
