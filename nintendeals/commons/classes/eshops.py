@@ -1,6 +1,3 @@
-from nintendeals.commons.enumerates import Platforms
-
-
 class NAeShop:
 
     FORMAT = "https://www.nintendo.com/{lang}_{country}/games/detail/{slug}"

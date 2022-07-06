@@ -4,7 +4,6 @@ import ddt
 
 from nintendeals import noa
 from nintendeals.api import prices
-
 from tests.util import spy
 
 
