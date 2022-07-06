@@ -26,7 +26,10 @@ def _search(query: str = "", platform: Platforms = None) -> Iterator[dict]:
         if not items:
             break
 
-        yield from items
+        yield from filter(
+            lambda item: "_" not in item["id"],
+            items,
+        )
 
 
 def search_by_nsuid(nsuid: str) -> Optional[dict]:

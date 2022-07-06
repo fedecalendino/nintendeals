@@ -11,8 +11,6 @@ LIMIT = 20
 @ddt.ddt
 class TestNintendo(TestCase):
     @ddt.data(
-        (Platforms.NINTENDO_WIIU, "200", "WUP"),
-        (Platforms.NINTENDO_3DS, "500", "CTR"),
         (Platforms.NINTENDO_SWITCH, "700", "HAC"),
     )
     @ddt.unpack

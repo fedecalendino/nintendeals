@@ -11,8 +11,7 @@ LIMIT = 20
 @ddt.ddt
 class TestAlgolia(TestCase):
     @ddt.data(
-        ("20010000001646", "the-legend-of-zelda-the-wind-waker-hd-wii-u"),
-        ("50010000000541", "the-legend-of-zelda-ocarina-of-time-3d-3ds"),
+        ("70010000000025", "the-legend-of-zelda-breath-of-the-wild-switch"),
         ("70010000020033", "the-legend-of-zelda-links-awakening-switch"),
     )
     @ddt.unpack
@@ -21,8 +20,6 @@ class TestAlgolia(TestCase):
         self.assertEqual(slug, result["slug"])
 
     @ddt.data(
-        (Platforms.NINTENDO_WIIU, "2001", "Wii U"),
-        (Platforms.NINTENDO_3DS, "5001", "Nintendo 3DS"),
         (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
     )
     @ddt.unpack
@@ -42,8 +39,6 @@ class TestAlgolia(TestCase):
                 self.assertIn(nsuid_prefix, nsuid)
 
     @ddt.data(
-        (Platforms.NINTENDO_WIIU, "2001", "Wii U"),
-        (Platforms.NINTENDO_3DS, "5001", "Nintendo 3DS"),
         (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
     )
     @ddt.unpack

@@ -93,16 +93,10 @@ class EUeShop:
 
     @property
     def au_en(self) -> str:
-        if self.game.platform != Platforms.NINTENDO_SWITCH:
-            raise ValueError("Only available for Nintendo Switch games")
-
         return EUeShop.FORMAT_ALT.format(country="AU", lang="en", nsuid=self.game.nsuid)
 
     @property
     def nz_en(self) -> str:
-        if self.game.platform != Platforms.NINTENDO_SWITCH:
-            raise ValueError("Only available for Nintendo Switch games")
-
         return EUeShop.FORMAT_ALT.format(country="NZ", lang="en", nsuid=self.game.nsuid)
 
 
@@ -116,10 +110,4 @@ class JPeShop:
 
     @property
     def jp_jp(self) -> str:
-        if self.game.platform == Platforms.NINTENDO_3DS:
-            return JPeShop.OLD_FORMAT.format(nsuid=self.game.nsuid)
-
-        if self.game.platform == Platforms.NINTENDO_WIIU:
-            return JPeShop.OLD_FORMAT.format(nsuid=self.game.nsuid)
-
         return JPeShop.NEW_FORMAT.format(nsuid=self.game.nsuid)

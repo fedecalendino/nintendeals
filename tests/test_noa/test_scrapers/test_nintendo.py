@@ -9,16 +9,10 @@ from nintendeals.noa.scrapers import nintendo
 class TestNintendo(TestCase):
     @ddt.data(
         (
-            "the-legend-of-zelda-the-wind-waker-hd-wii-u",
-            "20010000001646",
-            "WUPPBCZE",
-            "The Legend of Zelda: The Wind Waker HD",
-        ),
-        (
-            "the-legend-of-zelda-ocarina-of-time-3d-3ds",
-            "50010000000541",
-            "CTRPAQEE",
-            "The Legend of Zelda: Ocarina of Time 3D",
+            "the-legend-of-zelda-breath-of-the-wild-switch",
+            "70010000000025",
+            "HACPAAAAA",
+            "The Legend of Zelda™: Breath of the Wild",
         ),
         (
             "the-legend-of-zelda-links-awakening-switch",
@@ -32,6 +26,6 @@ class TestNintendo(TestCase):
         result = nintendo.scrap(slug)
 
         self.assertEqual(nsuid, result["nsuid"])
-        # self.assertEqual(product_code, result["product_code"])  TODO
+        self.assertEqual(product_code, result["product_code"])
         self.assertEqual(slug, result["slug"])
         self.assertEqual(title, result["title"])

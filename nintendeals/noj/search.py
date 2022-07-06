@@ -17,10 +17,9 @@ def search_switch_games(query: str) -> Iterator[Game]:
 
     Available Features
     ------------------
-        * DEMO
+        * AMIIBO
         * DLC
         * NSO_REQUIRED
-        * SAVE_DATA_CLOUD
 
     Parameters
     ----------
@@ -34,3 +33,5 @@ def search_switch_games(query: str) -> Iterator[Game]:
     """
 
     yield from search_games(query, Platforms.NINTENDO_SWITCH)
+
+list(search_switch_games("zelda"))

@@ -18,6 +18,8 @@ def list_switch_games() -> Iterator[Game]:
     Available Features
     ------------------
         * AMIIBO
+        * DLC
+        * NSO_REQUIRED
 
     Yields
     -------

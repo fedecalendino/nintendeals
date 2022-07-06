@@ -11,8 +11,6 @@ LIMIT = 100
 @ddt.ddt
 class TestNintendo(TestCase):
     @ddt.data(
-        (Platforms.NINTENDO_WIIU, "200", "4_WUP"),
-        (Platforms.NINTENDO_3DS, "500", "2_CTR"),
         (Platforms.NINTENDO_SWITCH, "700", "1_HAC"),
     )
     @ddt.unpack
@@ -31,8 +29,7 @@ class TestNintendo(TestCase):
                 self.assertEqual(nsuid_prefix, nsuid[:3])
 
     @ddt.data(
-        ("20010000019347", "BD3J", "4_WUP"),
-        # ("50010000042737", "AWHJ", "2_CTR"),
+        ("70010000000026", "AAAAA", "1_HAC"),
         ("70010000032983", "AY6QA", "1_HAC"),
     )
     @ddt.unpack
