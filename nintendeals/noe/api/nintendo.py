@@ -7,13 +7,11 @@ from nintendeals.commons.enumerates import Platforms
 SEARCH_URL = "https://search.nintendo-europe.com/en/select"
 
 SYSTEM_NAMES = {
-    Platforms.NINTENDO_3DS: "3DS",
     Platforms.NINTENDO_SWITCH: "Switch",
-    Platforms.NINTENDO_WIIU: "Wii U",
 }
 
-PRODUCT_CODE_PREFIXES = "CTR", "KTR", "HAC", "WUP"
-NSUIDS_PREFIXES = "200", "500", "700"
+PRODUCT_CODE_PREFIXES = "HAC"
+NSUIDS_PREFIXES = "700"
 
 
 def _search(

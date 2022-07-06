@@ -12,14 +12,6 @@ def game_info(nsuid: str) -> Optional[Game]:
 
     Available Features
     ------------------
-        * Nintendo 3DS
-            - AMIIBO
-            - DEMO
-            - DLC
-        * Nintendo WiiU
-            - AMIIBO
-            - DEMO
-            - DLC
         * Nintendo Switch
             - AMIIBO
             - DEMO

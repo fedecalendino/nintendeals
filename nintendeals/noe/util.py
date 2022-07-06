@@ -5,16 +5,11 @@ from nintendeals.commons.classes.games import Game
 from nintendeals.commons.enumerates import Features, Platforms, Ratings, Regions
 
 NSUIDS = {
-    "500": Platforms.NINTENDO_3DS,
     "700": Platforms.NINTENDO_SWITCH,
-    "200": Platforms.NINTENDO_WIIU,
 }
 
 PLATFORMS = {
-    "CTR": Platforms.NINTENDO_3DS,
-    "KTR": Platforms.NINTENDO_3DS,
     "HAC": Platforms.NINTENDO_SWITCH,
-    "WUP": Platforms.NINTENDO_WIIU,
 }
 
 
@@ -69,13 +64,9 @@ def build_game(data: Dict) -> Game:
         Features.AMIIBO: data.get("near_field_comm_b", False),
         Features.DEMO: data.get("demo_availability", False),
         Features.DLC: data.get("add_on_content_b", False),
+        Features.NSO_REQUIRED: data.get("paid_subscription_required_b", False),
+        Features.SAVE_DATA_CLOUD: data.get("cloud_saves_b", False),
+        Features.VOICE_CHAT: data.get("voice_chat_b", False),
     }
-
-    if game.platform == Platforms.NINTENDO_SWITCH:
-        game.features[Features.NSO_REQUIRED] = data.get(
-            "paid_subscription_required_b", False
-        )
-        game.features[Features.SAVE_DATA_CLOUD] = data.get("cloud_saves_b", False)
-        game.features[Features.VOICE_CHAT] = data.get("voice_chat_b", False)
 
     return game

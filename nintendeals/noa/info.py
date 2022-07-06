@@ -41,10 +41,11 @@ def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
 
     Available Features
     ------------------
-        * DEMO
-        * DLC
-        * NSO_REQUIRED
-        * SAVE_DATA_CLOUD
+        * Nintendo Switch
+            - DEMO
+            - DLC
+            - NSO_REQUIRED
+            - SAVE_DATA_CLOUD
 
     Parameters
     ----------
