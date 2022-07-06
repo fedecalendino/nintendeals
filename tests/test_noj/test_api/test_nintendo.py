@@ -10,7 +10,6 @@ LIMIT = 100
 
 @ddt.ddt
 class TestNintendo(TestCase):
-
     @ddt.data(
         (Platforms.NINTENDO_WIIU, "200", "4_WUP"),
         (Platforms.NINTENDO_3DS, "500", "2_CTR"),

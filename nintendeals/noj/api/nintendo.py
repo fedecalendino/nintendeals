@@ -14,19 +14,11 @@ HARDNAMES = {
 
 
 def _search(query: str = "", platform: Platforms = None) -> Iterator[dict]:
-    params = {
-        "q": query,
-        "limit": 150,
-        "page": 0,
-        "opt_hard": HARDNAMES.get(platform)
-    }
+    params = {"q": query, "limit": 150, "page": 0, "opt_hard": HARDNAMES.get(platform)}
 
     while True:
         params["page"] += 1
-        response = requests.get(
-            url=SEARCH_URL,
-            params=params
-        )
+        response = requests.get(url=SEARCH_URL, params=params)
 
         if response.status_code != 200:
             break

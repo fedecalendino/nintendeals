@@ -11,10 +11,7 @@ def _parse_date(string: str) -> datetime:
     return date_parser(string).replace(tzinfo=None)
 
 
-def fetch_prices(
-    country: str,
-    nsuids: Iterable[str]
-) -> Iterator[Tuple[str, Price]]:
+def fetch_prices(country: str, nsuids: Iterable[str]) -> Iterator[Tuple[str, Price]]:
     nsuids = set(nsuids)
 
     if not 51 > len(nsuids) > 0:
@@ -26,12 +23,12 @@ def fetch_prices(
             country=country,
             lang="en",
             ids=",".join(nsuids),
-        )
+        ),
     )
 
     response.raise_for_status()
 
-    for data in response.json().get('prices', []):
+    for data in response.json().get("prices", []):
         nsuid = str(data["title_id"])
         regular_price = data.get("regular_price")
 
@@ -49,8 +46,8 @@ def fetch_prices(
 
         if discount_price:
             price.sale_value = float(discount_price["raw_value"])
-            price.sale_start = _parse_date(discount_price['start_datetime'])
-            price.sale_end = _parse_date(discount_price['end_datetime'])
+            price.sale_start = _parse_date(discount_price["start_datetime"])
+            price.sale_end = _parse_date(discount_price["end_datetime"])
 
         yield price.nsuid, price
 
@@ -80,10 +77,9 @@ def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Pri
 
         if len(chunk) == 50:
             fetched = {
-                nsuid: price for nsuid, price in
-                fetch_prices(
-                    country=country,
-                    nsuids=[game.nsuid for game in chunk]
+                nsuid: price
+                for nsuid, price in fetch_prices(
+                    country=country, nsuids=[game.nsuid for game in chunk]
                 )
             }
             prices.update(fetched)
@@ -92,10 +88,9 @@ def get_prices(games: Iterable["Game"], country: str) -> Iterator[Tuple[str, Pri
 
     if chunk:
         fetched = {
-            nsuid: price for nsuid, price in
-            fetch_prices(
-                country=country,
-                nsuids=[game.nsuid for game in chunk]
+            nsuid: price
+            for nsuid, price in fetch_prices(
+                country=country, nsuids=[game.nsuid for game in chunk]
             )
         }
         prices.update(fetched)

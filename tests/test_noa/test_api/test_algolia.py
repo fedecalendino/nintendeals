@@ -10,7 +10,6 @@ LIMIT = 20
 
 @ddt.ddt
 class TestAlgolia(TestCase):
-
     @ddt.data(
         ("20010000001646", "the-legend-of-zelda-the-wind-waker-hd-wii-u"),
         ("50010000000541", "the-legend-of-zelda-ocarina-of-time-3d-3ds"),
@@ -28,10 +27,7 @@ class TestAlgolia(TestCase):
     )
     @ddt.unpack
     def test_search_by_query(self, platform, nsuid_prefix, playable_on):
-        result = algolia.search_by_query(
-            query="Zelda",
-            platform=platform
-        )
+        result = algolia.search_by_query(query="Zelda", platform=platform)
 
         for index, data in enumerate(result):
             if index > LIMIT:

@@ -2,14 +2,7 @@ from datetime import datetime
 
 
 class Price:
-
-    def __init__(
-        self,
-        nsuid: str,
-        country: str,
-        currency: str,
-        value: float
-    ):
+    def __init__(self, nsuid: str, country: str, currency: str, value: float):
         self.nsuid: str = nsuid
 
         self.country: str = country

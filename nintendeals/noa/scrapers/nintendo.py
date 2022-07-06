@@ -6,17 +6,18 @@ ESHOP_URL = "https://www.nintendo.com/games/detail/{slug}"
 
 
 def scrap(slug):
-    response = requests.get(
-        url=ESHOP_URL.format(slug=slug),
-        allow_redirects=True
-    )
+    response = requests.get(url=ESHOP_URL.format(slug=slug), allow_redirects=True)
 
     if response.status_code != 200:
         return {}
 
     soup = BeautifulSoup(response.text, features="html.parser")
     div = soup.find("div", class_="game-details-container")
-    script = [script for script in list(div.find_all("script")) if "window.game = Object.freeze" in str(script)][0]
+    script = [
+        script
+        for script in list(div.find_all("script"))
+        if "window.game = Object.freeze" in str(script)
+    ][0]
 
     data = {}
     separator = ': "'

@@ -32,11 +32,11 @@ def _search_index(query, **options):
         INDEX = client.init_index(INDEX_NAME)
 
     response = INDEX.search(query, request_options=options)
-    return response.get('hits', [])
+    return response.get("hits", [])
 
 
 def search_by_nsuid(nsuid: str) -> Optional[dict]:
-    hits = _search_index(nsuid, restrictSearchableAttributes=['nsuid'])
+    hits = _search_index(nsuid, restrictSearchableAttributes=["nsuid"])
     return (hits or [{}])[0]
 
 
@@ -49,9 +49,7 @@ def search_by_platform(platform: Platforms) -> Iterator[dict]:
         "allowTyposOnNumericTokens": False,
         "queryType": "prefixAll",
         "restrictSearchableAttributes": ["nsuid"],
-        "facetFilters": [
-            f"platform:{PLATFORMS[platform]}"
-        ],
+        "facetFilters": [f"platform:{PLATFORMS[platform]}"],
         "hitsPerPage": 500,
     }
 
@@ -79,9 +77,7 @@ def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
     }
 
     if platform:
-        options["facetFilters"] = [
-            f"platform:{PLATFORMS[platform]}"
-        ]
+        options["facetFilters"] = [f"platform:{PLATFORMS[platform]}"]
 
     page = -1
 

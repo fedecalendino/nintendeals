@@ -10,7 +10,6 @@ from tests.util import spy
 
 @ddt.ddt
 class TestPrices(TestCase):
-
     def test_fetch_prices(self):
         data = {
             "70010000000025": 59.99,  # Breath of the Wild (Switch)
@@ -29,11 +28,7 @@ class TestPrices(TestCase):
             self.assertEqual(expected_price, price.value)
 
     def test_non_existent_prices(self):
-        data = [
-            "50010000000000",
-            "60010000000000",
-            "70010000000000"
-        ]
+        data = ["50010000000000", "60010000000000", "70010000000000"]
 
         fetched_prices = prices.fetch_prices(country="US", nsuids=data)
 
@@ -51,8 +46,7 @@ class TestPrices(TestCase):
                 print(nsuid, price)
 
         self.assertEqual(
-            "The amount of nsuids must between 1 and 50.",
-            str(context.exception)
+            "The amount of nsuids must between 1 and 50.", str(context.exception)
         )
 
     def test_get_prices_chunks(self):
@@ -92,7 +86,7 @@ class TestPrices(TestCase):
                             "regular_price": {
                                 "amount": "$59.99",
                                 "currency": "USD",
-                                "raw_value": "59.99"
+                                "raw_value": "59.99",
                             },
                         },
                         {
@@ -101,17 +95,17 @@ class TestPrices(TestCase):
                             "regular_price": {
                                 "amount": "$59.99",
                                 "currency": "USD",
-                                "raw_value": "59.99"
+                                "raw_value": "59.99",
                             },
                             "discount_price": {
                                 "amount": "$41.99",
                                 "currency": "USD",
                                 "raw_value": "41.99",
                                 "start_datetime": "2020-04-30T06:00:00Z",
-                                "end_datetime": "2020-05-10T14:59:59Z"
-                            }
-                        }
-                    ]
+                                "end_datetime": "2020-05-10T14:59:59Z",
+                            },
+                        },
+                    ],
                 }
 
             def raise_for_status(self):

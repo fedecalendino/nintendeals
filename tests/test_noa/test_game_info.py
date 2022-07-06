@@ -5,7 +5,6 @@ from nintendeals.commons.enumerates import Features, Ratings, Regions, Platforms
 
 
 class TestGameInfo(TestCase):
-
     def test_game_info_non_existant(self):
         game = noa.game_info(nsuid="60010000000000")
         self.assertIsNone(game)
@@ -40,7 +39,10 @@ class TestGameInfo(TestCase):
 
         self.assertEqual(game.features.get(Features.DEMO), True)
 
-        self.assertEqual(game.eshop.ca_en, "https://www.nintendo.com/en_CA/games/detail/super-smash-bros-for-nintendo-3ds")
+        self.assertEqual(
+            game.eshop.ca_en,
+            "https://www.nintendo.com/en_CA/games/detail/super-smash-bros-for-nintendo-3ds",
+        )
 
     def test_game_info_switch(self):
         game = noa.game_info(slug="super-smash-bros-ultimate-switch")
@@ -69,7 +71,10 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.features.get(Features.NSO_REQUIRED), True)
         self.assertEqual(game.features.get(Features.SAVE_DATA_CLOUD), True)
 
-        self.assertEqual(game.eshop.ca_fr, "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-ultimate-switch")
+        self.assertEqual(
+            game.eshop.ca_fr,
+            "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-ultimate-switch",
+        )
 
     def test_game_info_wiiu(self):
         game = noa.game_info(nsuid="20010000007686")
@@ -95,4 +100,7 @@ class TestGameInfo(TestCase):
 
         self.assertEqual(game.features.get(Features.DEMO), False)
 
-        self.assertEqual(game.eshop.us_en, "https://www.nintendo.com/en_US/games/detail/super-smash-bros-for-wii-u")
+        self.assertEqual(
+            game.eshop.us_en,
+            "https://www.nintendo.com/en_US/games/detail/super-smash-bros-for-wii-u",
+        )

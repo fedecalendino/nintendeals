@@ -42,10 +42,7 @@ def build_game(data: Dict) -> Game:
 
     # Release Date
     try:
-        game.release_date = datetime.strptime(
-            data.get("pretty_date_s"),
-            "%d/%m/%Y"
-        )
+        game.release_date = datetime.strptime(data.get("pretty_date_s"), "%d/%m/%Y")
     except (ValueError, TypeError):
         game.release_date = None
 
@@ -75,7 +72,9 @@ def build_game(data: Dict) -> Game:
     }
 
     if game.platform == Platforms.NINTENDO_SWITCH:
-        game.features[Features.NSO_REQUIRED] = data.get("paid_subscription_required_b", False)
+        game.features[Features.NSO_REQUIRED] = data.get(
+            "paid_subscription_required_b", False
+        )
         game.features[Features.SAVE_DATA_CLOUD] = data.get("cloud_saves_b", False)
         game.features[Features.VOICE_CHAT] = data.get("voice_chat_b", False)
 

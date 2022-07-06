@@ -1,6 +1,0 @@
-algoliasearch
-beautifulsoup4
-pycountry
-python-dateutil
-requests
-xmltodict

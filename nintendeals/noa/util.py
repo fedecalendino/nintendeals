@@ -36,7 +36,7 @@ def build_game(data: Dict) -> Game:
     # Release Date
     try:
         release_date = data["releaseDateDisplay"].split("T")[0]
-        game.release_date = datetime.strptime(release_date, '%Y-%m-%d')
+        game.release_date = datetime.strptime(release_date, "%Y-%m-%d")
     except (KeyError, ValueError):
         game.release_date = None
 
@@ -64,7 +64,9 @@ def build_game(data: Dict) -> Game:
 
     if game.platform == Platforms.NINTENDO_SWITCH:
         game.features[Features.DLC] = "DLC available" in filters
-        game.features[Features.NSO_REQUIRED] = "Nintendo Switch Online compatible" in filters
+        game.features[Features.NSO_REQUIRED] = (
+            "Nintendo Switch Online compatible" in filters
+        )
         game.features[Features.SAVE_DATA_CLOUD] = extra.get("save_data_cloud")
 
     return game

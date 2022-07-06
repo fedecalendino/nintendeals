@@ -7,10 +7,9 @@ LIMIT = 20
 
 
 class TestListing(TestCase):
-
     def test_list_3ds_games(self):
         index = 0
-        
+
         for index, game in enumerate(noa.search_3ds_games("Zelda")):
             if index > LIMIT:
                 break

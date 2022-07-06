@@ -19,7 +19,6 @@ ESHOPS = {
 
 
 class Game:
-
     def __init__(
         self,
         platform: Platforms,

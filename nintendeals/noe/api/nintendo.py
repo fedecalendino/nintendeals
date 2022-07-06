@@ -17,9 +17,7 @@ NSUIDS_PREFIXES = "200", "500", "700"
 
 
 def _search(
-        query: str = "*",
-        nsuid: str = None,
-        platform: Platforms = None
+    query: str = "*", nsuid: str = None, platform: Platforms = None
 ) -> Iterator[dict]:
     rows = 200
 
@@ -46,7 +44,7 @@ def _search(
         if response.status_code != 200:
             break
 
-        json = response.json()['response'].get('docs', [])
+        json = response.json()["response"].get("docs", [])
 
         if not len(json):
             break
@@ -55,8 +53,8 @@ def _search(
             nsuids = data.get("nsuid_txt", [])
             product_codes = data["product_code_txt"] = [
                 pc.replace("-", "")
-                    for pc in data.get("product_code_txt", [])
-                        if pc[:3] in PRODUCT_CODE_PREFIXES
+                for pc in data.get("product_code_txt", [])
+                if pc[:3] in PRODUCT_CODE_PREFIXES
             ]
 
             if not any((nsuids, product_codes)):

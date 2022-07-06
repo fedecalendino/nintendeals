@@ -48,10 +48,7 @@ def build_game(data: Dict) -> Game:
 
     # Release Date
     try:
-        game.release_date = datetime.strptime(
-            data.get("sdate"),
-            "%Y.%m.%d"
-        )
+        game.release_date = datetime.strptime(data.get("sdate"), "%Y.%m.%d")
     except (ValueError, TypeError):
         game.release_date = None
 

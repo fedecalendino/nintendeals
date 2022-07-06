@@ -7,7 +7,6 @@ from nintendeals.noa.scrapers import nintendo
 
 @ddt.ddt
 class TestNintendo(TestCase):
-
     @ddt.data(
         (
             "the-legend-of-zelda-the-wind-waker-hd-wii-u",

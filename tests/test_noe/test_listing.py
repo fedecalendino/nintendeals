@@ -7,7 +7,6 @@ LIMIT = 20
 
 
 class TestListing(TestCase):
-
     def test_list_3ds_games(self):
         for index, game in enumerate(noe.list_3ds_games()):
             if index > LIMIT:

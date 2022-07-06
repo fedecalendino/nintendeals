@@ -5,7 +5,6 @@ from nintendeals.commons.enumerates import Features, Ratings, Regions, Platforms
 
 
 class TestGameInfo(TestCase):
-
     def test_game_info_non_existant(self):
         game = noj.game_info("60010000000000")
         self.assertIsNone(game)
@@ -32,7 +31,9 @@ class TestGameInfo(TestCase):
 
         self.assertEqual(game.features.get(Features.AMIIBO), True)
 
-        self.assertEqual(game.eshop.jp_jp, "https://www.nintendo.co.jp/titles/50010000025416")
+        self.assertEqual(
+            game.eshop.jp_jp, "https://www.nintendo.co.jp/titles/50010000025416"
+        )
 
     def test_game_info_switch(self):
         game = noj.game_info("70010000012085")
@@ -58,7 +59,10 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.features.get(Features.DLC), True)
         self.assertEqual(game.features.get(Features.NSO_REQUIRED), True)
 
-        self.assertEqual(game.eshop.jp_jp, "https://store-jp.nintendo.com/list/software/70010000012085.html")
+        self.assertEqual(
+            game.eshop.jp_jp,
+            "https://store-jp.nintendo.com/list/software/70010000012085.html",
+        )
 
     def test_game_info_wiiu(self):
         game = noj.game_info("20010000010867")
@@ -82,4 +86,6 @@ class TestGameInfo(TestCase):
 
         self.assertEqual(game.features.get(Features.AMIIBO), True)
 
-        self.assertEqual(game.eshop.jp_jp, "https://www.nintendo.co.jp/titles/20010000010867")
+        self.assertEqual(
+            game.eshop.jp_jp, "https://www.nintendo.co.jp/titles/20010000010867"
+        )
