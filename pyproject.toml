@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "nintendeals"
-description = "Scraping tools for Nintendo games and prices on NA, EU and JP."
+description = "Scraping tools for Nintendo Switch games and prices on NA, EU and JP."
 documentation = "https://github.com/fedecalendino/nintendeals/blob/main/README.md"
 homepage = "https://github.com/fedecalendino/nintendeals"
 license = "MIT"
 readme = "README.md"
-version = "2.2.0"
+version = "3.0.0"
 
 authors = [
   "Fede Calendino <fede@calendino.com>",
