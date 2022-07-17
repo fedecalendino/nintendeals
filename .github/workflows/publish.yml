@@ -34,4 +34,4 @@ jobs:
         with:
           slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
           pypi_project_name: nintendeals
-        uses: fedecalendino/slack-release-notifier@v1.1.0
+        uses: fedecalendino/slack-release-notifier@v1.2.1
