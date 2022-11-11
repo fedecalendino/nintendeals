@@ -17,10 +17,15 @@ def build_game(data: Dict) -> Game:
     nsuid = data.get("nsuid_txt")
     product_code = data.get("product_code_txt")
 
+    if not product_code:
+        product_code = None
+
     if nsuid:
         platform = NSUIDS[nsuid[:3]]
-    else:
+    elif product_code:
         platform = PLATFORMS[product_code[:3]]
+    else:
+        platform = PLATFORMS[data["playable_on_txt"][0]]
 
     game = Game(
         platform=platform,
