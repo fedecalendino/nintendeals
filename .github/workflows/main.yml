@@ -27,7 +27,7 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
 
       - name: Setup environment
-        run: poetry install
+        run: poetry install --no-root
 
       - name: Run tests with Coverage
         run: |
