@@ -7,7 +7,7 @@ from nintendeals.commons.enumerates import Platforms
 APP_ID = "U3B6GR4UA3"
 API_KEY = "a29c6927638bfd8cee23993e51e721c9"
 
-INDEX_NAME = "ncom_game_en_us"
+INDEX_NAME = "store_game_en_us"
 INDEX = None
 
 
