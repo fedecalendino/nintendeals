@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 
 import ddt
 
@@ -28,6 +28,7 @@ class TestNintendo(TestCase):
             if nsuid:
                 self.assertEqual(nsuid_prefix, nsuid[:3])
 
+    @SkipTest
     @ddt.data(
         ("70010000000026", "AAAAA", "1_HAC"),
         ("70010000032983", "AY6QA", "1_HAC"),

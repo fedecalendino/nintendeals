@@ -33,6 +33,3 @@ def search_switch_games(query: str) -> Iterator[Game]:
     """
 
     yield from search_games(query, Platforms.NINTENDO_SWITCH)
-
-
-list(search_switch_games("zelda"))

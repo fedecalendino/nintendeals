@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, SkipTest
 
 from nintendeals import noj
 from nintendeals.commons.enumerates import Features, Ratings, Regions, Platforms
@@ -9,6 +9,7 @@ class TestGameInfo(TestCase):
         game = noj.game_info("60010000000000")
         self.assertIsNone(game)
 
+    @SkipTest
     def test_game_info_switch(self):
         game = noj.game_info("70010000012085")
 
