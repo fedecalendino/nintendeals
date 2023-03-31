@@ -18,7 +18,11 @@ def scrap(slug):
     data = json.loads(script.text)["props"]["pageProps"]["product"]
 
     h3 = soup.find("h3", text="Supported languages")
-    languages = next(h3.nextSiblingGenerator())
+
+    if h3:
+        languages = next(h3.nextSiblingGenerator())
+    else:
+        languages = None
 
     if languages:
         languages = languages.text.strip().split(", ")
