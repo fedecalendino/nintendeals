@@ -29,7 +29,12 @@ def scrap(slug):
     else:
         languages = ["English"]
 
-    nso_features = {feature["code"] for feature in data["nsoFeatures"]}
+    features_data = data.get("nsoFeatured", None)
+
+    if features_data:
+        nso_features = {feature["code"] for feature in features_data}
+    else:
+        nso_features = set()
 
     return {
         "nsuid": data.get("nsuid"),
