@@ -15,7 +15,7 @@ def game_info(nsuid: str) -> Optional[Game]:
         * Nintendo Switch
             - AMIIBO
             - DLC
-            - NSO_REQUIRED
+            - ONLINE_PLAY
 
     Parameters
     ----------

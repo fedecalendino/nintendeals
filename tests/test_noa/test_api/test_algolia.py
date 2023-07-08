@@ -49,7 +49,5 @@ class TestAlgolia(TestCase):
             if index > LIMIT:
                 break
 
-            print(data)
-
             self.assertIn(nsuid_prefix, data.get("nsuid"))
             self.assertIn(playable_on, data.get("platform"))

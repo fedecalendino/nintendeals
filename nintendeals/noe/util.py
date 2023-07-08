@@ -69,6 +69,7 @@ def build_game(data: Dict) -> Game:
         Features.AMIIBO: data.get("near_field_comm_b", False),
         Features.DEMO: data.get("demo_availability", False),
         Features.DLC: data.get("add_on_content_b", False),
+        Features.GAME_VOUCHER: data.get("switch_game_voucher_b", False),
         Features.ONLINE_PLAY: data.get("paid_subscription_required_b", False),
         Features.SAVE_DATA_CLOUD: data.get("cloud_saves_b", False),
         Features.VOICE_CHAT: data.get("voice_chat_b", False),

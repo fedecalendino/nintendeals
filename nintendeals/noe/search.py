@@ -20,7 +20,8 @@ def search_switch_games(query: str) -> Iterator[Game]:
         * AMIIBO
         * DEMO
         * DLC
-        * NSO_REQUIRED
+        * GAME_VOUCHER
+        * ONLINE_PLAY
         * SAVE_DATA_CLOUD
         * VOICE_CHAT
 

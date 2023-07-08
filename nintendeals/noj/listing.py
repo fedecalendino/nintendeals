@@ -19,7 +19,7 @@ def list_switch_games() -> Iterator[Game]:
     ------------------
         * AMIIBO
         * DLC
-        * NSO_REQUIRED
+        * ONLINE_PLAY
 
     Yields
     -------

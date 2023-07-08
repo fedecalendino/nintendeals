@@ -19,7 +19,7 @@ def search_switch_games(query: str) -> Iterator[Game]:
     ------------------
         * AMIIBO
         * DLC
-        * NSO_REQUIRED
+        * ONLINE_PLAY
 
     Parameters
     ----------
