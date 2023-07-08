@@ -14,9 +14,7 @@ PRODUCT_CODE_PREFIXES = "HAC"
 NSUIDS_PREFIXES = "700"
 
 
-def _search(
-    query: str = "*", nsuid: str = None, platform: Platforms = None
-) -> Iterator[dict]:
+def _search(query: str = "*", nsuid: str = None, platform: Platforms = None) -> Iterator[dict]:
     rows = 200
 
     params = {
@@ -50,9 +48,7 @@ def _search(
         for data in json:
             nsuids = data.get("nsuid_txt", [])
             product_codes = data["product_code_txt"] = [
-                pc.replace("-", "")
-                for pc in data.get("product_code_txt", [])
-                if pc[:3] in PRODUCT_CODE_PREFIXES
+                pc.replace("-", "") for pc in data.get("product_code_txt", []) if pc[:3] in PRODUCT_CODE_PREFIXES
             ]
 
             if not any((nsuids, product_codes)):

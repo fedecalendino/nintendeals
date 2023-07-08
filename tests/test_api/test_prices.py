@@ -44,9 +44,7 @@ class TestPrices(TestCase):
             for nsuid, price in fetched_prices:
                 print(nsuid, price)
 
-        self.assertEqual(
-            "The amount of nsuids must between 1 and 50.", str(context.exception)
-        )
+        self.assertEqual("The amount of nsuids must between 1 and 50.", str(context.exception))
 
     def test_get_prices_chunks(self):
         nsuid = "70010000000025"

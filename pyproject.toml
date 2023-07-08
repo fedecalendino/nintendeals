@@ -39,6 +39,9 @@ black = "^23.3.0"
 coverage = "^7.2.7"
 ddt = "^1.5.0"
 
+[tool.black]
+line-length = 120
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

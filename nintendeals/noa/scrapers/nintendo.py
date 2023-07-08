@@ -19,9 +19,7 @@ def scrap(slug):
 
     sku = props["linkedData"]["sku"]
 
-    store_product = props["initialApolloState"][
-        f'StoreProduct:{{"sku":"{sku}","locale":"en_US"}}'
-    ]
+    store_product = props["initialApolloState"][f'StoreProduct:{{"sku":"{sku}","locale":"en_US"}}']
 
     return {
         "slug": store_product["urlKey"],
