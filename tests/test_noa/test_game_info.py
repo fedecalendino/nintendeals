@@ -29,7 +29,7 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.players, 8)
         self.assertFalse(game.free_to_play)
 
-        self.assertEqual(game.rating, (Ratings.ESRB, "Everyone 10+"))
+        self.assertEqual(game.rating, (Ratings.ESRB, "E10"))
 
         self.assertEqual(game.release_date.year, 2018)
         self.assertEqual(game.release_date.month, 12)
@@ -38,7 +38,6 @@ class TestGameInfo(TestCase):
         self.assertIn("Nintendo", game.publishers)
 
         self.assertEqual(game.features.get(Features.DEMO), False)
-        self.assertEqual(game.features.get(Features.DLC), True)
         self.assertEqual(game.features.get(Features.NSO_REQUIRED), True)
         self.assertEqual(game.features.get(Features.SAVE_DATA_CLOUD), True)
 

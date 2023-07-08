@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 from typing import Dict
 
@@ -22,18 +21,15 @@ def build_game(data: Dict) -> Game:
     )
 
     game.description = data.get("description")
-    game.slug = data.get("slug")
-    game.free_to_play = data.get("free_to_start", False)
+    game.slug = data.get("urlKey")
+    game.free_to_play = data.get("priceRange") == "Free to start"
 
     # Players
-    try:
-        game.players = int(re.sub(r"[^\d]*", "", data["numOfPlayers"]))
-    except (KeyError, ValueError):
-        game.players = 0
+    game.players = extra.get("players") or 1
 
     # Release Date
     try:
-        release_date = data["releaseDateDisplay"].split("T")[0]
+        release_date = data["releaseDate"].split("T")[0]
         game.release_date = datetime.strptime(release_date, "%Y-%m-%d")
     except (KeyError, ValueError):
         game.release_date = None
@@ -42,25 +38,27 @@ def build_game(data: Dict) -> Game:
     game.categories = data.get("genres", [])
 
     # Developer
-    game.developers = data.get("developers", [])
+    developer = data.get("softwareDeveloper")
+    game.developers = [developer] if developer else []
 
     # Languages
     game.languages = extra.get("languages", [])
 
     # Publisher
-    game.publishers = data.get("publishers", [])
+    publisher = data.get("softwarePublisher")
+    game.publishers = [publisher] if publisher else []
 
     # Rating (ESRB)
     game.rating = (Ratings.ESRB, data.get("esrbRating"))
 
     # Features
-    filters = data.get("generalFilters", [])
+    nso_features = data.get("nsoFeatures") or []
 
     game.features = {
-        Features.DEMO: "Demo available" in filters,
-        Features.DLC: "DLC available" in filters,
-        Features.NSO_REQUIRED: "Nintendo Switch Online compatible" in filters,
-        Features.SAVE_DATA_CLOUD: extra.get("save_data_cloud"),
+        Features.DEMO: data.get("demoNsuid") is not None,
+        Features.DLC: data.get("hasDlc", False),
+        Features.NSO_REQUIRED: "Online Play" in nso_features,
+        Features.SAVE_DATA_CLOUD: "Save Data Cloud" in nso_features,
     }
 
     return game

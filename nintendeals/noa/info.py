@@ -12,7 +12,7 @@ def game_info_by_nsuid(nsuid: str) -> Optional[Game]:
     if not data:
         return None
 
-    data["extra"] = nintendo.scrap(data["slug"])
+    data["extra"] = nintendo.scrap(data["urlKey"])
 
     return build_game(data)
 

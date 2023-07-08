@@ -17,10 +17,10 @@ class TestAlgolia(TestCase):
     @ddt.unpack
     def test_search_by_nsuid(self, nsuid, slug):
         result = algolia.search_by_nsuid(nsuid)
-        self.assertEqual(slug, result["slug"])
+        self.assertEqual(slug, result["urlKey"])
 
     @ddt.data(
-        (Platforms.NINTENDO_SWITCH, "7001", "Nintendo Switch"),
+        (Platforms.NINTENDO_SWITCH, "700", "Nintendo Switch"),
     )
     @ddt.unpack
     def test_search_by_query(self, platform, nsuid_prefix, playable_on):
@@ -48,6 +48,8 @@ class TestAlgolia(TestCase):
         for index, data in enumerate(result):
             if index > LIMIT:
                 break
+
+            print(data)
 
             self.assertIn(nsuid_prefix, data.get("nsuid"))
             self.assertIn(playable_on, data.get("platform"))

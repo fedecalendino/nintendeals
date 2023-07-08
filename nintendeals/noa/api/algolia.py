@@ -72,18 +72,23 @@ def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
         "hitsPerPage": hits_per_page,
     }
 
-    if platform:
-        options["facetFilters"] = [f"platform:{PLATFORMS[platform]}"]
-
     page = -1
 
     while True:
         page += 1
         options["page"] = page
 
-        games = _search_index(query, **options)
+        items = _search_index(query, **options)
 
-        yield from games
+        for item in items:
+            if item["topLevelCategoryCode"] != "GAMES":
+                continue
 
-        if len(games) < hits_per_page:
+            if platform:
+                if platform not in item.get("corePlatforms", []):
+                    continue
+
+            yield item
+
+        if len(items) < hits_per_page:
             break

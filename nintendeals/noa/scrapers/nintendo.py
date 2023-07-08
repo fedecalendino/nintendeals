@@ -15,23 +15,22 @@ def scrap(slug):
 
     soup = BeautifulSoup(response.text, features="html.parser")
     script = soup.find("script", id="__NEXT_DATA__")
-    data = json.loads(script.text)["props"]["pageProps"]["product"]
+    props = json.loads(script.text)["props"]["pageProps"]
 
-    h3 = soup.find("h3", text="Supported languages")
-    languages = next(h3.nextSiblingGenerator())
+    sku = props["linkedData"]["sku"]
 
-    if languages:
-        languages = languages.text.strip().split(", ")
-    else:
-        languages = ["English"]
-
-    nso_features = {feature["code"] for feature in data["nsoFeatures"]}
+    store_product = props["initialApolloState"][
+        f'StoreProduct:{{"sku":"{sku}","locale":"en_US"}}'
+    ]
 
     return {
-        "nsuid": data.get("nsuid"),
-        "product_code": data.get("productCode"),
-        "slug": data["urlKey"],
-        "title": data["name"],
-        "languages": languages,
-        "save_data_cloud": "SAVE_DATA_CLOUD" in nso_features,
+        "slug": store_product["urlKey"],
+        "title": store_product["name"],
+        "nsuid": store_product["nsuid"],
+        "product_code": store_product["productCode"],
+        "languages": store_product["supportedLanguages"],
+        "players": max(
+            store_product.get("playersMaxLocal") or 1,
+            store_product.get("playersMaxOnline") or 1,
+        ),
     }
