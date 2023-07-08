@@ -1,5 +1,4 @@
 class NAeShop:
-
     FORMAT = "https://www.nintendo.com/{lang}_{country}/games/detail/{slug}"
 
     def __init__(self, game: "Game"):
@@ -19,7 +18,6 @@ class NAeShop:
 
 
 class EUeShop:
-
     FORMAT_NO_LANG = "https://www.nintendo.{domain}{slug}"
     FORMAT_LANG = "https://www.nintendo.{domain}/{lang}{slug}"
 
@@ -98,7 +96,6 @@ class EUeShop:
 
 
 class JPeShop:
-
     NEW_FORMAT = "https://store-jp.nintendo.com/list/software/{nsuid}.html"
     OLD_FORMAT = "https://www.nintendo.co.jp/titles/{nsuid}"
 
