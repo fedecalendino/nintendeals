@@ -71,7 +71,7 @@ def build_game(data: Dict) -> Game:
     game.features = {
         Features.AMIIBO: data.get("amiibo", "0") == "1",
         Features.DLC: len(data.get("cnsuid") or []) > 0,
-        Features.NSO_REQUIRED: (data.get("nso") or ["0"]) == ["1"],
+        Features.ONLINE_PLAY: (data.get("nso") or ["0"]) == ["1"],
     }
 
     return game

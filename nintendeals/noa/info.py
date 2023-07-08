@@ -44,7 +44,8 @@ def game_info(nsuid: str = None, slug: str = None) -> Optional[Game]:
         * Nintendo Switch
             - DEMO
             - DLC
-            - NSO_REQUIRED
+            - GAME_VOUCHER
+            - ONLINE_PLAY
             - SAVE_DATA_CLOUD
 
     Parameters

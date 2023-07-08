@@ -37,7 +37,7 @@ class TestGameInfo(TestCase):
         self.assertEqual(game.features.get(Features.AMIIBO), True)
         self.assertEqual(game.features.get(Features.DEMO), False)
         self.assertEqual(game.features.get(Features.DLC), True)
-        self.assertEqual(game.features.get(Features.NSO_REQUIRED), True)
+        self.assertEqual(game.features.get(Features.ONLINE_PLAY), True)
         self.assertEqual(game.features.get(Features.SAVE_DATA_CLOUD), True)
         self.assertEqual(game.features.get(Features.VOICE_CHAT), True)
 

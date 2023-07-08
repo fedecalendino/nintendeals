@@ -33,4 +33,5 @@ def scrap(slug):
             store_product.get("playersMaxLocal") or 1,
             store_product.get("playersMaxOnline") or 1,
         ),
+        "dlc": len(store_product['relatedProducts({"limit":5})']) > 0,
     }

@@ -85,7 +85,7 @@ def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:
                 continue
 
             if platform:
-                if platform not in item.get("corePlatforms", []):
+                if item["platform"] != platform:
                     continue
 
             yield item
