@@ -45,7 +45,6 @@ def search_by_platform(platform: Platforms) -> Iterator[dict]:
         "allowTyposOnNumericTokens": False,
         "queryType": "prefixAll",
         "restrictSearchableAttributes": ["nsuid"],
-        "facetFilters": [f"platform:{PLATFORMS[platform]}"],
         "hitsPerPage": 500,
     }
 
@@ -54,15 +53,19 @@ def search_by_platform(platform: Platforms) -> Iterator[dict]:
     while True:
         current += 1
         query = f"{platform_code}{current:07}"
-        games = _search_index(query, **options)
+        items = _search_index(query, **options)
 
-        if not games:
+        if not items:
             empty_pages += 1
 
         if empty_pages == 5:
             break
 
-        yield from games
+        for item in items:
+            if item["platform"] != platform:
+                continue
+
+            yield item
 
 
 def search_by_query(query: str, platform: Platforms = None) -> Iterator[dict]:

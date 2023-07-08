@@ -31,7 +31,7 @@ def build_game(data: Dict) -> Game:
     try:
         release_date = data["releaseDate"].split("T")[0]
         game.release_date = datetime.strptime(release_date, "%Y-%m-%d")
-    except (KeyError, ValueError):
+    except (AttributeError, KeyError, ValueError):
         game.release_date = None
 
     # Categories
@@ -58,7 +58,7 @@ def build_game(data: Dict) -> Game:
     game.features = {
         Features.DEMO: "Demo Available" in filters,
         Features.GAME_VOUCHER: "Game Voucher eligible" in filters,
-        Features.DLC: extra.get("dlc", False),
+        Features.DLC: extra.get("dlc", False) if extra else None,
         Features.ONLINE_PLAY: "Online Play" in nso_features,
         Features.SAVE_DATA_CLOUD: "Save Data Cloud" in nso_features,
     }
