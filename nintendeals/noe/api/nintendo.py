@@ -48,16 +48,20 @@ def _search(query: str = "*", nsuid: str = None, platform: Platforms = None) -> 
         for data in json:
             nsuids = data.get("nsuid_txt", [])
             product_codes = data["product_code_txt"] = [
-                pc.replace("-", "") for pc in data.get("product_code_txt", []) if pc[:3] in PRODUCT_CODE_PREFIXES
+                pc.replace("-", "") for pc in data.get("product_code_txt", []) if pc[:3] == PRODUCT_CODE_PREFIXES
             ]
 
             if not any((nsuids, product_codes)):
                 continue
 
-            data["nsuid_txt"] = nsuids[0] if nsuids else 0
-            data["product_code_txt"] = product_codes[0] if product_codes else 0
+            for i in range(0, max(len(nsuids), len(product_codes))):
+                nsuid = nsuids[i] if i < len(nsuids) else None
+                product_code = product_codes[i] if i < len(product_codes) else None
 
-            yield data
+                data["nsuid_txt"] = nsuid
+                data["product_code_txt"] = product_code
+
+                yield data
 
 
 def search_by_nsuid(nsuid: str) -> Optional[dict]:

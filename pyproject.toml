@@ -5,7 +5,7 @@ documentation = "https://github.com/fedecalendino/nintendeals/blob/main/README.m
 homepage = "https://github.com/fedecalendino/nintendeals"
 license = "MIT"
 readme = "README.md"
-version = "3.1.0"
+version = "3.1.1"
 
 authors = [
   "Fede Calendino <fede@calendino.com>",
