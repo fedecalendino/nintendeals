@@ -49,7 +49,7 @@ class TestGameInfo(TestCase):
         )
 
     def test_game_info_nintendo_switch_oled_platform(self):
-        bunny_game = noa.game_info(nsuid="70010000052765")
+        game = noa.game_info(nsuid="70010000052765")
 
-        self.assertIsNotNone(bunny_game)
+        self.assertIsNotNone(game)
         self.assertEqual(game.platform, Platforms.NINTENDO_SWITCH)
