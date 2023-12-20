@@ -47,3 +47,9 @@ class TestGameInfo(TestCase):
             game.eshop.ca_fr,
             "https://www.nintendo.com/fr_CA/games/detail/super-smash-bros-ultimate-switch",
         )
+
+    def test_game_info_nintendo_switch_oled_platform(self):
+        bunny_game = noa.game_info(nsuid="70010000052765")
+
+        self.assertIsNotNone(bunny_game)
+        self.assertEqual(game.platform, Platforms.NINTENDO_SWITCH)
