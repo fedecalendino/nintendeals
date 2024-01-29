@@ -15,7 +15,10 @@ def scrap(slug):
 
     soup = BeautifulSoup(response.text, features="html.parser")
     script = soup.find("script", id="__NEXT_DATA__")
-    props = json.loads(script.text)["props"]["pageProps"]
+    try:
+        props = json.loads(script.text)["props"]["pageProps"]
+    except:
+        props = json.loads(script.text)["props"]['analytics']["pageProps"]
 
     sku = props["linkedData"]["sku"]
 
