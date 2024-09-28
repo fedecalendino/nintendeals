@@ -47,7 +47,7 @@ class TestGameInfo(TestCase):
         )
         self.assertEqual(
             game.eshop.uk_en,
-            "https://www.nintendo.co.uk/Games/Nintendo-Switch-games/Super-Smash-Bros-Ultimate-1395713.html",
+            "https://www.nintendo.co.uk/en-gb/Games/Nintendo-Switch-games/Super-Smash-Bros-Ultimate-1395713.html",
         )
         self.assertEqual(
             game.eshop.za_en,

@@ -54,7 +54,7 @@ def build_game(data: Dict) -> Game:
 
     # Features
     filters = list(map(str.lower, data.get("topLevelFilters") or []))
-    nso_features = data.get("nsoFeatures") or []
+    nso_features = list(map(str.lower, data.get("nsoFeatures") or []))
 
     game.features = {
         Features.DEMO: "demo available" in filters,
