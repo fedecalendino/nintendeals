@@ -53,15 +53,15 @@ def build_game(data: Dict) -> Game:
     game.rating = (Ratings.ESRB, data.get("esrbRating"))
 
     # Features
-    filters = data.get("topLevelFilters") or []
+    filters = list(map(str.lower, data.get("topLevelFilters") or []))
     nso_features = data.get("nsoFeatures") or []
 
     game.features = {
-        Features.DEMO: "Demo Available" in filters,
-        Features.GAME_VOUCHER: "Game Voucher eligible" in filters,
+        Features.DEMO: "demo available" in filters,
+        Features.GAME_VOUCHER: "game voucher eligible" in filters,
         Features.DLC: extra.get("dlc", False) if extra else None,
-        Features.ONLINE_PLAY: "Online Play" in nso_features,
-        Features.SAVE_DATA_CLOUD: "Save Data Cloud" in nso_features,
+        Features.ONLINE_PLAY: "online play" in nso_features,
+        Features.SAVE_DATA_CLOUD: "save data cloud" in nso_features,
     }
 
     return game
